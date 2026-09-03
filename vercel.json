@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/n8n-api/(.*)",
+      "destination": "https://prefamiliar-overliterary-princess.ngrok-free.dev/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

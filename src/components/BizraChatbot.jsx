@@ -214,14 +214,24 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
 
     let response;
     try {
-      // First attempt: Proxy via Vite server (bypasses browser CORS policy completely)
+      // First attempt: Proxy endpoint (bypasses browser CORS policy)
       response = await fetch(PROXY_URL, {
         method: 'POST',
         headers,
         body: JSON.stringify(payload),
       });
+
+      // If proxy returns 404 or non-2xx status, attempt direct fetch
+      if (!response.ok) {
+        console.warn(`Proxy returned status ${response.status}, trying direct URL...`);
+        response = await fetch(DIRECT_URL, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(payload),
+        });
+      }
     } catch (proxyError) {
-      console.warn('Proxy fetch failed, attempting direct fetch:', proxyError);
+      console.warn('Proxy fetch network error, attempting direct fetch:', proxyError);
       response = await fetch(DIRECT_URL, {
         method: 'POST',
         headers,
