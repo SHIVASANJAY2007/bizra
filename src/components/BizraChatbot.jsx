@@ -190,7 +190,7 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
   }, [messages, isTyping]);
 
   const callN8nAgent = async (userText, session, locationData) => {
-    const WEBHOOK_PATH = '/webhook/27a70dce-19d0-4858-82c0-d1126492962e';
+    const WEBHOOK_PATH = '/webhook/239e175e-8629-407e-98b8-580035573ac2';
     const PROXY_URL = `/n8n-api${WEBHOOK_PATH}`;
     const DIRECT_URL = `https://prefamiliar-overliterary-princess.ngrok-free.dev${WEBHOOK_PATH}`;
 
