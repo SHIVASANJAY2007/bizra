@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LandingPage from './components/LandingPage';
-import AboutBIZRA from './components/AboutBIZRA';
+import AboutBIZRA from './components/AboutBizra';
 import HowItWorks from './components/HowItWorks';
-import BIZRAChatbot from './components/BIZRAChatbot';
+import BIZRAChatbot from './components/BizraChatbot';
 import SmoothScroll from './components/animations/SmoothScroll';
 import './App.css';
 
