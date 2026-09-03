@@ -1,61 +1,75 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LandingPage from './components/LandingPage';
-import AboutBizra from './components/AboutBizra';
+import AboutBIZRA from './components/AboutBIZRA';
 import HowItWorks from './components/HowItWorks';
-import BizraChatbot from './components/BizraChatbot';
+import BIZRAChatbot from './components/BIZRAChatbot';
+import SmoothScroll from './components/animations/SmoothScroll';
 import './App.css';
+
+function readStoredNumber(key, fallback) {
+  if (typeof window === 'undefined') return fallback;
+  const stored = Number(window.localStorage.getItem(key));
+  return Number.isFinite(stored) && stored >= 0.8 && stored <= 1.2 ? stored : fallback;
+}
 
 function App() {
   const [currentTab, setCurrentTab] = useState('landing');
-  const [highContrast, setHighContrast] = useState(false);
-  const [fontSize, setFontSize] = useState(1.0);
+  const [fontSize, setFontSize] = useState(() => readStoredNumber('BIZRA-font-size', 1));
+  const [theme, setTheme] = useState(() => window.localStorage.getItem('BIZRA-theme') || 'dark');
 
-  const toggleHighContrast = () => {
-    setHighContrast(prev => !prev);
+  useEffect(() => {
+    document.documentElement.style.fontSize = `${fontSize * 100}%`;
+    window.localStorage.setItem('BIZRA-font-size', String(fontSize));
+  }, [fontSize]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    window.localStorage.setItem('BIZRA-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((previous) => (previous === 'dark' ? 'light' : 'dark'));
   };
 
   const renderActivePage = () => {
     switch (currentTab) {
-      case 'landing':
-        return <LandingPage setCurrentTab={setCurrentTab} fontSize={fontSize} />;
       case 'about':
-        return <AboutBizra fontSize={fontSize} />;
+        return <AboutBIZRA />;
       case 'how-it-works':
-        return <HowItWorks fontSize={fontSize} />;
+        return <HowItWorks />;
       case 'chatbot':
-        return <BizraChatbot setCurrentTab={setCurrentTab} fontSize={fontSize} />;
+        return <BIZRAChatbot setCurrentTab={setCurrentTab} theme={theme} toggleTheme={toggleTheme} />;
+      case 'landing':
       default:
-        return <LandingPage setCurrentTab={setCurrentTab} fontSize={fontSize} />;
+        return <LandingPage setCurrentTab={setCurrentTab} />;
     }
   };
 
-  // If viewing chatbot, render the full-screen immersive agent view
   if (currentTab === 'chatbot') {
     return (
-      <div className={`min-h-screen flex flex-col ${highContrast ? 'high-contrast' : ''}`}>
-        <BizraChatbot setCurrentTab={setCurrentTab} fontSize={fontSize} />
+      <div className="min-h-screen flex flex-col">
+        <BIZRAChatbot setCurrentTab={setCurrentTab} theme={theme} toggleTheme={toggleTheme} />
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen flex flex-col ${highContrast ? 'high-contrast' : ''}`}
-      style={{ background: 'var(--bg-dark)', color: 'var(--text-primary)' }}>
-      <Header
-        currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
-        highContrast={highContrast}
-        toggleHighContrast={toggleHighContrast}
-        fontSize={fontSize}
-        setFontSize={setFontSize}
-      />
-      <main className="flex-grow">
-        {renderActivePage()}
-      </main>
-      <Footer setCurrentTab={setCurrentTab} />
-    </div>
+    <SmoothScroll>
+      <div className="min-h-screen flex flex-col" style={{ background: 'var(--BIZRA-bg)', color: 'var(--BIZRA-ink)' }}>
+        <Header
+          currentTab={currentTab}
+          setCurrentTab={setCurrentTab}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+          theme={theme}
+          toggleTheme={toggleTheme}
+        />
+        <main className="flex-grow">{renderActivePage()}</main>
+        <Footer setCurrentTab={setCurrentTab} currentTab={currentTab} />
+      </div>
+    </SmoothScroll>
   );
 }
 

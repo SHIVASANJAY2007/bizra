@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment & local agent/tool directories
+.env*
+.agents/
+.kombai/

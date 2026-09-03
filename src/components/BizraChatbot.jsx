@@ -1,23 +1,171 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  ArrowLeft, RotateCcw, Send, Sparkles, MessageSquare,
-  Bot, CheckCircle2, ChevronRight, ExternalLink, Globe,
-  Shield, Zap, Layers, Compass, TrendingUp, IndianRupee,
-  MapPin, Check, Menu, X, ArrowUpRight, TrendingDown,
-  PieChart, Landmark, FileText, Coins, BarChart3
+  ArrowLeft, RotateCcw, Send, X, Sun, Moon, MapPin, LocateFixed, Loader2
 } from 'lucide-react';
+import ResponseRenderer from './ResponseRenderer';
 
-export default function BizraChatbot({ setCurrentTab, fontSize }) {
-  const [activeChannel, setActiveChannel] = useState('whatsapp'); // 'whatsapp' | 'telegram'
+export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, toggleTheme: externalToggleTheme }) {
   const [inputQuery, setInputQuery] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  
+
+  // Live Location States
+  const [userLocation, setUserLocation] = useState(null); // { latitude, longitude, city, state, country, pincode, address }
+  const [locationStatus, setLocationStatus] = useState('idle'); // 'idle' | 'locating' | 'granted' | 'denied' | 'error'
+  const [locationError, setLocationError] = useState(null);
+
+  const [internalTheme, setInternalTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.getAttribute('data-theme') || 'dark';
+    }
+    return 'dark';
+  });
+
+  const activeTheme = externalTheme || internalTheme;
+
+  const handleToggleTheme = () => {
+    if (externalToggleTheme) {
+      externalToggleTheme();
+    } else {
+      const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
+      setInternalTheme(nextTheme);
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      window.localStorage.setItem('BIZRA-theme', nextTheme);
+    }
+  };
+
+  const fetchIpLocation = async () => {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.city || data.region || data.latitude) {
+          const readable = [data.city, data.region, data.country_name].filter(Boolean).join(', ');
+          return {
+            latitude: data.latitude || 0,
+            longitude: data.longitude || 0,
+            city: data.city || '',
+            state: data.region || '',
+            country: data.country_name || '',
+            pincode: data.postal || '',
+            address: readable || 'Detected via IP',
+            source: 'IP Auto-Detect'
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('Primary IP location fallback failed:', e);
+    }
+
+    try {
+      const res2 = await fetch('https://freeipapi.com/api/json');
+      if (res2.ok) {
+        const data2 = await res2.json();
+        const readable = [data2.cityName, data2.regionName, data2.countryName].filter(Boolean).join(', ');
+        return {
+          latitude: data2.latitude || 0,
+          longitude: data2.longitude || 0,
+          city: data2.cityName || '',
+          state: data2.regionName || '',
+          country: data2.countryName || '',
+          pincode: data2.zipCode || '',
+          address: readable || 'Detected via IP',
+          source: 'IP Auto-Detect'
+        };
+      }
+    } catch (e) {
+      console.warn('Secondary IP location fallback failed:', e);
+    }
+
+    return null;
+  };
+
+  const autoDetectLocation = async () => {
+    setLocationStatus('locating');
+    setLocationError(null);
+
+    // 1. Try HTML5 Geolocation with a quick timeout (3s)
+    if (typeof window !== 'undefined' && navigator.geolocation) {
+      const getGpsPosition = () =>
+        new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: false,
+            timeout: 3000,
+            maximumAge: 300000
+          });
+        });
+
+      try {
+        const position = await getGpsPosition();
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        let locData = {
+          latitude: lat,
+          longitude: lon,
+          city: '',
+          state: '',
+          country: '',
+          pincode: '',
+          address: `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`,
+          source: 'GPS'
+        };
+
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=14`,
+            { headers: { 'Accept-Language': 'en' } }
+          );
+          if (res.ok) {
+            const geoJson = await res.json();
+            const addr = geoJson.address || {};
+            const city = addr.city || addr.town || addr.village || addr.county || addr.suburb || '';
+            const state = addr.state || addr.region || '';
+            const country = addr.country || '';
+            const pincode = addr.postcode || '';
+
+            const readableAddress = [city, state, country].filter(Boolean).join(', ');
+            locData = {
+              latitude: lat,
+              longitude: lon,
+              city,
+              state,
+              country,
+              pincode,
+              address: readableAddress || `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`,
+              source: 'GPS'
+            };
+          }
+        } catch (e) { }
+
+        setUserLocation(locData);
+        setLocationStatus('granted');
+        return;
+      } catch (gpsErr) {
+        console.log('Browser GPS prompt skipped/blocked. Auto-switching to IP location...');
+      }
+    }
+
+    // 2. Immediate IP Location Fallback (zero user effort!)
+    const ipLoc = await fetchIpLocation();
+    if (ipLoc) {
+      setUserLocation(ipLoc);
+      setLocationStatus('granted');
+    } else {
+      setLocationStatus('denied');
+    }
+  };
+
+  useEffect(() => {
+    // Automatically detect location on load (Zero manual work for user!)
+    autoDetectLocation();
+  }, []);
+
   const [messages, setMessages] = useState([
     {
       id: 1,
       sender: 'ai',
-      text: "Welcome to BIZRA AI! 🚀\n\nHow can I assist you with your rural business feasibility, local demand research, or government loan schemes today?",
-      time: '05:39 PM',
+      text: "Welcome to BIZRA AI Agent! 🚀\n\nHow can I assist you with your rural business feasibility, local demand research, or government loan schemes today?",
+      time: 'Just now',
       quickPills: [
         '🌾 Dairy business feasibility in Tamil Nadu',
         '💰 PMEGP 35% Subsidy calculation',
@@ -27,7 +175,11 @@ export default function BizraChatbot({ setCurrentTab, fontSize }) {
     }
   ]);
 
+  const generateSessionId = () => 'BIZRA-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now();
+  const [sessionId, setSessionId] = useState(generateSessionId);
+
   const messagesEndRef = useRef(null);
+  const messageIdRef = useRef(2);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -37,51 +189,95 @@ export default function BizraChatbot({ setCurrentTab, fontSize }) {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // AI Knowledge Base generator for realistic responses
-  const generateAiResponse = (userText) => {
-    const lower = userText.toLowerCase();
-    
-    if (lower.includes('dairy') || lower.includes('milk') || lower.includes('tamil nadu') || lower.includes('coimbatore')) {
-      return {
-        text: `📊 **Dairy Products Business Feasibility Scan (Tamil Nadu)**\n\n• **Opportunity Score:** 78% (High Potential)\n• **Local Demand Index:** High (Fresh pouch milk, curd, paneer, and ghee)\n• **Recommended Initial Capital:** ₹1.2 – 2.5 Lakhs\n• **Eligible Subsidy Scheme:** Dairy Entrepreneurship Development Scheme (DEDS) + PMEGP (up to 35% margin money)\n• **Estimated Break-Even:** 6 to 9 Months\n\n💡 *Recommendation:* Focus on direct-to-home morning deliveries within 5km of village cluster to capture 22% higher profit margins than bulk dairy cooperatives.`,
-        pills: ['Calculate exact PMEGP subsidy', 'Download FSSAI license form', 'View cold storage equipment costs']
-      };
-    }
-    
-    if (lower.includes('subsidy') || lower.includes('pmegp') || lower.includes('mudra') || lower.includes('loan')) {
-      return {
-        text: `💰 **Government Loan & Subsidy Eligibility Guide**\n\n• **PMEGP Scheme:** Offers 25% (Urban) to 35% (Rural) subsidy on project capital up to ₹50 Lakhs for manufacturing / ₹20 Lakhs for services.\n• **Mudra Loan (Kishor/Tarun):** Collateral-free funding from ₹50,000 up to ₹10 Lakhs at concessional interest rates.\n• **CGTMSE Coverage:** 100% government guarantee backed for rural micro-enterprises.\n\nWould you like me to generate a bank-ready Project Report format for your business category?`,
-        pills: ['Generate Bank Project Report', 'Check PMEGP eligibility criteria', 'Find nearest MSME facilitation centre']
-      };
+  const callN8nAgent = async (userText, session, locationData) => {
+    const WEBHOOK_PATH = '/webhook/27a70dce-19d0-4858-82c0-d1126492962e';
+    const PROXY_URL = `/n8n-api${WEBHOOK_PATH}`;
+    const DIRECT_URL = `https://prefamiliar-overliterary-princess.ngrok-free.dev${WEBHOOK_PATH}`;
+
+    let promptWithLocation = userText;
+    if (locationData && locationData.address) {
+      promptWithLocation = `${userText}\n\n[User Live Location Context: ${locationData.address} (Lat: ${locationData.latitude}, Lon: ${locationData.longitude}${locationData.pincode ? `, Pincode: ${locationData.pincode}` : ''})]`;
     }
 
-    if (lower.includes('competitor') || lower.includes('competition') || lower.includes('radius')) {
-      return {
-        text: `📍 **Hyper-Local Competitor Radius Mapping**\n\nBased on government MSME Udyam registration records within your 10km perimeter:\n• **Direct Competitors:** 12 active registered units\n• **Underserved Segments:** Packaged sweets & organic farm produce (Supply Gap: 42%)\n• **Nearest Mandi:** 6.4 km distance with daily wholesale auctions\n\nYour selected area exhibits low market saturation for branded value-added goods.`,
-        pills: ['View Mandi wholesale price index', 'Check transportation route efficiency', 'Explore raw material supplier contacts']
-      };
-    }
-
-    if (lower.includes('license') || lower.includes('fssai') || lower.includes('gst') || lower.includes('permit') || lower.includes('checklist')) {
-      return {
-        text: `📋 **Step-by-Step Regulatory & Compliance Sequence**\n\n1. **Udyam Registration:** 100% free online MSME registration for scheme access\n2. **Local Panchayat / Municipal Trade License:** 3–5 working days\n3. **FSSAI Food Safety Registration:** Mandatory for food, dairy, and edible produce\n4. **GST Registration:** Mandatory only if annual turnover exceeds ₹40 Lakhs (Goods) / ₹20 Lakhs (Services)\n5. **Pollution Board Consent (NOC):** Required for small manufacturing & processing units`,
-        pills: ['Step-by-step Udyam guide', 'Download FSSAI application draft', 'Check state-specific permit fees']
-      };
-    }
-
-    return {
-      text: `🤖 **BIZRA Intelligence Synthesis**\n\nI have analyzed your query: "${userText}" across national open data platforms.\n\n• **Market Viability:** Positive indicator for rural and semi-urban commercial expansion.\n• **Recommended Next Step:** Run a localized demand scan with pincode demographics to forecast 12-month cash flows.\n• **Subsidy Opportunity:** Multiple central schemes (Mudra, PMEGP, Stand-Up India) are open for application.`,
-      pills: ['Explore business categories', 'Calculate project cost breakdown', 'Speak with regional coordinator']
+    const payload = {
+      chatInput: promptWithLocation,
+      message: userText,
+      rawQuery: userText,
+      sessionId: session,
+      location: locationData || null
     };
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true',
+    };
+
+    let response;
+    try {
+      // First attempt: Proxy via Vite server (bypasses browser CORS policy completely)
+      response = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+    } catch (proxyError) {
+      console.warn('Proxy fetch failed, attempting direct fetch:', proxyError);
+      response = await fetch(DIRECT_URL, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`n8n AI Agent returned status ${response.status}`);
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const data = await response.json();
+      if (typeof data === 'string') return data;
+      if (Array.isArray(data) && data.length > 0) {
+        const first = data[0];
+        if (typeof first === 'string') return first;
+        return (
+          first?.output ||
+          first?.response ||
+          first?.text ||
+          first?.message ||
+          first?.json?.output ||
+          first?.json?.text ||
+          first?.json?.response ||
+          JSON.stringify(first)
+        );
+      }
+      if (typeof data === 'object' && data !== null) {
+        return (
+          data.output ||
+          data.response ||
+          data.text ||
+          data.message ||
+          data.fulfillmentText ||
+          data.json?.output ||
+          data.json?.text ||
+          data.json?.response ||
+          JSON.stringify(data)
+        );
+      }
+      return String(data);
+    } else {
+      return await response.text();
+    }
   };
 
-  const handleSendMessage = (textToSend = inputQuery) => {
-    if (!textToSend.trim()) return;
+  const handleSendMessage = async (textToSend = inputQuery) => {
+    if (!textToSend.trim() || isTyping) return;
 
+    const query = textToSend.trim();
     const userMsg = {
-      id: Date.now(),
+      id: messageIdRef.current++,
       sender: 'user',
-      text: textToSend,
+      text: query,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
@@ -89,26 +285,36 @@ export default function BizraChatbot({ setCurrentTab, fontSize }) {
     setInputQuery('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      const responseData = generateAiResponse(textToSend);
+    try {
+      const aiReplyText = await callN8nAgent(query, sessionId, userLocation);
       const aiMsg = {
-        id: Date.now() + 1,
+        id: messageIdRef.current++,
         sender: 'ai',
-        text: responseData.text,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        quickPills: responseData.pills
+        text: aiReplyText || "Received empty response from AI Agent.",
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      setIsTyping(false);
       setMessages(prev => [...prev, aiMsg]);
-    }, 900);
+    } catch (err) {
+      console.error('AI Agent connection error:', err);
+      const errorMsg = {
+        id: messageIdRef.current++,
+        sender: 'ai',
+        text: `⚠️ **Connection Error**: Unable to reach BIZRA AI Agent.\n\nDetails: ${err.message || 'Network error'}`,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const resetChat = () => {
+    setSessionId(generateSessionId());
     setMessages([
       {
         id: 1,
         sender: 'ai',
-        text: "Welcome to BIZRA AI! 🚀\n\nHow can I assist you with your rural business feasibility, local demand research, or government loan schemes today?",
+        text: "Welcome to BIZRA AI Agent! 🚀\n\nHow can I assist you with your rural business feasibility, local demand research, or government loan schemes today?",
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         quickPills: [
           '🌾 Dairy business feasibility in Tamil Nadu',
@@ -126,139 +332,161 @@ export default function BizraChatbot({ setCurrentTab, fontSize }) {
     window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${text}`, '_blank');
   };
 
-  return (
-    <div className="h-[100dvh] w-full flex flex-col bg-[#fbf8f2] text-gray-900 overflow-hidden select-none" style={{ fontSize: `${fontSize}rem` }}>
+  const isLight = activeTheme === 'light';
 
-      {/* ═══════════════════════════════════════
-          TOP NAVIGATION BAR (64-68px Fixed Height, Robust Padding)
-      ═══════════════════════════════════════ */}
-      <header className="h-[64px] sm:h-[68px] w-full shrink-0 border-b border-[#e8dcd0] bg-[#fbf8f2] px-4 sm:px-8 flex items-center justify-between z-30 relative">
-        
-        {/* Left Links */}
-        <div className="flex items-center gap-4 sm:gap-6">
+  return (
+    <div className={`h-[100dvh] w-full flex flex-col transition-colors duration-200 overflow-hidden ${isLight ? 'bg-slate-50 text-slate-900' : 'bg-[#080c14] text-gray-100'
+      }`}>
+
+      {/* ── TOP HEADER BAR ── */}
+      <header className={`h-16 w-full shrink-0 border-b px-4 sm:px-6 flex items-center justify-between z-30 transition-colors ${isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-[#04060a] border-white/10 text-white'
+        }`}>
+
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setCurrentTab('landing')}
-            className="flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-700 hover:text-emerald-700 transition-colors cursor-pointer px-2.5 py-1.5 rounded-lg hover:bg-[#efe6db]"
+            className={`flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer px-3 py-1.5 rounded-lg border ${isLight
+              ? 'bg-slate-100 text-slate-700 hover:text-slate-900 border-slate-200 hover:bg-slate-200'
+              : 'bg-white/5 text-gray-300 hover:text-white border-white/10 hover:bg-white/10'
+              }`}
           >
             <ArrowLeft size={16} />
             <span>Home</span>
           </button>
 
-          <span className="text-[#e2d5c7] hidden sm:block">|</span>
+          <span className={`${isLight ? 'text-slate-300' : 'text-white/20'} hidden sm:block`}>|</span>
 
-          {/* Logo Badge */}
-          <div className="flex items-center gap-2 select-none">
-            <span className="font-serif font-black text-sm sm:text-base tracking-tight text-gray-900">BIZRA AI</span>
-            <span className="text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded-full font-mono bg-[#e63946]/10 text-[#e63946] border border-[#e63946]/20 tracking-wider">
-              OGD DYNAMIC
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center font-black text-emerald-500 text-xs">
+              B
+            </div>
+            <span className={`font-black text-sm tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              BIZRA AI Agent
             </span>
+
+            {/* Live Location Badge */}
+            {locationStatus === 'granted' && userLocation && (
+              <button
+                onClick={autoDetectLocation}
+                className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25 transition-all cursor-pointer"
+                title="Live Location active. Click to refresh location."
+              >
+                <MapPin size={11} className="text-emerald-500 animate-pulse shrink-0" />
+                <span className="max-w-[110px] sm:max-w-[170px] truncate">
+                  {userLocation.city ? `${userLocation.city}, ${userLocation.state}` : userLocation.address}
+                </span>
+              </button>
+            )}
+
+            {locationStatus === 'locating' && (
+              <div className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-mono">
+                <Loader2 size={11} className="animate-spin text-amber-500 shrink-0" />
+                <span className="hidden sm:inline">Locating...</span>
+              </div>
+            )}
+
+            {(locationStatus === 'idle' || locationStatus === 'denied' || locationStatus === 'error') && (
+              <button
+                onClick={autoDetectLocation}
+                className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-500/15 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 border border-slate-500/30 hover:border-emerald-500/40 transition-all cursor-pointer"
+                title="Click to grant live location access for regional market data"
+              >
+                <LocateFixed size={11} className="shrink-0" />
+                <span className="hidden sm:inline">Location Access</span>
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Right Controls */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={handleToggleTheme}
+            className={`flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer px-3 py-1.5 rounded-lg border ${isLight
+              ? 'bg-slate-100 text-slate-700 hover:text-slate-900 border-slate-200 hover:bg-slate-200'
+              : 'bg-white/5 text-gray-300 hover:text-white border-white/10 hover:bg-white/10'
+              }`}
+            title={isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+          >
+            {isLight ? <Moon size={15} className="text-emerald-600" /> : <Sun size={15} className="text-amber-400" />}
+            <span className="hidden sm:inline">{isLight ? 'Dark Mode' : 'Light Mode'}</span>
+          </button>
+
+          {/* Reset Session Button */}
           <button
             onClick={resetChat}
-            className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors cursor-pointer px-3 py-1.5 rounded-lg hover:bg-[#efe6db]"
+            className={`flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer px-3 py-1.5 rounded-lg border ${isLight
+              ? 'bg-slate-100 text-slate-700 hover:text-slate-900 border-slate-200 hover:bg-slate-200'
+              : 'bg-white/5 text-gray-300 hover:text-white border-white/10 hover:bg-white/10'
+              }`}
             title="Reset Session"
           >
             <RotateCcw size={14} />
             <span className="hidden sm:inline">Reset Session</span>
           </button>
 
+          {/* Back to Home Button */}
           <button
             onClick={() => setCurrentTab('landing')}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white border border-[#e5dcd3] shadow-xs flex items-center justify-center text-gray-800 hover:bg-gray-50 transition-transform hover:scale-105 cursor-pointer"
-            title="Menu"
+            className={`w-9 h-9 rounded-lg border flex items-center justify-center transition-colors cursor-pointer ${isLight
+              ? 'bg-slate-100 text-slate-700 hover:text-slate-900 border-slate-200 hover:bg-slate-200'
+              : 'bg-white/5 text-gray-300 hover:text-white border-white/10 hover:bg-white/10'
+              }`}
+            title="Back to Landing Page"
           >
-            <Menu size={17} />
+            <X size={18} />
           </button>
         </div>
+
       </header>
 
-      {/* ═══════════════════════════════════════
-          MAIN WORKSPACE (Grid 65% / 35%, Non-clipping min-w-0)
-      ═══════════════════════════════════════ */}
+      {/* ── MAIN CHAT WORKSPACE ── */}
       <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 min-h-0 w-full overflow-hidden">
-        
-        {/* ── LEFT COLUMN: AI CHAT (8 of 12 / ~66%) ── */}
-        <div className="lg:col-span-7 xl:col-span-8 flex flex-col min-w-0 h-full relative bg-[#fcfaf7] border-r border-[#e8dcd0] overflow-hidden">
-          
-          {/* Scattered Finance Icons Background (Contained & Muted) */}
-          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden flex flex-wrap justify-around items-center gap-10 sm:gap-14 p-6 opacity-[0.25]">
-            {[...Array(3)].map((_, groupIdx) => (
-              <React.Fragment key={groupIdx}>
-                <div className="m-3"><TrendingUp size={24} className="text-[#b0a89d] stroke-[1.5]" /></div>
-                <div className="m-3"><FileText size={24} className="text-[#b0a89d] stroke-[1.5]" /></div>
-                <div className="m-3"><PieChart size={24} className="text-[#38bdf8] stroke-[1.5]" /></div>
-                <div className="m-3"><Landmark size={26} className="text-[#b0a89d] stroke-[1.5]" /></div>
-                <div className="m-3"><TrendingDown size={24} className="text-[#b0a89d] stroke-[1.5]" /></div>
-                <div className="m-3"><Coins size={24} className="text-[#b0a89d] stroke-[1.5]" /></div>
-                <div className="m-3"><BarChart3 size={24} className="text-[#38bdf8] stroke-[1.5]" /></div>
-                <div className="m-3"><FileText size={24} className="text-[#38bdf8] stroke-[1.5]" /></div>
-              </React.Fragment>
-            ))}
-          </div>
 
-          {/* AGENT STATUS HEADER */}
-          <div className="shrink-0 px-6 sm:px-8 py-3.5 border-b border-[#ebdccd]/80 flex items-center justify-between relative z-10 bg-[#fcfaf7]/95 backdrop-blur-md">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-[#3e1818] text-[#fabc09] shadow-sm shrink-0">
-                <Bot size={20} />
-              </div>
-              <div>
-                <h2 className="font-serif font-black text-sm sm:text-base text-gray-900 leading-none tracking-tight">
-                  BIZRA AI AGENT
-                </h2>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-emerald-700">
-                    ONLINE • READY
-                  </span>
-                </div>
-              </div>
-            </div>
+        {/* Chat Feed Column (Left 8 Cols) */}
+        <div className={`lg:col-span-8 flex flex-col h-full relative overflow-hidden border-r transition-colors ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#080c14] border-white/5'
+          }`}>
 
-            {/* Status Pill */}
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold text-gray-600 bg-white border border-[#ded2c4] shadow-xs">
-              <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-              <span>Government OGD Live Sync</span>
-            </div>
-          </div>
-
-          {/* SCROLLABLE CHAT FEED */}
-          <div className="flex-grow overflow-y-auto px-6 sm:px-8 py-6 space-y-6 relative z-10 scrollbar-thin min-w-0">
+          {/* Scrollable Feed */}
+          <div className="flex-grow overflow-y-auto px-4 sm:px-8 py-6 space-y-6">
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} space-y-2 animate-fade-in`}
+                className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} space-y-2`}
               >
-                {/* Chat Bubble */}
                 <div
-                  className={`w-full max-w-[560px] rounded-3xl p-5 sm:p-6 shadow-sm leading-relaxed text-sm sm:text-[15px] relative ${
-                    msg.sender === 'user'
-                      ? 'bg-[#054d32] text-white rounded-br-sm shadow-md'
-                      : 'bg-white text-gray-800 border border-[#ebdccd] rounded-bl-sm'
-                  }`}
+                  className={`max-w-[580px] rounded-2xl p-4 sm:p-5 text-xs sm:text-sm leading-relaxed ${msg.sender === 'user'
+                    ? 'bg-emerald-600 text-white rounded-br-none shadow-md font-medium'
+                    : isLight
+                      ? 'bg-white text-slate-800 border border-slate-200/90 rounded-bl-none shadow-sm'
+                      : 'bg-[#121826] text-gray-200 border border-white/10 rounded-bl-none shadow-lg'
+                    }`}
                 >
-                  <p className="whitespace-pre-line font-medium leading-[1.6]">
-                    {msg.text}
-                  </p>
-                  
-                  {/* Timestamp */}
-                  <div className={`text-[10px] sm:text-[11px] font-bold mt-3 text-right ${msg.sender === 'user' ? 'text-emerald-200/80' : 'text-gray-400'}`}>
+                  {msg.sender === 'user' ? (
+                    <p className="whitespace-pre-wrap">{msg.text}</p>
+                  ) : (
+                    <ResponseRenderer text={msg.text} />
+                  )}
+                  <div className={`text-[10px] font-bold mt-2 text-right ${msg.sender === 'user'
+                    ? 'text-emerald-200'
+                    : isLight
+                      ? 'text-slate-400'
+                      : 'text-gray-400'
+                    }`}>
                     {msg.time}
                   </div>
                 </div>
 
-                {/* Suggested Prompts (Pills) */}
-                {msg.quickPills && msg.quickPills.length > 0 && (
-                  <div className="flex flex-wrap gap-2 max-w-[560px] pt-1">
+                {msg.quickPills && (
+                  <div className="flex flex-wrap gap-2 max-w-[580px] pt-1">
                     {msg.quickPills.map((pill, pIdx) => (
                       <button
                         key={pIdx}
                         onClick={() => handleSendMessage(pill)}
-                        className="text-xs sm:text-[13px] font-semibold px-4 py-2.5 rounded-full bg-white text-gray-800 border border-[#ded2c4] hover:bg-emerald-50 hover:text-emerald-900 hover:border-emerald-400 transition-all shadow-xs cursor-pointer text-left leading-snug"
+                        className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition-all cursor-pointer text-left ${isLight
+                          ? 'bg-white text-slate-700 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700 shadow-sm'
+                          : 'bg-[#efe7d5]/10 text-[#efe7d5] border-[#efe7d5]/25 hover:border-[#efe7d5]/50 hover:bg-[#efe7d5]/20'
+                          }`}
                       >
                         {pill}
                       </button>
@@ -268,131 +496,119 @@ export default function BizraChatbot({ setCurrentTab, fontSize }) {
               </div>
             ))}
 
-            {/* Typing Indicator */}
             {isTyping && (
-              <div className="flex items-center gap-2 p-4 bg-white rounded-3xl rounded-bl-sm border border-[#ebdccd] w-fit shadow-xs animate-fade-in">
-                <div className="flex gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '300ms' }} />
-                </div>
-                <span className="text-xs font-semibold text-gray-500 ml-2">BIZRA AI is analyzing OGD databases...</span>
+              <div className={`p-3 rounded-xl border text-xs w-fit flex items-center gap-2 ${isLight
+                ? 'bg-white border-slate-200 text-slate-600 shadow-sm'
+                : 'bg-[#121826] border-[#efe7d5]/20 text-[#efe7d5]'
+                }`}>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                <span>BIZRA AI Agent is thinking...</span>
               </div>
             )}
 
             <div ref={messagesEndRef} className="h-2" />
           </div>
 
-          {/* BOTTOM CHAT INPUT BAR */}
-          <div className="shrink-0 px-6 sm:px-8 pb-6 pt-3 relative z-10 bg-[#fcfaf7]/90 backdrop-blur-xs">
+          {/* Input Bar */}
+          <div className={`p-4 border-t transition-colors ${isLight ? 'bg-white border-slate-200' : 'bg-[#04060a] border-white/10'
+            }`}>
             <form
               onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
-              className="relative flex items-center bg-white rounded-full h-[56px] sm:h-[60px] border-2 border-[#d9cbbb] focus-within:border-[#054d32] focus-within:ring-4 focus-within:ring-[#054d32]/10 shadow-md transition-all px-2"
+              className={`flex items-center gap-2 rounded-xl p-1.5 border focus-within:border-emerald-500 transition-colors ${isLight ? 'bg-slate-100 border-slate-200' : 'bg-[#121826] border-white/10'
+                }`}
             >
+              <button
+                type="button"
+                onClick={autoDetectLocation}
+                className={`p-2 rounded-lg transition-colors cursor-pointer shrink-0 ${locationStatus === 'granted'
+                  ? 'text-emerald-500 hover:bg-emerald-500/10'
+                  : isLight
+                    ? 'text-slate-400 hover:text-slate-700 hover:bg-slate-200'
+                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+                  }`}
+                title={userLocation ? `Location Active: ${userLocation.address}` : "Access live location"}
+              >
+                {locationStatus === 'locating' ? (
+                  <Loader2 size={16} className="animate-spin text-amber-500" />
+                ) : (
+                  <MapPin size={16} className={locationStatus === 'granted' ? 'text-emerald-500' : ''} />
+                )}
+              </button>
+
               <input
                 type="text"
-                placeholder="Ask BIZRA AI anything..."
+                placeholder={
+                  userLocation
+                    ? `Ask BIZRA AI about market feasibility near ${userLocation.city || 'your location'}...`
+                    : "Ask BIZRA AI about feasibility, subsidies, or local market demand..."
+                }
                 value={inputQuery}
                 onChange={(e) => setInputQuery(e.target.value)}
-                className="w-full h-full pl-4 pr-12 bg-transparent text-sm sm:text-[15px] text-gray-900 placeholder-gray-400 font-medium focus:outline-none rounded-full"
+                className={`flex-grow px-2 py-2 bg-transparent text-xs sm:text-sm focus:outline-none ${isLight ? 'text-slate-900 placeholder-slate-400' : 'text-white placeholder-gray-400'
+                  }`}
               />
 
               <button
                 type="submit"
                 disabled={!inputQuery.trim()}
-                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all absolute right-2.5 cursor-pointer shadow-sm ${
-                  inputQuery.trim()
-                    ? 'bg-[#054d32] text-white hover:scale-105 hover:bg-[#076644]'
-                    : 'bg-[#eee4d8] text-gray-400 cursor-not-allowed'
-                }`}
-                title="Send Message"
+                className={`w-9 h-9 rounded-lg flex items-center justify-center text-white transition-all cursor-pointer ${inputQuery.trim()
+                  ? 'bg-emerald-500 hover:bg-emerald-600 shadow-sm'
+                  : isLight
+                    ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                    : 'bg-white/10 text-gray-400 cursor-not-allowed'
+                  }`}
               >
-                <Send size={16} />
+                <Send size={15} />
               </button>
             </form>
           </div>
 
         </div>
 
-        {/* ── RIGHT COLUMN: WHATSAPP CONCIERGE (4-5 of 12) ── */}
-        <div className="lg:col-span-5 xl:col-span-4 bg-gradient-to-b from-[#e8f7ee] via-[#e2f5ea] to-[#d8f0e2] flex flex-col justify-between items-center p-6 sm:p-8 lg:p-10 text-center min-w-0 h-full overflow-y-auto scrollbar-thin relative">
-          
-          {/* Top Channel Toggle Capsule */}
-          <div className="inline-flex items-center p-1 rounded-full bg-white/80 border border-emerald-200/80 shadow-xs backdrop-blur-md gap-1 shrink-0 mb-4">
-            <button
-              onClick={() => setActiveChannel('whatsapp')}
-              className={`flex items-center gap-1.5 px-5 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                activeChannel === 'whatsapp'
-                  ? 'bg-[#25D366] text-white shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-              </svg>
-              <span>WhatsApp</span>
-            </button>
+        {/* WhatsApp Mobile Concierge Column (Right 4 Cols) */}
+        <div className={`hidden lg:flex lg:col-span-4 flex-col justify-between p-8 text-center border-l transition-colors ${isLight ? 'bg-slate-100/70 border-slate-200 text-slate-800' : 'bg-[#05080f] border-white/5 text-white'
+          }`}>
+          <div className="space-y-6 my-auto">
+            {/* Tan Paper Highlighted Concierge Card in Dark Mode */}
+            <div className={`p-6 rounded-2xl border transition-all ${isLight
+              ? 'bg-white border-slate-200 shadow-sm'
+              : 'bg-[#efe7d5] text-[#152329] border-[#efe7d5]/40 shadow-xl'
+              }`}>
+              <div
+                className={`w-16 h-16 rounded-2xl mx-auto flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform mb-4 ${isLight ? 'bg-[#25D366]' : 'bg-[#152329] text-[#efe7d5]'
+                  }`}
+                onClick={openWhatsApp}
+              >
+                <svg className={`w-10 h-10 ${isLight ? 'fill-white' : 'fill-[#efe7d5]'}`} viewBox="0 0 24 24">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+                </svg>
+              </div>
 
-            <button
-              onClick={() => setActiveChannel('telegram')}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                activeChannel === 'telegram'
-                  ? 'bg-blue-500 text-white shadow-xs'
-                  : 'text-gray-500 hover:text-gray-900'
-              }`}
-            >
-              <Send size={13} />
-              <span>Telegram</span>
-            </button>
-          </div>
+              <div className="space-y-1">
+                <h3 className={`font-black text-lg ${isLight ? 'text-slate-900' : 'text-[#152329]'}`}>
+                  Chat on WhatsApp
+                </h3>
+                <p className={`text-xs max-w-xs mx-auto leading-relaxed font-medium ${isLight ? 'text-slate-500' : 'text-[#152329]/80'}`}>
+                  Connect with BIZRA AI on WhatsApp for instant feasibility reports and mandi price alerts.
+                </p>
+              </div>
 
-          {/* Center Graphic & Pitch Area */}
-          <div className="space-y-6 my-auto py-4 max-w-sm w-full">
-            
-            {/* WhatsApp App Card Icon */}
-            <div
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl mx-auto flex items-center justify-center shadow-[0_12px_32px_rgba(37,211,102,0.35)] transition-transform hover:scale-105 cursor-pointer bg-[#25D366]"
-              onClick={openWhatsApp}
-            >
-              <svg className="w-14 h-14 sm:w-16 sm:h-16 fill-white" viewBox="0 0 24 24">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-              </svg>
-            </div>
-
-            {/* Typography */}
-            <div className="space-y-1">
-              <h3 className="font-serif font-black text-xl sm:text-2xl text-gray-900 tracking-tight leading-none uppercase">
-                TAKE IT TO
-              </h3>
-              <h2 className="font-serif font-black text-3xl sm:text-4xl text-[#25D366] tracking-tight leading-none">
-                WHATSAPP
-              </h2>
-            </div>
-
-            <p className="text-xs sm:text-sm leading-[1.6] text-gray-600 font-medium max-w-[340px] mx-auto">
-              Ready to chat? Connect with our BIZRA AI bot on WhatsApp for instant financial insights, mandi crop rates, and subsidy alerts on the go.
-            </p>
-
-            {/* Open WhatsApp CTA */}
-            <div className="pt-2">
               <button
                 onClick={openWhatsApp}
-                className="w-full max-w-[320px] h-[50px] sm:h-[54px] rounded-full bg-black text-white font-extrabold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-gray-900 hover:scale-102 transition-all shadow-lg cursor-pointer mx-auto"
+                className={`mt-5 px-6 py-2.5 rounded-xl uppercase font-extrabold tracking-wider cursor-pointer text-xs shadow-md transition-all ${isLight
+                  ? 'bg-[#25D366] text-white hover:bg-emerald-600'
+                  : 'bg-[#152329] text-[#efe7d5] hover:bg-black'
+                  }`}
               >
-                <span>OPEN WHATSAPP BOT</span>
-                <ArrowUpRight size={15} />
+                Open WhatsApp Bot
               </button>
             </div>
-
           </div>
 
-          {/* Bottom Branding Tag */}
-          <div className="w-full pt-4 mt-4 border-t border-emerald-800/10 shrink-0">
-            <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-emerald-800/60 block">
-              BIZRA OFFICIAL MOBILE CONCIERGE
-            </span>
+          <div className={`pt-4 border-t text-[10px] uppercase tracking-widest ${isLight ? 'border-slate-200 text-slate-400' : 'border-white/5 text-gray-500'
+            }`}>
+            BIZRA Official Mobile Concierge
           </div>
-
         </div>
 
       </main>
