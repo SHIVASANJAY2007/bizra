@@ -4,8 +4,6 @@ import {
   ChevronRight,
   Globe2,
   Menu,
-  Moon,
-  Sun,
   UserRound,
   X,
   Sparkles,
@@ -33,8 +31,6 @@ export default function Header({
   setCurrentTab,
   fontSize,
   setFontSize,
-  theme,
-  toggleTheme,
 }) {
   const [showSettings, setShowSettings] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -139,21 +135,34 @@ export default function Header({
 
   const scrollToSection = (id) => {
     window.setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 60);
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (window.__lenis) {
+        window.__lenis.scrollTo(el, { offset: -80, duration: 1.0 });
+      } else {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   const handleNavigation = (event, item) => {
     event.preventDefault();
     setShowMobileMenu(false);
 
-    if (currentTab === 'landing') {
-      document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (currentTab === 'landing' && item.id && document.getElementById(item.id)) {
+      const el = document.getElementById(item.id);
+      if (window.__lenis) {
+        window.__lenis.scrollTo(el, { offset: -80, duration: 1.0 });
+      } else {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
       return;
     }
 
     setCurrentTab(item.tab);
-    if (item.tab === 'landing') scrollToSection(item.id);
+    if (item.tab === 'landing' && item.id) {
+      scrollToSection(item.id);
+    }
   };
 
   const handleMobileNavigation = (event, item) => {
@@ -203,22 +212,17 @@ export default function Header({
     (item.tab !== 'landing' && currentTab === item.tab);
 
   return (
-    <header
-      ref={headerRef}
-      className={`sticky top-0 z-50 w-full transition-all duration-300 transform ${hidden ? '-translate-y-full' : 'translate-y-0'
-        }`}
-    >
-      {/* Top Banner */}
-      <div className="w-full py-1.5 px-4 text-center text-xs font-medium tracking-wide flex items-center justify-center gap-2 border-b border-slate-800/80 bg-slate-950 text-slate-400">
-        <span className="inline-block w-3 h-2 bg-gradient-to-r from-orange-500 via-white to-green-500 rounded-[1px]" />
-        <span>A Government of India Initiative · Open Data &amp; AI Rural Intelligence Portal</span>
-      </div>
-
+    <>
+      <header
+        ref={headerRef}
+        className={`sticky top-0 z-50 w-full transition-all duration-300 transform ${hidden ? '-translate-y-full' : 'translate-y-0'
+          }`}
+      >
       {/* Main Header Container */}
       <div
         className={`w-full transition-all duration-300 ${scrolled
-          ? 'bg-slate-950/90 backdrop-blur-md border-b border-slate-800 shadow-2xl py-3'
-          : 'bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 py-4'
+          ? 'bg-[#111D21]/95 backdrop-blur-md border-b border-[#3B5C65] shadow-2xl py-3'
+          : 'bg-[#111D21]/85 backdrop-blur-md border-b border-[#3B5C65]/80 py-4'
           }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between gap-4">
@@ -228,19 +232,19 @@ export default function Header({
               onClick={() => setCurrentTab('landing')}
               className="flex items-center gap-3 group cursor-pointer text-left focus:outline-none"
             >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-500 text-white font-black text-xl shadow-md shadow-emerald-950/40 group-hover:bg-emerald-600 transition-colors">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#2EA8A4] text-[#18292E] font-black text-xl shadow-md shadow-[#111D21]/40 group-hover:bg-[#258B87] transition-colors">
                 B
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-lg tracking-tight text-white group-hover:text-emerald-400 transition-colors">
+                  <span className="font-extrabold text-lg tracking-tight text-[#EAF2C9] group-hover:text-[#2EA8A4] transition-colors">
                     BIZRA
                   </span>
-                  <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono">
+                  <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/30 font-mono">
                     AI
                   </span>
                 </div>
-                <span className="text-[10px] font-medium text-slate-400 hidden sm:block">
+                <span className="text-[10px] font-medium text-[#9ED4AC] hidden sm:block">
                   Rural Business Intelligence
                 </span>
               </div>
@@ -248,14 +252,14 @@ export default function Header({
           </div>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800">
+          <nav className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#18292E] border border-[#3B5C65]">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={(e) => handleNavigation(e, item)}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${isActive(item)
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  ? 'bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/40'
+                  : 'text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D]'
                   }`}
               >
                 {item.label}
@@ -265,24 +269,14 @@ export default function Header({
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle Theme"
-              className="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              {theme === 'dark' ? <Sun size={16} className="text-amber-400" /> : <Moon size={16} className="text-emerald-500" />}
-            </button>
-
             {/* Language Switcher */}
             <button
               ref={settingsTriggerRef}
               onClick={openSettings}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#18292E] border border-[#3B5C65] text-xs font-semibold text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
               title="Settings & Accessibility"
             >
-              <Globe2 size={14} className="text-emerald-400" />
+              <Globe2 size={14} className="text-[#2EA8A4]" />
               <span>{language}</span>
             </button>
 
@@ -290,7 +284,7 @@ export default function Header({
             <button
               ref={loginTriggerRef}
               onClick={openLogin}
-              className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-200 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#18292E] border border-[#3B5C65] text-xs font-semibold text-[#EAF2C9] hover:text-white hover:bg-[#22373D] transition-colors cursor-pointer"
             >
               <UserRound size={14} />
               <span>Login</span>
@@ -298,18 +292,18 @@ export default function Header({
 
             {/* Primary Launch AI CTA */}
             <button
-              onClick={() => setCurrentTab('chatbot')}
-              className="btn btn-primary px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-1.5 cursor-pointer shadow-md shadow-emerald-500/20"
+              onClick={() => setCurrentTab('manual')}
+              className="px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-1.5 cursor-pointer shadow-md bg-[#2EA8A4] text-[#18292E] hover:bg-[#258B87] transition-all"
             >
               <Sparkles size={14} />
-              <span>Launch AI</span>
+              <span>Launch BIZRA</span>
             </button>
 
             {/* Mobile Menu Button */}
             <button
               ref={mobileMenuTriggerRef}
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-colors cursor-pointer"
+              className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center bg-[#18292E] border border-[#3B5C65] text-[#9ED4AC] hover:text-[#EAF2C9] transition-colors cursor-pointer"
               aria-label="Toggle Menu"
             >
               {showMobileMenu ? <X size={18} /> : <Menu size={18} />}
@@ -320,22 +314,22 @@ export default function Header({
 
       {/* Mobile Menu Drawer */}
       {showMobileMenu && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/80 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-sm h-full bg-slate-900 border-l border-slate-800 shadow-2xl p-6 flex flex-col justify-between overflow-y-auto" ref={layerRef}>
+        <div className="fixed inset-0 z-50 flex justify-end bg-[#111D21]/80 backdrop-blur-md animate-fade-in">
+          <div className="w-full max-w-sm h-full bg-[#18292E] border-l border-[#3B5C65] shadow-2xl p-6 flex flex-col justify-between overflow-y-auto" ref={layerRef}>
             <div className="space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+              <div className="flex items-center justify-between pb-4 border-b border-[#3B5C65]">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center font-bold text-emerald-400 text-xs">
+                  <div className="w-8 h-8 rounded-lg bg-[#2EA8A4]/20 border border-[#2EA8A4]/30 flex items-center justify-center font-bold text-[#2EA8A4] text-xs">
                     B
                   </div>
                   <div>
-                    <span className="font-bold text-sm text-white block">BIZRA Menu</span>
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Navigation &amp; Settings</span>
+                    <span className="font-bold text-sm text-[#EAF2C9] block">BIZRA Menu</span>
+                    <span className="text-[10px] text-[#9ED4AC] uppercase tracking-wider block">Navigation &amp; Settings</span>
                   </div>
                 </div>
                 <button
                   onClick={closeMobileMenu}
-                  className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-lg bg-[#22373D] flex items-center justify-center text-[#9ED4AC] hover:text-[#EAF2C9] transition-colors cursor-pointer"
                 >
                   <X size={16} />
                 </button>
@@ -343,14 +337,14 @@ export default function Header({
 
               {/* Mobile Nav Links */}
               <div className="space-y-2 md:hidden">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block">Navigation</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#9ED4AC] block">Navigation</span>
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={(e) => handleMobileNavigation(e, item)}
                     className={`w-full flex items-center justify-between p-3 rounded-xl text-xs font-semibold text-left transition-all cursor-pointer ${isActive(item)
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                      : 'bg-slate-800/50 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                      ? 'bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/40'
+                      : 'bg-[#22373D]/50 text-[#9ED4AC] hover:bg-[#22373D] border border-[#3B5C65]'
                       }`}
                   >
                     <span>{item.label}</span>
@@ -361,15 +355,15 @@ export default function Header({
 
               {/* Languages */}
               <div className="space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block">Language / भाषा</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#9ED4AC] block">Language / भाषा</span>
                 <div className="grid grid-cols-2 gap-2">
                   {languages.map((lang) => (
                     <button
                       key={lang}
                       onClick={() => handleLanguageChange(lang)}
                       className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer text-left flex items-center justify-between ${language === lang
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                        : 'bg-slate-800/50 text-slate-400 border border-slate-800 hover:text-white'
+                        ? 'bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/40'
+                        : 'bg-[#22373D]/50 text-[#9ED4AC] border border-[#3B5C65] hover:text-[#EAF2C9]'
                         }`}
                     >
                       <span>{lang}</span>
@@ -381,28 +375,26 @@ export default function Header({
 
               {/* Accessibility Settings */}
               <div className="space-y-3">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block">Accessibility</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#9ED4AC] block">Accessibility</span>
 
-
-
-                <div className="p-3.5 rounded-xl bg-slate-800/50 border border-slate-800 flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-200">Font Scale</span>
+                <div className="p-3.5 rounded-xl bg-[#22373D]/50 border border-[#3B5C65] flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#EAF2C9]">Font Scale</span>
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => setFontSize((current) => Math.max(0.8, Number((current - 0.1).toFixed(1))))}
-                      className="w-7 h-7 rounded-lg bg-slate-700 text-xs font-bold flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
+                      className="w-7 h-7 rounded-lg bg-[#3B5C65] text-xs font-bold flex items-center justify-center text-[#EAF2C9] hover:bg-[#2EA8A4] hover:text-[#18292E] cursor-pointer"
                     >
                       A-
                     </button>
                     <button
                       onClick={() => setFontSize(1)}
-                      className="w-7 h-7 rounded-lg bg-slate-700 text-xs font-bold flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
+                      className="w-7 h-7 rounded-lg bg-[#3B5C65] text-xs font-bold flex items-center justify-center text-[#EAF2C9] hover:bg-[#2EA8A4] hover:text-[#18292E] cursor-pointer"
                     >
                       A
                     </button>
                     <button
                       onClick={() => setFontSize((current) => Math.min(1.2, Number((current + 0.1).toFixed(1))))}
-                      className="w-7 h-7 rounded-lg bg-slate-700 text-xs font-bold flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
+                      className="w-7 h-7 rounded-lg bg-[#3B5C65] text-xs font-bold flex items-center justify-center text-[#EAF2C9] hover:bg-[#2EA8A4] hover:text-[#18292E] cursor-pointer"
                     >
                       A+
                     </button>
@@ -413,7 +405,7 @@ export default function Header({
               <div className="pt-2">
                 <button
                   onClick={openLogin}
-                  className="btn btn-secondary w-full py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer bg-[#22373D] text-[#EAF2C9] border border-[#3B5C65] hover:bg-[#2A444C]"
                 >
                   <UserRound size={15} />
                   <span>Citizen Portal Login</span>
@@ -421,65 +413,71 @@ export default function Header({
               </div>
             </div>
 
-            <div className="pt-6 border-t border-slate-800 text-center text-[10px] text-slate-500">
+            <div className="pt-6 border-t border-[#3B5C65] text-center text-[10px] text-[#9ED4AC]/70">
               Digital India Open Government Platform
             </div>
           </div>
         </div>
       )}
 
-      {/* Settings Modal */}
+      </header>
+
+      {/* Settings Modal (Language Selection) */}
       {showSettings && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4" ref={layerRef}>
-          <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl relative">
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#111D21]/90 backdrop-blur-md overflow-y-auto"
+          onClick={closeSettings}
+        >
+          <div
+            className="w-full max-w-md bg-[#18292E] border-2 border-[#2EA8A4]/50 rounded-2xl p-6 md:p-8 shadow-2xl relative my-auto"
+            onClick={(e) => e.stopPropagation()}
+            ref={layerRef}
+          >
+            {/* Close Button */}
             <button
               onClick={closeSettings}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#22373D] border border-[#3B5C65] text-[#9ED4AC] hover:text-[#18292E] hover:bg-[#2EA8A4] hover:border-[#2EA8A4] flex items-center justify-center transition-all cursor-pointer shadow-md"
+              aria-label="Close modal"
+              title="Close"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
 
             <div className="text-center mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-3 text-emerald-400">
-                <Globe2 size={22} />
+              <div className="w-12 h-12 rounded-2xl bg-[#2EA8A4]/15 border border-[#2EA8A4]/40 flex items-center justify-center mx-auto mb-3 text-[#2EA8A4] shadow-md">
+                <Globe2 size={24} />
               </div>
-              <h3 className="text-xl font-bold text-white">Language &amp; Display</h3>
-              <p className="text-xs text-slate-400 mt-1">Customize language and visual preferences</p>
+              <h3 className="text-xl font-bold text-[#EAF2C9]">Language &amp; Display</h3>
+              <p className="text-xs text-[#9ED4AC] mt-1 font-medium">Customize language and visual preferences</p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Select Language</label>
-                <div className="grid grid-cols-2 gap-2">
+                <label className="block text-xs font-bold uppercase text-[#9ED4AC] tracking-wider mb-3">Select Language / भाषा</label>
+                <div className="grid grid-cols-2 gap-2.5">
                   {languages.map((lang) => (
                     <button
                       key={lang}
                       onClick={() => handleLanguageChange(lang)}
-                      className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer text-left flex items-center justify-between ${language === lang
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                        : 'bg-slate-800/50 text-slate-400 border border-slate-800 hover:text-white'
+                      className={`px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer text-left flex items-center justify-between shadow-sm ${language === lang
+                        ? 'bg-[#2EA8A4]/25 text-[#2EA8A4] border-2 border-[#2EA8A4] shadow-md'
+                        : 'bg-[#22373D] text-[#9ED4AC] border border-[#3B5C65] hover:text-[#EAF2C9] hover:bg-[#2A444C] hover:border-[#2EA8A4]/50'
                         }`}
                     >
-                      <span>{lang}</span>
-                      {language === lang && <Check size={12} />}
+                      <span className="text-sm">{lang}</span>
+                      {language === lang && <Check size={16} className="text-[#2EA8A4]" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-slate-800 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-200">Theme</span>
-                  <button
-                    onClick={toggleTheme}
-                    className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 border border-slate-700 text-slate-200 flex items-center gap-1.5 cursor-pointer"
-                  >
-                    {theme === 'dark' ? <Sun size={14} className="text-amber-400" /> : <Moon size={14} className="text-emerald-400" />}
-                    <span>{theme === 'dark' ? 'Dark' : 'Light'}</span>
-                  </button>
-                </div>
-
-
+              <div className="pt-4 border-t border-[#3B5C65] mt-6">
+                <button
+                  onClick={closeSettings}
+                  className="w-full py-3 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-[#2EA8A4] text-[#18292E] hover:bg-[#258B87] transition-all cursor-pointer shadow-md"
+                >
+                  Done / Save Language
+                </button>
               </div>
             </div>
           </div>
@@ -488,23 +486,33 @@ export default function Header({
 
       {/* Login Modal */}
       {showLogin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4" ref={layerRef}>
-          <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl relative">
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#111D21]/90 backdrop-blur-md overflow-y-auto"
+          onClick={closeLogin}
+        >
+          <div
+            className="w-full max-w-md bg-[#18292E] border-2 border-[#3B5C65] rounded-2xl p-6 md:p-8 shadow-2xl relative my-auto"
+            onClick={(e) => e.stopPropagation()}
+            ref={layerRef}
+          >
+            {/* Close Button */}
             <button
               onClick={closeLogin}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#22373D] border border-[#3B5C65] text-[#9ED4AC] hover:text-[#18292E] hover:bg-[#2EA8A4] hover:border-[#2EA8A4] flex items-center justify-center transition-all cursor-pointer shadow-md"
+              aria-label="Close modal"
+              title="Close"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
 
             <div className="text-center mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-3 text-emerald-400">
-                <UserRound size={22} />
+              <div className="w-12 h-12 rounded-2xl bg-[#2EA8A4]/15 border border-[#2EA8A4]/30 flex items-center justify-center mx-auto mb-3 text-[#2EA8A4]">
+                <UserRound size={24} />
               </div>
-              <h3 className="text-xl font-bold text-white">
+              <h3 className="text-xl font-bold text-[#EAF2C9]">
                 {isRegistering ? 'Create BIZRA Account' : 'Welcome to BIZRA'}
               </h3>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-[#9ED4AC] mt-1 font-medium">
                 {isRegistering
                   ? 'Sign up to evaluate your rural business ideas'
                   : 'Access your business feasibility reports and loan proposals'}
@@ -512,53 +520,53 @@ export default function Header({
             </div>
 
             {authStatus === 'success' ? (
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-center font-bold text-sm mb-4 animate-pulse">
+              <div className="p-4 rounded-xl bg-[#2EA8A4]/20 border border-[#2EA8A4]/40 text-[#2EA8A4] text-center font-bold text-sm mb-4 animate-pulse">
                 {isRegistering ? 'Account created successfully!' : 'Signed in successfully!'}
               </div>
             ) : (
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-400 mb-1.5">Email Address</label>
+                  <label className="block text-xs font-bold uppercase text-[#9ED4AC] mb-1.5">Email Address</label>
                   <input
                     type="email"
                     required
                     placeholder="entrepreneur@domain.in"
                     value={loginForm.email}
                     onChange={(e) => updateLoginField('email', e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-[#111D21] border border-[#3B5C65] text-[#EAF2C9] placeholder-[#9ED4AC]/50 text-sm focus:outline-none focus:border-[#2EA8A4] transition-colors"
                   />
                   {loginErrors.email && <span className="text-rose-400 text-xs mt-1 block">{loginErrors.email}</span>}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-400 mb-1.5">Password</label>
+                  <label className="block text-xs font-bold uppercase text-[#9ED4AC] mb-1.5">Password</label>
                   <input
                     type="password"
                     required
                     placeholder="••••••••"
                     value={loginForm.password}
                     onChange={(e) => updateLoginField('password', e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-[#111D21] border border-[#3B5C65] text-[#EAF2C9] placeholder-[#9ED4AC]/50 text-sm focus:outline-none focus:border-[#2EA8A4] transition-colors"
                   />
                   {loginErrors.password && <span className="text-rose-400 text-xs mt-1 block">{loginErrors.password}</span>}
                 </div>
-                <button type="submit" className="btn btn-primary w-full py-3 rounded-xl text-sm font-bold mt-2 cursor-pointer">
+                <button type="submit" className="w-full py-3 rounded-xl text-sm font-bold mt-2 cursor-pointer bg-[#2EA8A4] text-[#18292E] hover:bg-[#258B87] transition-all shadow-md">
                   {isRegistering ? 'Create Account' : 'Sign In'}
                 </button>
               </form>
             )}
 
-            <div className="mt-6 text-center text-xs text-slate-400 pt-4 border-t border-slate-800">
+            <div className="mt-6 text-center text-xs text-[#9ED4AC] pt-4 border-t border-[#3B5C65]">
               {isRegistering ? (
                 <span>
                   Already registered?{' '}
-                  <button onClick={toggleAuthMode} className="font-bold text-emerald-400 hover:underline cursor-pointer">
+                  <button onClick={toggleAuthMode} className="font-bold text-[#2EA8A4] hover:underline cursor-pointer">
                     Sign In
                   </button>
                 </span>
               ) : (
                 <span>
                   First time user?{' '}
-                  <button onClick={toggleAuthMode} className="font-bold text-emerald-400 hover:underline cursor-pointer">
+                  <button onClick={toggleAuthMode} className="font-bold text-[#2EA8A4] hover:underline cursor-pointer">
                     Create Account
                   </button>
                 </span>
@@ -567,6 +575,6 @@ export default function Header({
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }

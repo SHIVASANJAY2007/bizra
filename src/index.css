@@ -1,6 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Bebas Neue';
+  src: url('./assets/BebasNeue-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Palace';
+  src: url('./assets/Palace.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-bebas {
+  font-family: 'Bebas Neue', 'Space Grotesk', sans-serif;
+}
+
+.font-palace {
+  font-family: 'Palace', cursive, sans-serif;
+}
+
 @theme inline {
   --color-BIZRA-ink: var(--BIZRA-ink);
   --color-BIZRA-muted: var(--BIZRA-muted);
@@ -23,46 +47,26 @@
 }
 
 :root {
-  --BIZRA-ink: #ffffff;
-  --BIZRA-muted: #94a3b8;
-  --BIZRA-muted-strong: #e2e8f0;
-  --BIZRA-bg: #081018;
-  --BIZRA-bg-deep: #050b11;
-  --BIZRA-panel: #101c25;
-  --BIZRA-panel-raised: #162630;
-  --BIZRA-line: #2a3a40;
-  --BIZRA-line-soft: rgba(157, 177, 175, 0.2);
-  --BIZRA-green: #35c58b;
-  --BIZRA-green-deep: #147a58;
-  --BIZRA-green-soft: #a4e3c6;
-  --BIZRA-amber: #e5ae59;
-  --BIZRA-amber-soft: #f3d398;
-  --BIZRA-paper: #efe7d5;
-  --BIZRA-paper-ink: #152329;
-  --BIZRA-paper-muted: #66726f;
+  --BIZRA-ink: #EAF2C9;
+  --BIZRA-muted: #9ED4AC;
+  --BIZRA-muted-strong: #EAF2C9;
+  --BIZRA-bg: #18292E;
+  --BIZRA-bg-deep: #111D21;
+  --BIZRA-panel: #22373D;
+  --BIZRA-panel-raised: #2A444C;
+  --BIZRA-line: #3B5C65;
+  --BIZRA-line-soft: rgba(59, 92, 101, 0.4);
+  --BIZRA-green: #2EA8A4;
+  --BIZRA-green-deep: #258B87;
+  --BIZRA-green-soft: #9ED4AC;
+  --BIZRA-amber: #4B6E77;
+  --BIZRA-amber-soft: #9ED4AC;
+  --BIZRA-paper: #EAF2C9;
+  --BIZRA-paper-ink: #18292E;
+  --BIZRA-paper-muted: #4B6E77;
   --font-BIZRA-body: 'DM Sans', system-ui, -apple-system, sans-serif;
   --font-BIZRA-display: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
   --font-BIZRA-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-
-html[data-theme='light'] {
-  --BIZRA-ink: #0f172a;
-  --BIZRA-muted: #64748b;
-  --BIZRA-muted-strong: #1e293b;
-  --BIZRA-bg: #f8fafc;
-  --BIZRA-bg-deep: #f1f5f9;
-  --BIZRA-panel: #ffffff;
-  --BIZRA-panel-raised: #f1f5f9;
-  --BIZRA-line: #cbd5e1;
-  --BIZRA-line-soft: rgba(100, 116, 139, 0.2);
-  --BIZRA-green: #147a58;
-  --BIZRA-green-deep: #0f6047;
-  --BIZRA-green-soft: #d7f0e2;
-  --BIZRA-amber: #a86e21;
-  --BIZRA-amber-soft: #8d5c1d;
-  --BIZRA-paper: #ffffff;
-  --BIZRA-paper-ink: #0f172a;
-  --BIZRA-paper-muted: #64748b;
 }
 
 @layer base {
@@ -74,8 +78,49 @@ html[data-theme='light'] {
   }
 
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     background: var(--BIZRA-bg-deep);
+    scrollbar-gutter: stable;
+  }
+
+  html.lenis,
+  html.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  html.lenis body,
+  html.lenis-smooth body {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .valley-scroll-locked,
+  .valley-scroll-locked body,
+  .valley-scroll-locked html {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    scrollbar-gutter: stable !important;
+  }
+
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+
+  section[id],
+  div[id],
+  footer[id] {
+    scroll-margin-top: 80px;
   }
 
   body {

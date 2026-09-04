@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  ArrowLeft, RotateCcw, Send, X, Sun, Moon, MapPin, LocateFixed, Loader2
+  ArrowLeft, RotateCcw, Send, X, MapPin, LocateFixed, Loader2, Compass, Bot, ChevronRight
 } from 'lucide-react';
 import ResponseRenderer from './ResponseRenderer';
 
-export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, toggleTheme: externalToggleTheme }) {
+export default function BIZRAChatbot({ setCurrentTab }) {
   const [inputQuery, setInputQuery] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
@@ -13,23 +13,14 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
   const [locationStatus, setLocationStatus] = useState('idle'); // 'idle' | 'locating' | 'granted' | 'denied' | 'error'
   const [locationError, setLocationError] = useState(null);
 
-  const [internalTheme, setInternalTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.getAttribute('data-theme') || 'dark';
-    }
-    return 'dark';
-  });
+  // Messaging Concierge Platform State
+  const [messagingTab, setMessagingTab] = useState('whatsapp'); // 'whatsapp' | 'telegram'
 
-  const activeTheme = externalTheme || internalTheme;
-
-  const handleToggleTheme = () => {
-    if (externalToggleTheme) {
-      externalToggleTheme();
+  const openMessagingBot = () => {
+    if (messagingTab === 'whatsapp') {
+      window.open('https://wa.me/?text=Hello%20BIZRA%20AI%20Assistant', '_blank');
     } else {
-      const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
-      setInternalTheme(nextTheme);
-      document.documentElement.setAttribute('data-theme', nextTheme);
-      window.localStorage.setItem('BIZRA-theme', nextTheme);
+      window.open('https://t.me/bizra_ai_bot', '_blank');
     }
   };
 
@@ -342,46 +333,38 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
     window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${text}`, '_blank');
   };
 
-  const isLight = activeTheme === 'light';
-
   return (
-    <div className={`h-[100dvh] w-full flex flex-col transition-colors duration-200 overflow-hidden ${isLight ? 'bg-slate-50 text-slate-900' : 'bg-[#080c14] text-gray-100'
-      }`}>
+    <div className="flex flex-col h-screen bg-[#111D21] text-[#EAF2C9] overflow-hidden font-sans">
 
-      {/* ── TOP HEADER BAR ── */}
-      <header className={`h-16 w-full shrink-0 border-b px-4 sm:px-6 flex items-center justify-between z-30 transition-colors ${isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-[#04060a] border-white/10 text-white'
-        }`}>
-
+      {/* Top Navigation Bar */}
+      <header className="px-6 py-3 border-b border-[#3B5C65] bg-[#111D21]/95 backdrop-blur-md flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setCurrentTab('landing')}
-            className={`flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer px-3 py-1.5 rounded-lg border ${isLight
-              ? 'bg-slate-100 text-slate-700 hover:text-slate-900 border-slate-200 hover:bg-slate-200'
-              : 'bg-white/5 text-gray-300 hover:text-white border-white/10 hover:bg-white/10'
-              }`}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#3B5C65] bg-[#18292E] text-xs font-semibold text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={14} />
             <span>Home</span>
           </button>
 
-          <span className={`${isLight ? 'text-slate-300' : 'text-white/20'} hidden sm:block`}>|</span>
+          <div className="h-4 w-[1px] bg-[#3B5C65]" />
 
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center font-black text-emerald-500 text-xs">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#2EA8A4] text-[#18292E] font-black text-base shadow-md">
               B
             </div>
-            <span className={`font-black text-sm tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
-              BIZRA AI Agent
+            <span className="font-extrabold text-base tracking-tight text-[#EAF2C9]">
+              BIZRA <span className="text-[#2EA8A4] font-normal text-xs uppercase px-1.5 py-0.5 rounded bg-[#2EA8A4]/15 border border-[#2EA8A4]/30 font-mono">AI Agent</span>
             </span>
 
             {/* Live Location Badge */}
             {locationStatus === 'granted' && userLocation && (
               <button
                 onClick={autoDetectLocation}
-                className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25 transition-all cursor-pointer"
+                className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#2EA8A4]/15 text-[#2EA8A4] border border-[#2EA8A4]/30 hover:bg-[#2EA8A4]/25 transition-all cursor-pointer"
                 title="Live Location active. Click to refresh location."
               >
-                <MapPin size={11} className="text-emerald-500 animate-pulse shrink-0" />
+                <MapPin size={11} className="text-[#2EA8A4] animate-pulse shrink-0" />
                 <span className="max-w-[110px] sm:max-w-[170px] truncate">
                   {userLocation.city ? `${userLocation.city}, ${userLocation.state}` : userLocation.address}
                 </span>
@@ -389,8 +372,8 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
             )}
 
             {locationStatus === 'locating' && (
-              <div className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-mono">
-                <Loader2 size={11} className="animate-spin text-amber-500 shrink-0" />
+              <div className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#9ED4AC]/15 text-[#9ED4AC] border border-[#9ED4AC]/30 font-mono">
+                <Loader2 size={11} className="animate-spin text-[#9ED4AC] shrink-0" />
                 <span className="hidden sm:inline">Locating...</span>
               </div>
             )}
@@ -398,7 +381,7 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
             {(locationStatus === 'idle' || locationStatus === 'denied' || locationStatus === 'error') && (
               <button
                 onClick={autoDetectLocation}
-                className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-500/15 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 border border-slate-500/30 hover:border-emerald-500/40 transition-all cursor-pointer"
+                className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#22373D] text-[#9ED4AC] hover:text-[#2EA8A4] border border-[#3B5C65] hover:border-[#2EA8A4]/40 transition-all cursor-pointer"
                 title="Click to grant live location access for regional market data"
               >
                 <LocateFixed size={11} className="shrink-0" />
@@ -408,54 +391,50 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
           </div>
         </div>
 
+        {/* Right Tab Switcher Actions */}
         <div className="flex items-center gap-2">
-          {/* Theme Toggle Button */}
-          <button
-            onClick={handleToggleTheme}
-            className={`flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer px-3 py-1.5 rounded-lg border ${isLight
-              ? 'bg-slate-100 text-slate-700 hover:text-slate-900 border-slate-200 hover:bg-slate-200'
-              : 'bg-white/5 text-gray-300 hover:text-white border-white/10 hover:bg-white/10'
-              }`}
-            title={isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-          >
-            {isLight ? <Moon size={15} className="text-emerald-600" /> : <Sun size={15} className="text-amber-400" />}
-            <span className="hidden sm:inline">{isLight ? 'Dark Mode' : 'Light Mode'}</span>
-          </button>
+          {/* Mode Switch Pills */}
+          <div className="hidden sm:flex items-center p-1 rounded-xl bg-[#18292E] border border-[#3B5C65]">
+            <button
+              onClick={() => setCurrentTab('manual')}
+              className="px-3 py-1 rounded-lg text-xs font-semibold text-[#9ED4AC] hover:text-[#EAF2C9] transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <Compass size={13} />
+              <span>Manual</span>
+            </button>
+            <button
+              onClick={() => setCurrentTab('chatbot')}
+              className="px-3 py-1 rounded-lg text-xs font-bold transition-all bg-[#2EA8A4] text-[#18292E] shadow-sm flex items-center gap-1.5 cursor-pointer"
+            >
+              <Bot size={13} />
+              <span>AI Chatbot</span>
+            </button>
+          </div>
 
-          {/* Reset Session Button */}
           <button
             onClick={resetChat}
-            className={`flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer px-3 py-1.5 rounded-lg border ${isLight
-              ? 'bg-slate-100 text-slate-700 hover:text-slate-900 border-slate-200 hover:bg-slate-200'
-              : 'bg-white/5 text-gray-300 hover:text-white border-white/10 hover:bg-white/10'
-              }`}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#18292E] border border-[#3B5C65] text-xs font-medium text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
             title="Reset Session"
           >
-            <RotateCcw size={14} />
-            <span className="hidden sm:inline">Reset Session</span>
+            <RotateCcw size={13} />
+            <span className="hidden md:inline">Reset</span>
           </button>
 
-          {/* Back to Home Button */}
           <button
             onClick={() => setCurrentTab('landing')}
-            className={`w-9 h-9 rounded-lg border flex items-center justify-center transition-colors cursor-pointer ${isLight
-              ? 'bg-slate-100 text-slate-700 hover:text-slate-900 border-slate-200 hover:bg-slate-200'
-              : 'bg-white/5 text-gray-300 hover:text-white border-white/10 hover:bg-white/10'
-              }`}
-            title="Back to Landing Page"
+            className="p-1.5 rounded-xl border border-[#3B5C65] bg-[#18292E] text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
+            aria-label="Exit"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
-
       </header>
 
-      {/* ── MAIN CHAT WORKSPACE ── */}
-      <main className="flex-grow grid grid-cols-1 lg:grid-cols-12 min-h-0 w-full overflow-hidden">
+      {/* Main Workspace Body */}
+      <main className="grid grid-cols-1 lg:grid-cols-12 flex-grow overflow-hidden">
 
         {/* Chat Feed Column (Left 8 Cols) */}
-        <div className={`lg:col-span-8 flex flex-col h-full relative overflow-hidden border-r transition-colors ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#080c14] border-white/5'
-          }`}>
+        <div className="lg:col-span-8 flex flex-col h-full relative overflow-hidden border-r border-[#3B5C65] bg-[#18292E]">
 
           {/* Scrollable Feed */}
           <div className="flex-grow overflow-y-auto px-4 sm:px-8 py-6 space-y-6">
@@ -466,10 +445,8 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
               >
                 <div
                   className={`max-w-[580px] rounded-2xl p-4 sm:p-5 text-xs sm:text-sm leading-relaxed ${msg.sender === 'user'
-                    ? 'bg-emerald-600 text-white rounded-br-none shadow-md font-medium'
-                    : isLight
-                      ? 'bg-white text-slate-800 border border-slate-200/90 rounded-bl-none shadow-sm'
-                      : 'bg-[#121826] text-gray-200 border border-white/10 rounded-bl-none shadow-lg'
+                    ? 'bg-[#2EA8A4] text-[#18292E] rounded-br-none shadow-md font-medium'
+                    : 'bg-[#22373D] text-[#EAF2C9] border border-[#3B5C65] rounded-bl-none shadow-lg'
                     }`}
                 >
                   {msg.sender === 'user' ? (
@@ -478,10 +455,8 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
                     <ResponseRenderer text={msg.text} />
                   )}
                   <div className={`text-[10px] font-bold mt-2 text-right ${msg.sender === 'user'
-                    ? 'text-emerald-200'
-                    : isLight
-                      ? 'text-slate-400'
-                      : 'text-gray-400'
+                    ? 'text-[#111D21]'
+                    : 'text-[#9ED4AC]'
                     }`}>
                     {msg.time}
                   </div>
@@ -493,10 +468,7 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
                       <button
                         key={pIdx}
                         onClick={() => handleSendMessage(pill)}
-                        className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition-all cursor-pointer text-left ${isLight
-                          ? 'bg-white text-slate-700 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700 shadow-sm'
-                          : 'bg-[#efe7d5]/10 text-[#efe7d5] border-[#efe7d5]/25 hover:border-[#efe7d5]/50 hover:bg-[#efe7d5]/20'
-                          }`}
+                        className="text-xs font-semibold px-3 py-1.5 rounded-full border transition-all cursor-pointer text-left bg-[#22373D] text-[#EAF2C9] border-[#3B5C65] hover:border-[#2EA8A4] hover:bg-[#2A444C]"
                       >
                         {pill}
                       </button>
@@ -507,11 +479,8 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
             ))}
 
             {isTyping && (
-              <div className={`p-3 rounded-xl border text-xs w-fit flex items-center gap-2 ${isLight
-                ? 'bg-white border-slate-200 text-slate-600 shadow-sm'
-                : 'bg-[#121826] border-[#efe7d5]/20 text-[#efe7d5]'
-                }`}>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+              <div className="p-3 rounded-xl border border-[#3B5C65] text-xs w-fit flex items-center gap-2 bg-[#22373D] text-[#EAF2C9]">
+                <span className="w-2 h-2 rounded-full bg-[#2EA8A4] animate-ping" />
                 <span>BIZRA AI Agent is thinking...</span>
               </div>
             )}
@@ -520,28 +489,24 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
           </div>
 
           {/* Input Bar */}
-          <div className={`p-4 border-t transition-colors ${isLight ? 'bg-white border-slate-200' : 'bg-[#04060a] border-white/10'
-            }`}>
+          <div className="p-4 border-t border-[#3B5C65] bg-[#111D21]">
             <form
               onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
-              className={`flex items-center gap-2 rounded-xl p-1.5 border focus-within:border-emerald-500 transition-colors ${isLight ? 'bg-slate-100 border-slate-200' : 'bg-[#121826] border-white/10'
-                }`}
+              className="flex items-center gap-2 rounded-xl p-1.5 border border-[#3B5C65] focus-within:border-[#2EA8A4] transition-colors bg-[#18292E]"
             >
               <button
                 type="button"
                 onClick={autoDetectLocation}
                 className={`p-2 rounded-lg transition-colors cursor-pointer shrink-0 ${locationStatus === 'granted'
-                  ? 'text-emerald-500 hover:bg-emerald-500/10'
-                  : isLight
-                    ? 'text-slate-400 hover:text-slate-700 hover:bg-slate-200'
-                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+                  ? 'text-[#2EA8A4] hover:bg-[#2EA8A4]/10'
+                  : 'text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D]'
                   }`}
                 title={userLocation ? `Location Active: ${userLocation.address}` : "Access live location"}
               >
                 {locationStatus === 'locating' ? (
-                  <Loader2 size={16} className="animate-spin text-amber-500" />
+                  <Loader2 size={16} className="animate-spin text-[#9ED4AC]" />
                 ) : (
-                  <MapPin size={16} className={locationStatus === 'granted' ? 'text-emerald-500' : ''} />
+                  <MapPin size={16} className={locationStatus === 'granted' ? 'text-[#2EA8A4]' : ''} />
                 )}
               </button>
 
@@ -554,18 +519,15 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
                 }
                 value={inputQuery}
                 onChange={(e) => setInputQuery(e.target.value)}
-                className={`flex-grow px-2 py-2 bg-transparent text-xs sm:text-sm focus:outline-none ${isLight ? 'text-slate-900 placeholder-slate-400' : 'text-white placeholder-gray-400'
-                  }`}
+                className="flex-grow px-2 py-2 bg-transparent text-xs sm:text-sm focus:outline-none text-[#EAF2C9] placeholder-[#9ED4AC]/60"
               />
 
               <button
                 type="submit"
                 disabled={!inputQuery.trim()}
-                className={`w-9 h-9 rounded-lg flex items-center justify-center text-white transition-all cursor-pointer ${inputQuery.trim()
-                  ? 'bg-emerald-500 hover:bg-emerald-600 shadow-sm'
-                  : isLight
-                    ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                    : 'bg-white/10 text-gray-400 cursor-not-allowed'
+                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all cursor-pointer ${inputQuery.trim()
+                  ? 'bg-[#2EA8A4] text-[#18292E] hover:bg-[#258B87] shadow-sm'
+                  : 'bg-[#22373D] text-[#9ED4AC]/40 cursor-not-allowed'
                   }`}
               >
                 <Send size={15} />
@@ -575,48 +537,127 @@ export default function BIZRAChatbot({ setCurrentTab, theme: externalTheme, togg
 
         </div>
 
-        {/* WhatsApp Mobile Concierge Column (Right 4 Cols) */}
-        <div className={`hidden lg:flex lg:col-span-4 flex-col justify-between p-8 text-center border-l transition-colors ${isLight ? 'bg-slate-100/70 border-slate-200 text-slate-800' : 'bg-[#05080f] border-white/5 text-white'
-          }`}>
+        {/* Right Sidebar (4 Cols) - Navigation & WhatsApp/Telegram Bot (Matching BizraManual) */}
+        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-[#3B5C65] bg-[#111D21] text-[#EAF2C9] overflow-y-auto">
           <div className="space-y-6 my-auto">
-            {/* Tan Paper Highlighted Concierge Card in Dark Mode */}
-            <div className={`p-6 rounded-2xl border transition-all ${isLight
-              ? 'bg-white border-slate-200 shadow-sm'
-              : 'bg-[#efe7d5] text-[#152329] border-[#efe7d5]/40 shadow-xl'
-              }`}>
-              <div
-                className={`w-16 h-16 rounded-2xl mx-auto flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform mb-4 ${isLight ? 'bg-[#25D366]' : 'bg-[#152329] text-[#efe7d5]'
-                  }`}
-                onClick={openWhatsApp}
+            {/* Mode Switcher Card */}
+            <div className="p-5 rounded-2xl border border-[#3B5C65] bg-[#18292E] space-y-4 text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#2EA8A4]/20 border border-[#2EA8A4]/30 flex items-center justify-center text-[#2EA8A4]">
+                  <Compass size={20} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-sm text-[#EAF2C9]">Prefer Guided Step-by-Step?</h3>
+                  <span className="text-xs text-[#9ED4AC]">Switch to BIZRA Manual Wizard</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setCurrentTab('manual')}
+                className="w-full py-2.5 rounded-xl bg-[#2EA8A4] text-[#18292E] font-black text-xs uppercase tracking-wider shadow-md hover:bg-[#258B87] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <svg className={`w-10 h-10 ${isLight ? 'fill-white' : 'fill-[#efe7d5]'}`} viewBox="0 0 24 24">
-                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
-                </svg>
+                <Compass size={14} />
+                <span>Launch Manual Wizard</span>
+              </button>
+            </div>
+
+            {/* WhatsApp / Telegram Concierge Card */}
+            <div
+              className={`p-6 rounded-2xl border shadow-xl text-center transition-all duration-300 ${
+                messagingTab === 'whatsapp'
+                  ? 'border-[#25D366]/40 bg-[#25D366] text-white'
+                  : 'border-[#0088CC]/40 bg-[#0088CC] text-white'
+              }`}
+            >
+              {/* Concierge Platform Switcher Buttons */}
+              <div className="inline-flex items-center p-1 rounded-xl mb-4 bg-white/20 border border-white/30">
+                <button
+                  onClick={() => setMessagingTab('whatsapp')}
+                  className={`px-3.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                    messagingTab === 'whatsapp'
+                      ? 'bg-white text-[#25D366] shadow-sm'
+                      : 'text-white/80 hover:text-white'
+                  }`}
+                >
+                  WhatsApp
+                </button>
+                <button
+                  onClick={() => setMessagingTab('telegram')}
+                  className={`px-3.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                    messagingTab === 'telegram'
+                      ? 'bg-white text-[#0088CC] shadow-sm'
+                      : 'text-white/80 hover:text-white'
+                  }`}
+                >
+                  Telegram
+                </button>
+              </div>
+
+              {/* Dynamic Real Brand Icon Badge */}
+              <div
+                className={`w-16 h-16 rounded-2xl mx-auto flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform mb-4 ${
+                  messagingTab === 'whatsapp'
+                    ? 'bg-white text-[#25D366]'
+                    : 'bg-white text-[#0088CC]'
+                }`}
+                onClick={openMessagingBot}
+              >
+                {messagingTab === 'whatsapp' ? (
+                  <svg className="w-10 h-10 fill-[#25D366]" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.447-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.572-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.99c-.002 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                  </svg>
+                ) : (
+                  <svg className="w-10 h-10 fill-[#0088CC] ml-0.5" viewBox="0 0 24 24">
+                    <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.141.119.098.152.228.166.331.016.11.036.353.02.547z" />
+                  </svg>
+                )}
               </div>
 
               <div className="space-y-1">
-                <h3 className={`font-black text-lg ${isLight ? 'text-slate-900' : 'text-[#152329]'}`}>
-                  Chat on WhatsApp
+                <h3 className="font-black text-lg">
+                  {messagingTab === 'whatsapp' ? 'Chat on WhatsApp' : 'Chat on Telegram'}
                 </h3>
-                <p className={`text-xs max-w-xs mx-auto leading-relaxed font-medium ${isLight ? 'text-slate-500' : 'text-[#152329]/80'}`}>
-                  Connect with BIZRA AI on WhatsApp for instant feasibility reports and mandi price alerts.
+                <p className="text-xs max-w-xs mx-auto leading-relaxed font-medium text-white/90">
+                  Connect with BIZRA AI on {messagingTab === 'whatsapp' ? 'WhatsApp' : 'Telegram'} for instant feasibility reports and mandi price alerts.
                 </p>
               </div>
 
               <button
-                onClick={openWhatsApp}
-                className={`mt-5 px-6 py-2.5 rounded-xl uppercase font-extrabold tracking-wider cursor-pointer text-xs shadow-md transition-all ${isLight
-                  ? 'bg-[#25D366] text-white hover:bg-emerald-600'
-                  : 'bg-[#152329] text-[#efe7d5] hover:bg-black'
-                  }`}
+                onClick={openMessagingBot}
+                className={`mt-5 px-6 py-2.5 rounded-xl uppercase font-extrabold tracking-wider cursor-pointer text-xs shadow-md transition-all ${
+                  messagingTab === 'whatsapp'
+                    ? 'bg-[#128C7E] text-white hover:bg-[#075E54]'
+                    : 'bg-[#0F172A] text-white hover:bg-[#0284C7]'
+                }`}
               >
-                Open WhatsApp Bot
+                {messagingTab === 'whatsapp' ? 'Open WhatsApp Bot' : 'Open Telegram Bot'}
               </button>
+            </div>
+
+            {/* Popular Questions List */}
+            <div className="p-5 rounded-2xl border border-[#3B5C65] bg-[#18292E] space-y-3 text-left">
+              <h4 className="font-extrabold text-xs uppercase tracking-wider text-[#9ED4AC]">Popular Questions</h4>
+              <div className="space-y-2">
+                {[
+                  'Which business is best in my area?',
+                  'How much loan can I get?',
+                  'What government schemes can I apply for?',
+                  'How to start a bakery business?'
+                ].map((q) => (
+                  <button
+                    key={q}
+                    onClick={() => handleSendMessage(q)}
+                    className="w-full p-2.5 rounded-xl border border-[#3B5C65]/80 bg-[#111D21] text-left text-xs font-semibold text-[#EAF2C9] hover:text-[#2EA8A4] hover:border-[#2EA8A4]/50 transition-colors flex items-center justify-between cursor-pointer"
+                  >
+                    <span>{q}</span>
+                    <ChevronRight size={14} className="text-[#9ED4AC]/70 shrink-0" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className={`pt-4 border-t text-[10px] uppercase tracking-widest ${isLight ? 'border-slate-200 text-slate-400' : 'border-white/5 text-gray-500'
-            }`}>
+          <div className="pt-4 border-t border-[#3B5C65] text-center text-[10px] uppercase tracking-widest text-[#9ED4AC]/70">
             BIZRA Official Mobile Concierge
           </div>
         </div>

@@ -1,0 +1,54 @@
+.parallax {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-block: 0.75rem;
+}
+
+.scroller {
+  display: flex;
+  white-space: nowrap;
+  text-align: center;
+  align-items: center;
+  will-change: transform;
+}
+
+.scroller span {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.scroll-velocity-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  margin-inline: 0.5rem;
+  border-radius: 9999px;
+  background: rgba(34, 55, 61, 0.6);
+  border: 1px solid rgba(59, 92, 101, 0.5);
+  backdrop-filter: blur(8px);
+  color: #EAF2C9;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.scroll-velocity-item:hover {
+  border-color: rgba(46, 168, 164, 0.8);
+  background: rgba(34, 55, 61, 0.9);
+}
+
+.scroll-velocity-item .sub-desc {
+  color: #9ED4AC;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.scroll-velocity-icon {
+  color: #2EA8A4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

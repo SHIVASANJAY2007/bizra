@@ -16,12 +16,29 @@ export default function Footer({ setCurrentTab, currentTab }) {
       return;
     }
 
-    if (currentTab === 'landing') {
-      document.getElementById(link.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (currentTab === 'landing' && link.target && document.getElementById(link.target)) {
+      const el = document.getElementById(link.target);
+      if (window.__lenis) {
+        window.__lenis.scrollTo(el, { offset: -80, duration: 1.0 });
+      } else {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
       return;
     }
 
     setCurrentTab?.(link.tab);
+    if (link.tab === 'landing' && link.target) {
+      window.setTimeout(() => {
+        const el = document.getElementById(link.target);
+        if (el) {
+          if (window.__lenis) {
+            window.__lenis.scrollTo(el, { offset: -80, duration: 1.0 });
+          } else {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      }, 100);
+    }
   };
 
   return (

@@ -27,7 +27,7 @@ export function renderFormattedInline(text) {
             href={match[2]}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-emerald-500 dark:text-[#efe7d5] hover:text-emerald-600 dark:hover:text-white font-semibold underline underline-offset-2 transition-colors mx-0.5"
+            className="inline-flex items-center gap-1 text-[#2EA8A4] hover:text-[#9ED4AC] font-semibold underline underline-offset-2 transition-colors mx-0.5"
           >
             <span>{match[1]}</span>
             <ExternalLink size={12} />
@@ -41,7 +41,7 @@ export function renderFormattedInline(text) {
       return (
         <code
           key={idx}
-          className="bg-emerald-500/10 dark:bg-[#efe7d5]/15 text-emerald-600 dark:text-[#efe7d5] font-mono text-[11px] px-1.5 py-0.5 rounded border border-emerald-500/30 dark:border-[#efe7d5]/30 mx-0.5 shadow-sm"
+          className="bg-[#2EA8A4]/15 text-[#EAF2C9] font-mono text-[11px] px-1.5 py-0.5 rounded border border-[#2EA8A4]/30 mx-0.5 shadow-sm"
         >
           {part.slice(1, -1)}
         </code>
@@ -93,17 +93,17 @@ function CodeBlock({ language, code }) {
   };
 
   return (
-    <div className="my-3 rounded-xl bg-[#070b12] border border-[#efe7d5]/20 overflow-hidden shadow-lg text-gray-100">
-      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#efe7d5]/5 border-b border-[#efe7d5]/15 text-[11px] font-mono text-gray-400">
-        <span className="uppercase font-semibold text-[#efe7d5]">{language || 'code'}</span>
+    <div className="my-3 rounded-xl bg-[#111D21] border border-[#3B5C65] overflow-hidden shadow-lg text-[#EAF2C9]">
+      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#22373D] border-b border-[#3B5C65] text-[11px] font-mono text-[#9ED4AC]">
+        <span className="uppercase font-semibold text-[#2EA8A4]">{language || 'code'}</span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer text-[#efe7d5]"
+          className="flex items-center gap-1 hover:text-[#EAF2C9] transition-colors cursor-pointer text-[#9ED4AC]"
         >
           {copied ? (
             <>
-              <Check size={13} className="text-emerald-400" />
-              <span className="text-emerald-400">Copied</span>
+              <Check size={13} className="text-[#2EA8A4]" />
+              <span className="text-[#2EA8A4]">Copied</span>
             </>
           ) : (
             <>
@@ -113,7 +113,7 @@ function CodeBlock({ language, code }) {
           )}
         </button>
       </div>
-      <pre className="p-4 text-xs font-mono text-[#efe7d5] overflow-x-auto whitespace-pre leading-relaxed">
+      <pre className="p-4 text-xs font-mono text-[#EAF2C9] overflow-x-auto whitespace-pre leading-relaxed">
         {code}
       </pre>
     </div>
@@ -279,9 +279,9 @@ export default function ResponseRenderer({ text }) {
             return (
               <div
                 key={index}
-                className="my-2 p-3 rounded-xl bg-gradient-to-r from-[#efe7d5]/20 via-[#efe7d5]/8 to-transparent border border-[#efe7d5]/35 font-bold text-sm sm:text-base flex items-center gap-2 shadow-sm text-slate-900 dark:text-[#efe7d5]"
+                className="my-2 p-3 rounded-xl bg-[#22373D] border border-[#3B5C65] font-bold text-sm sm:text-base flex items-center gap-2 shadow-sm text-[#EAF2C9]"
               >
-                <Sparkles size={16} className="text-emerald-500 dark:text-[#efe7d5] shrink-0" />
+                <Sparkles size={16} className="text-[#2EA8A4] shrink-0" />
                 <span>{renderFormattedInline(block.text)}</span>
               </div>
             );
@@ -289,9 +289,9 @@ export default function ResponseRenderer({ text }) {
           case 'heading':
             if (block.level === 1) {
               return (
-                <div key={index} className="pt-2 pb-1 border-b border-emerald-500/20 dark:border-[#efe7d5]/25 my-2">
-                  <h2 className="text-base sm:text-lg font-black tracking-tight flex items-center gap-2 text-slate-900 dark:text-[#efe7d5]">
-                    <span className="w-2 h-4 rounded-full bg-emerald-500 dark:bg-[#efe7d5] inline-block" />
+                <div key={index} className="pt-2 pb-1 border-b border-[#3B5C65] my-2">
+                  <h2 className="text-base sm:text-lg font-black tracking-tight flex items-center gap-2 text-[#EAF2C9]">
+                    <span className="w-2 h-4 rounded-full bg-[#2EA8A4] inline-block" />
                     {renderFormattedInline(block.text)}
                   </h2>
                 </div>
@@ -299,14 +299,14 @@ export default function ResponseRenderer({ text }) {
             }
             if (block.level === 2) {
               return (
-                <h3 key={index} className="text-sm sm:text-base font-extrabold text-emerald-600 dark:text-[#efe7d5] mt-3 mb-1 flex items-center gap-1.5">
-                  <ChevronRight size={15} className="text-emerald-600 dark:text-[#efe7d5]" />
+                <h3 key={index} className="text-sm sm:text-base font-extrabold text-[#2EA8A4] mt-3 mb-1 flex items-center gap-1.5">
+                  <ChevronRight size={15} className="text-[#2EA8A4]" />
                   {renderFormattedInline(block.text)}
                 </h3>
               );
             }
             return (
-              <h4 key={index} className="text-xs sm:text-sm font-bold mt-2 mb-1 text-slate-900 dark:text-[#efe7d5]">
+              <h4 key={index} className="text-xs sm:text-sm font-bold mt-2 mb-1 text-[#EAF2C9]">
                 {renderFormattedInline(block.text)}
               </h4>
             );
@@ -317,13 +317,13 @@ export default function ResponseRenderer({ text }) {
                 {block.items.map((item, kIdx) => (
                   <div
                     key={kIdx}
-                    className="p-3 rounded-xl bg-emerald-500/[0.04] dark:bg-[#efe7d5]/[0.08] border border-slate-200 dark:border-[#efe7d5]/25 hover:border-emerald-500/40 dark:hover:border-[#efe7d5]/50 transition-colors flex flex-col justify-between shadow-sm group"
+                    className="p-3 rounded-xl bg-[#22373D] border border-[#3B5C65] hover:border-[#2EA8A4]/60 transition-colors flex flex-col justify-between shadow-sm group"
                   >
-                    <span className="text-[10px] uppercase tracking-wider font-bold text-emerald-600 dark:text-[#efe7d5] mb-1 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-[#efe7d5]" />
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-[#9ED4AC] mb-1 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#2EA8A4]" />
                       {item.key}
                     </span>
-                    <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-[#efe7d5] group-hover:text-emerald-600 dark:group-hover:text-white transition-colors">
+                    <span className="text-xs sm:text-sm font-semibold text-[#EAF2C9] group-hover:text-white transition-colors">
                       {renderFormattedInline(item.value)}
                     </span>
                   </div>
@@ -334,18 +334,18 @@ export default function ResponseRenderer({ text }) {
           case 'bullet':
             return (
               <div key={index} className="flex items-start gap-2.5 my-1 pl-1">
-                <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-[#efe7d5] shrink-0 shadow-[0_0_8px_rgba(239,231,213,0.6)]" />
+                <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#2EA8A4] shrink-0" />
                 <div className="flex-grow">{renderFormattedInline(block.text)}</div>
               </div>
             );
 
           case 'numbered':
             return (
-              <div key={index} className="flex items-start gap-3 my-2 p-2.5 rounded-xl bg-slate-100/70 dark:bg-[#efe7d5]/[0.05] border border-slate-200 dark:border-[#efe7d5]/20">
-                <span className="w-6 h-6 rounded-lg bg-emerald-500/20 dark:bg-[#efe7d5]/20 border border-emerald-500/40 dark:border-[#efe7d5]/40 text-emerald-600 dark:text-[#efe7d5] font-extrabold text-xs flex items-center justify-center shrink-0">
+              <div key={index} className="flex items-start gap-3 my-2 p-2.5 rounded-xl bg-[#22373D] border border-[#3B5C65]">
+                <span className="w-6 h-6 rounded-lg bg-[#2EA8A4]/20 border border-[#2EA8A4]/40 text-[#2EA8A4] font-extrabold text-xs flex items-center justify-center shrink-0">
                   {block.number}
                 </span>
-                <div className="flex-grow pt-0.5 text-xs sm:text-sm">
+                <div className="flex-grow pt-0.5 text-xs sm:text-sm text-[#EAF2C9]">
                   {renderFormattedInline(block.text)}
                 </div>
               </div>
@@ -357,19 +357,19 @@ export default function ResponseRenderer({ text }) {
                 key={index}
                 className={`my-3 p-3.5 sm:p-4 rounded-xl border flex items-start gap-3 shadow-md ${
                   block.style === 'tip'
-                    ? 'bg-amber-500/10 dark:bg-[#efe7d5]/15 border-amber-500/30 dark:border-[#efe7d5]/35 text-amber-900 dark:text-[#efe7d5]'
+                    ? 'bg-[#22373D] border-[#2EA8A4]/40 text-[#EAF2C9]'
                     : block.style === 'warning'
-                    ? 'bg-rose-500/10 border-rose-500/30 text-rose-900 dark:text-rose-100'
-                    : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-900 dark:text-emerald-100'
+                    ? 'bg-[#22373D] border-amber-500/40 text-amber-200'
+                    : 'bg-[#22373D] border-[#3B5C65] text-[#EAF2C9]'
                 }`}
               >
                 <div className="mt-0.5 shrink-0">
                   {block.style === 'tip' ? (
-                    <Lightbulb size={18} className="text-amber-500 dark:text-[#efe7d5]" />
+                    <Lightbulb size={18} className="text-[#2EA8A4]" />
                   ) : block.style === 'warning' ? (
-                    <AlertTriangle size={18} className="text-rose-500" />
+                    <AlertTriangle size={18} className="text-amber-400" />
                   ) : (
-                    <Info size={18} className="text-emerald-500 dark:text-[#efe7d5]" />
+                    <Info size={18} className="text-[#9ED4AC]" />
                   )}
                 </div>
                 <div className="flex-grow text-xs sm:text-sm leading-relaxed font-medium">

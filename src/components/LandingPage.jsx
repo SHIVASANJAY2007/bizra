@@ -1,4 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -16,6 +18,11 @@ import {
   ScanSearch,
   ShieldCheck,
 } from 'lucide-react';
+import heroBg from '../assets/824784.jpg';
+import valleyBottom from '../assets/valley6.bf02ee47.avif';
+import ScrollVelocity from './ScrollVelocity';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const budgetOptions = [
   { value: '', label: 'Select a range' },
@@ -355,19 +362,65 @@ function SampleReportCard() {
 }
 
 function CommitmentStrip() {
-  return (
-    <div className="BIZRA-ruled-strip" aria-label="BIZRA service commitments">
-      <div className="BIZRA-shell BIZRA-ruled-items">
-        {commitments.map(({ title, description, Icon }) => (
-          <div className="BIZRA-ruled-item" key={title}>
-            <Icon size={17} aria-hidden="true" />
-            <div>
-              <strong>{title}</strong>
-              <span>{description}</span>
-            </div>
-          </div>
-        ))}
+  const row1Node = (
+    <div className="flex items-center gap-3 py-1">
+      <div className="scroll-velocity-item">
+        <span className="scroll-velocity-icon"><BadgeCheck size={16} /></span>
+        <span>Free public utility</span>
+        <span className="sub-desc">· Open to every citizen</span>
       </div>
+      <div className="scroll-velocity-item">
+        <span className="scroll-velocity-icon"><Database size={16} /></span>
+        <span>Official datasets</span>
+        <span className="sub-desc">· Source-led public records</span>
+      </div>
+      <div className="scroll-velocity-item">
+        <span className="scroll-velocity-icon"><MapPinned size={16} /></span>
+        <span>Hyper-local data</span>
+        <span className="sub-desc">· Place matters to the answer</span>
+      </div>
+      <div className="scroll-velocity-item">
+        <span className="scroll-velocity-icon"><FileCheck2 size={16} /></span>
+        <span>Bank-loan ready</span>
+        <span className="sub-desc">· Reports shaped for next steps</span>
+      </div>
+    </div>
+  );
+
+  const row2Node = (
+    <div className="flex items-center gap-3 py-1">
+      <div className="scroll-velocity-item">
+        <span className="scroll-velocity-icon"><ShieldCheck size={16} /></span>
+        <span>Verified OGD Datasets</span>
+        <span className="sub-desc">· Direct central & state feeds</span>
+      </div>
+      <div className="scroll-velocity-item">
+        <span className="scroll-velocity-icon"><Check size={16} /></span>
+        <span>100% Free Public Utility</span>
+        <span className="sub-desc">· Zero subscription fees</span>
+      </div>
+      <div className="scroll-velocity-item">
+        <span className="scroll-velocity-icon"><BadgeCheck size={16} /></span>
+        <span>Government Loan Schemes</span>
+        <span className="sub-desc">· PMEGP & Mudra guidance</span>
+      </div>
+      <div className="scroll-velocity-item">
+        <span className="scroll-velocity-icon"><CircleCheck size={16} /></span>
+        <span>Institutional Feasibility</span>
+        <span className="sub-desc">· Instant SWOT & Demand index</span>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="w-full bg-[#111D21] border-y border-[#3B5C65] py-4 overflow-hidden shadow-inner" aria-label="BIZRA service commitments">
+      <ScrollVelocity
+        texts={[row1Node, row2Node]}
+        velocity={60}
+        numCopies={4}
+        damping={40}
+        stiffness={300}
+      />
     </div>
   );
 }
@@ -656,19 +709,222 @@ function FounderStory() {
 }
 
 export default function LandingPage() {
+  const heroRef = useRef(null);
+  const valleyImgRef = useRef(null);
+  const contentRef = useRef(null);
+
+  const targetProgressRef = useRef(0);
+  const currentProgressRef = useRef(0);
+
+  useEffect(() => {
+    if (!heroRef.current || !valleyImgRef.current) return;
+
+    let isValleyPulled = false;
+    let lockActive = true;
+    let animFrameId = null;
+    let touchStartY = 0;
+
+    const lenis = window.__lenis;
+
+    const activateLock = () => {
+      if (lenis) lenis.stop();
+      document.documentElement.classList.add('valley-scroll-locked');
+      lockActive = true;
+    };
+    const releaseLock = () => {
+      if (lenis) lenis.start();
+      document.documentElement.classList.remove('valley-scroll-locked');
+      lockActive = false;
+    };
+
+    // Strictly lock on mount until the valley6 is pulled down completely.
+    activateLock();
+
+    // Continuous 60fps/120fps spring animation loop
+    const animateLoop = () => {
+      const diff = targetProgressRef.current - currentProgressRef.current;
+      if (Math.abs(diff) > 0.0001) {
+        currentProgressRef.current += diff * 0.2;
+        const yPos = -10 + currentProgressRef.current * 175;
+        gsap.set(valleyImgRef.current, { yPercent: yPos });
+      } else if (currentProgressRef.current !== targetProgressRef.current) {
+        currentProgressRef.current = targetProgressRef.current;
+        const yPos = -10 + currentProgressRef.current * 175;
+        gsap.set(valleyImgRef.current, { yPercent: yPos });
+      }
+
+      // Strictly lock: keep page locked until valley is 100% pulled down.
+      // Latch the lock on as soon as the valley is NOT fully pulled, and only
+      // release it once it reaches the fully-pulled state.
+      if (currentProgressRef.current >= 0.995) {
+        if (!isValleyPulled) {
+          isValleyPulled = true;
+          releaseLock();
+        }
+      } else {
+        if (isValleyPulled || !lockActive) {
+          isValleyPulled = false;
+          activateLock();
+        }
+      }
+
+      animFrameId = requestAnimationFrame(animateLoop);
+    };
+
+    animFrameId = requestAnimationFrame(animateLoop);
+
+    const handleWheel = (e) => {
+      const delta = e.deltaY;
+
+      // Valley not fully pulled -> page is STRICTLY locked.
+      // All scroll input drives the valley pull animation only.
+      if (!isValleyPulled) {
+        e.preventDefault();
+        if (delta > 0) {
+          targetProgressRef.current = Math.min(1, targetProgressRef.current + delta * 0.0012);
+        } else if (delta < 0) {
+          const desired = targetProgressRef.current + delta * 0.0012;
+          targetProgressRef.current = Math.max(0, desired);
+        }
+        return;
+      }
+
+      // Valley fully pulled -> free scroll is enabled.
+      // If the user scrolls back UP near the hero top, pull the valley back
+      // up smoothly and dynamically while locking the page again.
+      if (delta < 0 && window.scrollY <= 5) {
+        e.preventDefault();
+        isValleyPulled = false;
+        activateLock();
+        targetProgressRef.current = Math.max(0, targetProgressRef.current + delta * 0.0012);
+      }
+    };
+
+    const handleTouchStart = (e) => {
+      if (e.touches && e.touches[0]) {
+        touchStartY = e.touches[0].clientY;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (!e.touches || !e.touches[0]) return;
+      const touchY = e.touches[0].clientY;
+      const delta = touchStartY - touchY;
+      touchStartY = touchY;
+
+      // Valley not fully pulled -> page is STRICTLY locked.
+      if (!isValleyPulled) {
+        e.preventDefault();
+        if (delta > 0) {
+          targetProgressRef.current = Math.min(1, targetProgressRef.current + delta * 0.006);
+        } else if (delta < 0) {
+          targetProgressRef.current = Math.max(0, targetProgressRef.current + delta * 0.006);
+        }
+        return;
+      }
+
+      // Valley fully pulled -> free scroll enabled.
+      // Scroll back UP near hero top pulls valley up and locks the page.
+      if (delta < 0 && window.scrollY <= 5) {
+        e.preventDefault();
+        isValleyPulled = false;
+        activateLock();
+        targetProgressRef.current = Math.max(0, targetProgressRef.current + delta * 0.006);
+      }
+    };
+
+    const handleKey = (e) => {
+      const scrollKeys = ['ArrowDown', 'PageDown', 'Space', 'ArrowUp', 'PageUp'];
+      if (!scrollKeys.includes(e.code)) return;
+
+      // Valley not fully pulled -> page is STRICTLY locked.
+      if (!isValleyPulled) {
+        e.preventDefault();
+        if (['ArrowDown', 'PageDown', 'Space'].includes(e.code)) {
+          targetProgressRef.current = Math.min(1, targetProgressRef.current + 0.2);
+        } else if (['ArrowUp', 'PageUp'].includes(e.code)) {
+          targetProgressRef.current = Math.max(0, targetProgressRef.current - 0.2);
+        }
+        return;
+      }
+
+      // Valley fully pulled -> scroll back UP near hero top pulls valley up and locks.
+      if (['ArrowUp', 'PageUp'].includes(e.code) && window.scrollY <= 5) {
+        e.preventDefault();
+        isValleyPulled = false;
+        activateLock();
+        targetProgressRef.current = Math.max(0, targetProgressRef.current - 0.2);
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('keydown', handleKey, { passive: false });
+
+    return () => {
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('keydown', handleKey);
+      releaseLock();
+    };
+  }, []);
+
   return (
     <div className="field-notebook">
       <main>
-        <section className="BIZRA-hero" id="start-report" aria-labelledby="hero-title">
-          <div className="BIZRA-shell BIZRA-hero-grid">
-            <div>
-              <div className="BIZRA-eyebrow"><span className="dot" aria-hidden="true" />Start with the ground you know</div>
-              <h1 id="hero-title">Know the ground before you invest.</h1>
-              <p className="BIZRA-hero-lede">Build a clear, local feasibility report from the place, idea, and budget you already have. BIZRA turns public records into practical next steps for rural businesses.</p>
-              <p className="BIZRA-hero-note"><ShieldCheck size={16} aria-hidden="true" />Free public utility · Uses available verified government datasets</p>
-              <ReportRequestForm />
+        <section
+          ref={heroRef}
+          className="relative w-full h-screen py-8 sm:py-12 md:py-16 px-6 overflow-hidden flex flex-col items-center justify-center text-center border-b border-[#3B5C65]"
+          id="start-report"
+          aria-labelledby="hero-title"
+          style={{
+            backgroundImage: `linear-gradient(to bottom, rgba(17, 29, 33, 0.85), rgba(24, 41, 46, 0.70)), url(${heroBg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          <div ref={contentRef} className="max-w-4xl mx-auto flex flex-col items-center justify-center text-center z-20 relative -translate-y-12 sm:-translate-y-16 md:-translate-y-20">
+            {/* Eyebrow */}
+            <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#2EA8A4]/15 border border-[#2EA8A4]/35 text-[#9ED4AC] text-xs sm:text-sm font-mono font-bold uppercase tracking-wider mb-4 shadow-md backdrop-blur-sm">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#2EA8A4] animate-pulse" />
+              START WITH THE GROUND YOU KNOW
+            </span>
+
+            {/* Main Headline */}
+            <h1
+              id="hero-title"
+              className="font-bebas text-4xl sm:text-6xl md:text-7xl lg:text-8xl uppercase tracking-wider text-[#EAF2C9] leading-[0.96] max-w-4xl mx-auto mb-4 drop-shadow-xl"
+            >
+              Know the ground before you{' '}
+              <span className="font-palace text-[#2EA8A4] normal-case tracking-normal text-[1.12em] inline-block font-normal">
+                invest.
+              </span>
+            </h1>
+
+            {/* Subtitle / Lede */}
+            <p className="text-base sm:text-lg md:text-xl text-[#9ED4AC] font-medium leading-relaxed max-w-2xl mx-auto mb-6 drop-shadow-md">
+              Build a clear, local feasibility report from the place, idea, and budget you already have. BIZRA turns public records into practical next steps for rural businesses.
+            </p>
+
+            {/* Note / Tagline */}
+            <div className="inline-flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-[#EAF2C9]/90 bg-[#18292E]/85 backdrop-blur-md px-4 py-2 rounded-xl border border-[#3B5C65] shadow-xl">
+              <ShieldCheck size={16} className="text-[#2EA8A4] shrink-0" />
+              <span>Free public utility · Uses available verified government datasets</span>
             </div>
-            <SampleReportCard />
+          </div>
+
+          {/* Valley Bottom Image - Sleek 115% height layout anchored to top */}
+          <div className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-hidden">
+            <img
+              ref={valleyImgRef}
+              src={valleyBottom}
+              alt="Valley landscape framing"
+              onLoad={() => ScrollTrigger.refresh()}
+              className="absolute top-0 left-0 w-full h-[115%] object-cover object-top block will-change-transform"
+            />
           </div>
         </section>
         <CommitmentStrip />
