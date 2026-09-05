@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   ArrowLeft, RotateCcw, Send, X, MapPin, LocateFixed, Loader2, Compass, Bot, ChevronRight
 } from 'lucide-react';
+import { useResizable } from '../hooks/useResizable';
 import ResponseRenderer from './ResponseRenderer';
 
 export default function BIZRAChatbot({ setCurrentTab }) {
@@ -15,6 +16,9 @@ export default function BIZRAChatbot({ setCurrentTab }) {
 
   // Messaging Concierge Platform State
   const [messagingTab, setMessagingTab] = useState('whatsapp'); // 'whatsapp' | 'telegram'
+
+  // Resizable Panels hook
+  const { containerRef, startDrag, initialWidth } = useResizable(66.66, 30, 75);
 
   const openMessagingBot = () => {
     if (messagingTab === 'whatsapp') {
@@ -327,21 +331,15 @@ export default function BIZRAChatbot({ setCurrentTab }) {
     ]);
   };
 
-  const openWhatsApp = () => {
-    const phone = "919999999999";
-    const text = encodeURIComponent("Hi BIZRA AI! I would like to analyze my business idea and check government loan subsidies.");
-    window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${text}`, '_blank');
-  };
-
   return (
-    <div className="flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden font-sans">
+    <div className="flex flex-col h-screen bg-[#F8F2E5] text-gray-900 overflow-hidden font-sans">
 
       {/* Top Navigation Bar */}
       <header className="px-4 lg:px-10 h-[60px] md:h-[72px] border-b border-gray-200 bg-white/95 backdrop-blur-md flex items-center justify-between shrink-0 shadow-[0_2px_10px_rgba(0,0,0,0.02)] z-10 relative">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setCurrentTab('landing')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:text-black hover:bg-white transition-colors cursor-pointer shadow-sm"
           >
             <ArrowLeft size={14} />
             <span>Home</span>
@@ -394,7 +392,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
         {/* Right Tab Switcher Actions */}
         <div className="flex items-center gap-2">
           {/* Mode Switch Pills */}
-          <div className="hidden sm:flex items-center p-1 rounded-xl bg-gray-50 border border-gray-200 shadow-inner">
+          <div className="hidden sm:flex items-center p-1 rounded-xl bg-white border border-gray-200 shadow-inner">
             <button
               onClick={() => setCurrentTab('manual')}
               className="px-3 py-1 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-900 transition-all flex items-center gap-1.5 cursor-pointer"
@@ -413,7 +411,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
 
           <button
             onClick={resetChat}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-600 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-600 hover:text-black hover:bg-white transition-colors cursor-pointer shadow-sm"
             title="Reset Session"
           >
             <RotateCcw size={13} />
@@ -422,7 +420,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
 
           <button
             onClick={() => setCurrentTab('landing')}
-            className="p-1.5 rounded-xl border border-gray-200 bg-white text-gray-500 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
+            className="p-1.5 rounded-xl border border-gray-200 bg-white text-gray-500 hover:text-black hover:bg-white transition-colors cursor-pointer shadow-sm"
             aria-label="Exit"
           >
             <X size={16} />
@@ -430,15 +428,18 @@ export default function BIZRAChatbot({ setCurrentTab }) {
         </div>
       </header>
 
-      {/* Main Workspace Body */}
-      <main className="grid grid-cols-1 lg:grid-cols-12 flex-grow overflow-hidden">
-
-        {/* Chat Feed Column (Left 8 Cols) */}
-        <div className="lg:col-span-8 flex flex-col h-full relative overflow-hidden border-r border-gray-200 bg-white">
+      {/* Main Workspace */}
+      <main 
+        ref={containerRef}
+        className="flex flex-col lg:flex-row flex-grow overflow-hidden relative"
+        style={{ '--left-width': `${initialWidth}%` }}
+      >
+        {/* Left Workspace - Chat Feed */}
+        <div className="w-full lg-dynamic-w flex flex-col h-full relative overflow-hidden bg-[#F8F2E5]">
 
           {/* Scrollable Feed */}
           <div
-            className="flex-grow overflow-y-auto px-4 sm:px-8 py-6 space-y-6"
+            className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 bg-[#F8F2E5]"
             data-lenis-prevent
           >
             {messages.map((msg) => (
@@ -449,7 +450,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
                 <div
                   className={`max-w-[580px] rounded-2xl p-4 sm:p-5 text-xs sm:text-sm leading-relaxed ${msg.sender === 'user'
                     ? 'bg-[#2EA8A4] text-white rounded-br-none shadow-md font-medium'
-                    : 'bg-gray-100 text-gray-900 border border-gray-200 rounded-bl-none shadow-lg'
+                    : 'bg-white text-gray-900 border border-gray-200 rounded-bl-none shadow-lg'
                     }`}
                 >
                   {msg.sender === 'user' ? (
@@ -471,7 +472,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
                       <button
                         key={pIdx}
                         onClick={() => handleSendMessage(pill)}
-                        className="text-xs font-semibold px-3 py-1.5 rounded-full border transition-all cursor-pointer text-left bg-gray-100 text-gray-900 border-gray-200 hover:border-[#2EA8A4] hover:bg-gray-200"
+                        className="text-xs font-semibold px-3 py-1.5 rounded-full border transition-all cursor-pointer text-left bg-white text-gray-900 border-gray-200 hover:border-[#2EA8A4] hover:bg-white"
                       >
                         {pill}
                       </button>
@@ -482,7 +483,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
             ))}
 
             {isTyping && (
-              <div className="p-3 rounded-xl border border-gray-200 text-xs w-fit flex items-center gap-2 bg-gray-100 text-gray-900">
+              <div className="p-3 rounded-xl border border-gray-200 text-xs w-fit flex items-center gap-2 bg-white text-gray-900">
                 <span className="w-2 h-2 rounded-full bg-[#2EA8A4] animate-ping" />
                 <span>BIZRA AI Agent is thinking...</span>
               </div>
@@ -492,7 +493,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
           </div>
 
           {/* Input Bar */}
-          <div className="p-4 border-t border-gray-200 bg-gray-50">
+          <div className="p-4 border-t border-gray-200 bg-[#F8F2E5]">
             <form
               onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
               className="flex items-center gap-2 rounded-xl p-1.5 border border-gray-200 focus-within:border-[#2EA8A4] transition-colors bg-white"
@@ -540,8 +541,15 @@ export default function BIZRAChatbot({ setCurrentTab }) {
 
         </div>
 
-        {/* Right Sidebar (4 Cols) - Navigation & WhatsApp/Telegram Bot (Matching BizraManual) */}
-        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-gray-200 bg-gray-50 text-gray-900 overflow-y-auto" data-lenis-prevent>
+        {/* Resizer Handle (Curvy visible line) */}
+        <div 
+          className="hidden lg:block w-1.5 my-4 mx-1 rounded-full bg-gray-300 hover:bg-[#2EA8A4] cursor-col-resize transition-colors z-50 flex-shrink-0"
+          onPointerDown={startDrag}
+          title="Drag to resize panels"
+        />
+
+        {/* Right Sidebar - Integrations & Context */}
+        <div className="hidden lg:flex flex-1 flex-col h-full justify-between p-6 bg-[#F8F2E5] text-gray-900 overflow-y-auto" data-lenis-prevent>
           <div className="space-y-6 my-auto">
             {/* Mode Switcher Card */}
             <div className="p-5 rounded-2xl border border-gray-200 bg-white space-y-4 text-left">
@@ -650,7 +658,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
                   <button
                     key={q}
                     onClick={() => handleSendMessage(q)}
-                    className="w-full p-2.5 rounded-xl border border-gray-200/80 bg-gray-50 text-left text-xs font-semibold text-gray-900 hover:text-[#2EA8A4] hover:border-[#2EA8A4]/50 transition-colors flex items-center justify-between cursor-pointer"
+                    className="w-full p-2.5 rounded-xl border border-gray-200/80 bg-white text-left text-xs font-semibold text-gray-900 hover:text-[#2EA8A4] hover:border-[#2EA8A4]/50 transition-colors flex items-center justify-between cursor-pointer"
                   >
                     <span>{q}</span>
                     <ChevronRight size={14} className="text-gray-500/70 shrink-0" />

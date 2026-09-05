@@ -1,6 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
+@layer utilities {
+  @media (min-width: 1024px) {
+    .lg-dynamic-w {
+      width: var(--left-width);
+      flex: 0 0 var(--left-width);
+    }
+  }
+}
+
+/* Hide scrollbar globally but allow scrolling */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 @font-face {
   font-family: 'Bebas Neue';
   src: url('./assets/BebasNeue-Regular.ttf') format('truetype');

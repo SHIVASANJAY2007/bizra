@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ArrowLeft,
   RotateCcw,
@@ -25,6 +25,7 @@ import {
   RefreshCw,
   AlertCircle
 } from 'lucide-react';
+import { useResizable } from '../hooks/useResizable';
 import ResponseRenderer from './ResponseRenderer';
 import { marked } from 'marked';
 
@@ -119,6 +120,9 @@ const claudeLoadingPhrases = [
 ];
 
 export default function BizraManual({ setCurrentTab }) {
+  const { containerRef, startDrag, initialWidth } = useResizable(66.66, 30, 75);
+  const scrollRef = useRef(null);
+
   const [currentStep, setCurrentStep] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = sessionStorage.getItem('BIZRA_MANUAL_STEP');
@@ -126,6 +130,12 @@ export default function BizraManual({ setCurrentTab }) {
     }
     return 2;
   });
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [currentStep]);
 
   const [locationMode, setLocationMode] = useState(() => {
     if (typeof window !== 'undefined') return sessionStorage.getItem('BIZRA_MANUAL_LOC_MODE') || 'auto';
@@ -495,13 +505,13 @@ Please structure the response with clear headings, bullet points, and key metric
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden font-sans">
+    <div className="flex flex-col h-screen bg-[#F8F2E5] text-gray-900 overflow-hidden font-sans">
       {/* Top Navigation Bar */}
       <header className="px-4 lg:px-10 h-[60px] md:h-[72px] border-b border-gray-200 bg-white/95 backdrop-blur-md flex items-center justify-between shrink-0 shadow-[0_2px_10px_rgba(0,0,0,0.02)] z-10 relative">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setCurrentTab('landing')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:text-black hover:bg-white transition-colors cursor-pointer shadow-sm"
           >
             <ArrowLeft size={14} />
             <span>Home</span>
@@ -519,7 +529,7 @@ Please structure the response with clear headings, bullet points, and key metric
           </div>
 
           {selections.location && (
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-50 border border-gray-200 text-xs text-gray-700">
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-gray-200 text-xs text-gray-700">
               <MapPin size={12} className="text-black" />
               <span>{selections.location}</span>
             </div>
@@ -529,7 +539,7 @@ Please structure the response with clear headings, bullet points, and key metric
         {/* Right Tab Switcher Actions */}
         <div className="flex items-center gap-2">
           {/* Mode Switch Pills */}
-          <div className="hidden sm:flex items-center p-1 rounded-xl bg-gray-50 border border-gray-200 shadow-inner">
+          <div className="hidden sm:flex items-center p-1 rounded-xl bg-white border border-gray-200 shadow-inner">
             <button
               onClick={() => setCurrentTab('manual')}
               className="px-3 py-1 rounded-lg text-xs font-bold transition-all bg-white text-black shadow-sm flex items-center gap-1.5 cursor-pointer"
@@ -548,7 +558,7 @@ Please structure the response with clear headings, bullet points, and key metric
 
           <button
             onClick={handleReset}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-600 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-600 hover:text-black hover:bg-white transition-colors cursor-pointer shadow-sm"
             title="Reset Session"
           >
             <RotateCcw size={13} />
@@ -557,7 +567,7 @@ Please structure the response with clear headings, bullet points, and key metric
 
           <button
             onClick={() => setCurrentTab('landing')}
-            className="p-1.5 rounded-xl border border-gray-200 bg-white text-gray-500 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
+            className="p-1.5 rounded-xl border border-gray-200 bg-white text-gray-500 hover:text-black hover:bg-white transition-colors cursor-pointer shadow-sm"
             aria-label="Exit"
           >
             <X size={16} />
@@ -566,12 +576,17 @@ Please structure the response with clear headings, bullet points, and key metric
       </header>
 
       {/* Main Workspace Body */}
-      <main className="grid grid-cols-1 lg:grid-cols-12 flex-grow overflow-hidden">
-        {/* Left Workspace (8 Cols) - Manual Steps Questionnaire or Report View */}
+      <main 
+        ref={containerRef}
+        className="flex flex-col lg:flex-row flex-grow overflow-hidden relative"
+        style={{ '--left-width': `${initialWidth}%` }}
+      >
+        {/* Left Workspace (Variable Width) - Manual Steps Questionnaire or Report View */}
         <div
-          className="lg:col-span-8 flex flex-col p-4 sm:p-6 md:p-8 overflow-y-auto bg-gray-50"
-          data-lenis-prevent
+          id="manual-workspace"
+          className="w-full lg-dynamic-w flex flex-col h-full relative overflow-hidden bg-[#F8F2E5]"
         >
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-[#F8F2E5]" data-lenis-prevent>
           {reportState === 'loading' && (
             <div className="flex flex-col items-center justify-center py-16 px-6 text-center space-y-8 max-w-xl mx-auto my-auto">
               {/* Ambient Pulse Glowing Orb */}
@@ -649,7 +664,7 @@ Please structure the response with clear headings, bullet points, and key metric
 
                   <button
                     onClick={() => setReportState('idle')}
-                    className="px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-100 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="px-3 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-100 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                     title="Modify Parameters"
                   >
                     <RefreshCw size={14} />
@@ -843,7 +858,7 @@ Please structure the response with clear headings, bullet points, and key metric
                                 placeholder="e.g. Konkani, Mizo, Santali, Tulu..."
                                 value={customInputs.language}
                                 onChange={(e) => handleCustomInputChange('language', e.target.value)}
-                                className="w-full px-3.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
+                                className="w-full px-3.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             </div>
                           );
@@ -914,7 +929,7 @@ Please structure the response with clear headings, bullet points, and key metric
                           <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/30 font-mono">
                             Recommended
                           </span>
-                          <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-[#2EA8A4]">
+                          <div className="w-12 h-12 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-[#2EA8A4]">
                             <MapPin size={22} />
                           </div>
                         </div>
@@ -947,7 +962,7 @@ Please structure the response with clear headings, bullet points, and key metric
                         </div>
 
                         <div className="flex items-center justify-end pt-2">
-                          <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500">
+                          <div className="w-12 h-12 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500">
                             <Map size={22} />
                           </div>
                         </div>
@@ -987,7 +1002,7 @@ Please structure the response with clear headings, bullet points, and key metric
                                     updateSelection('location', `PIN: ${e.target.value}`);
                                   }
                                 }}
-                                className="mt-3 w-full px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
+                                className="mt-3 w-full px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             )}
                           </div>
@@ -1027,7 +1042,7 @@ Please structure the response with clear headings, bullet points, and key metric
                                   setManualLocationInput(e.target.value);
                                   updateSelection('location', e.target.value);
                                 }}
-                                className="mt-3 w-full px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
+                                className="mt-3 w-full px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             )}
                           </div>
@@ -1075,7 +1090,7 @@ Please structure the response with clear headings, bullet points, and key metric
                                 placeholder="e.g. Village Cooperative with 50 local farmers..."
                                 value={customInputs.scale}
                                 onChange={(e) => handleCustomInputChange('scale', e.target.value)}
-                                className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             </div>
                           );
@@ -1138,7 +1153,7 @@ Please structure the response with clear headings, bullet points, and key metric
                                 placeholder="e.g. Drone spray service for precision agriculture..."
                                 value={customInputs.business}
                                 onChange={(e) => handleCustomInputChange('business', e.target.value)}
-                                className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             </div>
                           );
@@ -1204,7 +1219,7 @@ Please structure the response with clear headings, bullet points, and key metric
                                 placeholder="e.g. ₹15 Lakhs bank loan + ₹5 Lakhs personal savings..."
                                 value={customInputs.investment}
                                 onChange={(e) => handleCustomInputChange('investment', e.target.value)}
-                                className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             </div>
                           );
@@ -1267,7 +1282,7 @@ Please structure the response with clear headings, bullet points, and key metric
                                 placeholder="e.g. 10 years experience in logistics & cold chain supply management..."
                                 value={customInputs.experience}
                                 onChange={(e) => handleCustomInputChange('experience', e.target.value)}
-                                className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             </div>
                           );
@@ -1316,7 +1331,7 @@ Please structure the response with clear headings, bullet points, and key metric
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
                       {Object.entries(selections).map(([key, val]) => (
-                        <div key={key} className="p-3 rounded-xl bg-gray-50 border border-gray-200">
+                        <div key={key} className="p-3 rounded-xl bg-white border border-gray-200">
                           <span className="text-[10px] uppercase tracking-wider font-mono text-gray-500/70 block">{key}</span>
                           <strong className="text-xs text-gray-900 block mt-0.5 truncate">{val || 'Not selected'}</strong>
                         </div>
@@ -1421,9 +1436,17 @@ Please structure the response with clear headings, bullet points, and key metric
             </div>
           </div>
         </div>
+        </div>
 
-        {/* Right Sidebar (4 Cols) - Navigation & WhatsApp Bot (Matching Image 2) */}
-        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-gray-200 bg-gray-50 text-gray-900 overflow-y-auto" data-lenis-prevent>
+        {/* Resizer Handle (Curvy visible line) */}
+        <div 
+          className="hidden lg:block w-1.5 my-4 mx-1 rounded-full bg-gray-300 hover:bg-[#2EA8A4] cursor-col-resize transition-colors z-50 flex-shrink-0"
+          onPointerDown={startDrag}
+          title="Drag to resize panels"
+        />
+
+        {/* Right Sidebar - Integrations & Context */}
+        <div className="hidden lg:flex flex-1 flex-col h-full justify-between p-6 bg-[#F8F2E5] text-gray-900 overflow-y-auto" data-lenis-prevent>
           <div className="space-y-6 my-auto">
             {/* AI Assistant Mode Switcher Card */}
             <div className="p-5 rounded-2xl border border-gray-200 bg-white space-y-4">
@@ -1527,7 +1550,7 @@ Please structure the response with clear headings, bullet points, and key metric
                   <button
                     key={q}
                     onClick={() => setCurrentTab('chatbot')}
-                    className="w-full p-2.5 rounded-xl border border-gray-200/80 bg-gray-50 text-left text-xs font-semibold text-gray-900 hover:text-[#2EA8A4] hover:border-[#2EA8A4]/50 transition-colors flex items-center justify-between cursor-pointer"
+                    className="w-full p-2.5 rounded-xl border border-gray-200/80 bg-white text-left text-xs font-semibold text-gray-900 hover:text-[#2EA8A4] hover:border-[#2EA8A4]/50 transition-colors flex items-center justify-between cursor-pointer"
                   >
                     <span>{q}</span>
                     <ChevronRight size={14} className="text-gray-500/70 shrink-0" />
