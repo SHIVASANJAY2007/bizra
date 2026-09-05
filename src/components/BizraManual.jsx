@@ -26,6 +26,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import ResponseRenderer from './ResponseRenderer';
+import { marked } from 'marked';
 
 const steps = [
   { id: 1, label: 'Language', icon: Globe },
@@ -118,26 +119,63 @@ const claudeLoadingPhrases = [
 ];
 
 export default function BizraManual({ setCurrentTab }) {
-  const [currentStep, setCurrentStep] = useState(2);
-  const [locationMode, setLocationMode] = useState('auto'); // 'auto' | 'map' | 'pin' | 'manual'
-  const [pinCodeInput, setPinCodeInput] = useState('');
-  const [manualLocationInput, setManualLocationInput] = useState('');
-  const [customInputs, setCustomInputs] = useState({
-    language: '',
-    scale: '',
-    business: '',
-    investment: '',
-    experience: ''
+  const [currentStep, setCurrentStep] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('BIZRA_MANUAL_STEP');
+      return saved ? parseInt(saved, 10) : 2;
+    }
+    return 2;
   });
 
-  const [selections, setSelections] = useState({
-    language: 'English',
-    location: 'Coimbatore, Tamil Nadu',
-    scale: '',
-    business: '',
-    investment: '',
-    experience: ''
+  const [locationMode, setLocationMode] = useState(() => {
+    if (typeof window !== 'undefined') return sessionStorage.getItem('BIZRA_MANUAL_LOC_MODE') || 'auto';
+    return 'auto';
   });
+
+  const [pinCodeInput, setPinCodeInput] = useState(() => {
+    if (typeof window !== 'undefined') return sessionStorage.getItem('BIZRA_MANUAL_PIN') || '';
+    return '';
+  });
+
+  const [manualLocationInput, setManualLocationInput] = useState(() => {
+    if (typeof window !== 'undefined') return sessionStorage.getItem('BIZRA_MANUAL_LOC_INPUT') || '';
+    return '';
+  });
+
+  const [customInputs, setCustomInputs] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('BIZRA_MANUAL_CUSTOM_INPUTS');
+      if (saved) return JSON.parse(saved);
+    }
+    return { language: '', scale: '', business: '', investment: '', experience: '' };
+  });
+
+  const [selections, setSelections] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('BIZRA_MANUAL_SELECTIONS');
+      if (saved) return JSON.parse(saved);
+    }
+    return {
+      language: 'English',
+      location: 'Coimbatore, Tamil Nadu',
+      scale: '',
+      business: '',
+      investment: '',
+      experience: ''
+    };
+  });
+
+  // Persist questionnaire state to sessionStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('BIZRA_MANUAL_STEP', currentStep.toString());
+      sessionStorage.setItem('BIZRA_MANUAL_LOC_MODE', locationMode);
+      sessionStorage.setItem('BIZRA_MANUAL_PIN', pinCodeInput);
+      sessionStorage.setItem('BIZRA_MANUAL_LOC_INPUT', manualLocationInput);
+      sessionStorage.setItem('BIZRA_MANUAL_CUSTOM_INPUTS', JSON.stringify(customInputs));
+      sessionStorage.setItem('BIZRA_MANUAL_SELECTIONS', JSON.stringify(selections));
+    }
+  }, [currentStep, locationMode, pinCodeInput, manualLocationInput, customInputs, selections]);
 
   // n8n AI Agent Report States (with sessionStorage backup)
   const [reportState, setReportState] = useState(() => {
@@ -324,7 +362,8 @@ Please structure the response with clear headings, bullet points, and key metric
 3. Financial Projections, Unit Economics & Payback Period
 4. Applicable Government Loan Schemes & Subsidies (e.g. Mudra, PMEGP, CGTMSE)
 5. Mandatory Licenses & Regulatory Compliance Checklist (FSSAI, GST, MSME Udyam)
-6. Key Risk Factors & Actionable 90-Day Execution Roadmap`;
+6. Key Risk Factors & Actionable 90-Day Execution Roadmap
+7. Local Competitor Landscape (List of existing related businesses in ${selections.location || 'the specified region'} with brief descriptions and address/locality details)`;
 
     try {
       const replyText = await callN8nForReport(promptText);
@@ -341,14 +380,27 @@ Please structure the response with clear headings, bullet points, and key metric
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
-    const cleanHtml = reportText
+    // Clean n8n artifacts before passing to marked (same logic as ResponseRenderer)
+    const cleanedMarkdown = reportText
       ? reportText
-          .replace(/\n/g, '<br/>')
-          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-          .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-          .replace(/^## (.*$)/gim, '<h2>$2</h2>')
-          .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+          .split('\n')
+          .filter(line => {
+            const t = line.trim();
+            const stripped = t.replace(/^[#*\-.\s\d>•◦▪]+/, '').replace(/[*]+$/, '').trim();
+            if (/^PANEL\s*[-_]\s*[\d\-]+$/i.test(stripped)) return false;
+            if (/^\{\{.*\}\}\s*$/.test(t)) return false;
+            return true;
+          })
+          .map(line => {
+            const t = line.trim();
+            if (/^-{3,}$/.test(t) || /^={3,}$/.test(t) || /^\*{3,}$/.test(t)) return '---';
+            return line.replace(/PANEL\s*[-_]\s*[\d\-]+/gi, '').replace(/\s{2,}/g, ' ');
+          })
+          .join('\n')
       : '';
+
+    // Use marked to convert Markdown into proper HTML (tables, lists, bold, etc.)
+    const cleanHtml = cleanedMarkdown ? marked.parse(cleanedMarkdown) : '';
 
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -357,39 +409,67 @@ Please structure the response with clear headings, bullet points, and key metric
           <title>BIZRA_Feasibility_Report_${(selections.business || 'Venture').replace(/\s+/g, '_')}</title>
           <style>
             @page { size: A4; margin: 18mm; }
-            body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #0F172A; line-height: 1.6; font-size: 13px; margin: 0; padding: 0; }
+            body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1e293b; line-height: 1.6; font-size: 13px; margin: 0; padding: 0; }
             .header { border-bottom: 3px solid #2EA8A4; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-            .logo { font-size: 22px; font-weight: 900; color: #18292E; letter-spacing: -0.5px; }
+            .logo { font-size: 22px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px; }
             .logo span { color: #2EA8A4; }
             .tagline { font-size: 11px; color: #64748B; font-weight: 600; text-transform: uppercase; }
             .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 14px; border-radius: 8px; margin-bottom: 24px; }
             .meta-item { font-size: 11px; }
             .meta-label { font-size: 9px; text-transform: uppercase; color: #64748B; font-weight: 700; display: block; margin-bottom: 2px; }
             .meta-val { font-weight: 700; color: #0F172A; }
-            .content-body { font-size: 13px; line-height: 1.7; }
-            h1, h2, h3 { color: #18292E; font-weight: 800; margin-top: 20px; margin-bottom: 8px; }
-            h2 { border-left: 4px solid #2EA8A4; padding-left: 10px; font-size: 16px; }
-            h3 { font-size: 14px; color: #0F172A; }
-            strong { color: #0F172A; }
-            .footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #E2E8F0; text-align: center; font-size: 10px; color: #94A3B8; font-weight: 600; }
+            
+            /* Markdown Content Styles */
+            .content-body { font-size: 13px; line-height: 1.7; color: #334155; }
+            .content-body p { margin-top: 0; margin-bottom: 12px; }
+            .content-body h1, .content-body h2, .content-body h3 { color: #0f172a; font-weight: 800; margin-top: 24px; margin-bottom: 10px; page-break-after: avoid; }
+            .content-body h1 { font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
+            .content-body h2 { font-size: 16px; border-left: 4px solid #2EA8A4; padding-left: 10px; }
+            .content-body h3 { font-size: 14px; }
+            .content-body strong { font-weight: 700; color: #0f172a; }
+            
+            /* Table Styles */
+            .content-body table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 12px; }
+            .content-body th, .content-body td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: left; }
+            .content-body th { background-color: #f1f5f9; font-weight: 700; color: #0f172a; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+            .content-body tr:nth-child(even) { background-color: #f8fafc; }
+            
+            /* List Styles */
+            .content-body ul, .content-body ol { margin-top: 0; margin-bottom: 14px; padding-left: 24px; }
+            .content-body li { margin-bottom: 6px; }
+            
+            /* Blockquotes & Code */
+            .content-body blockquote { margin: 16px 0; padding: 10px 16px; background: #f8fafc; border-left: 4px solid #2EA8A4; color: #475569; font-style: italic; }
+            .content-body code { background: #f1f5f9; padding: 2px 4px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #0f172a; border: 1px solid #e2e8f0; }
+            .content-body hr { border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0; }
+            
+            .footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #E2E8F0; text-align: center; font-size: 10px; color: #94A3B8; font-weight: 600; page-break-inside: avoid; }
+            
+            /* Screen Preview Wrapper */
+            .container { max-width: 850px; margin: 0 auto; padding: 40px 40px 40px 60px; }
+            @media print {
+              .container { max-width: 100%; margin: 0; padding: 0; }
+            }
           </style>
         </head>
         <body>
-          <div class="header">
-            <div class="logo">BIZRA <span>AI Agent</span></div>
-            <div class="tagline">Official MSME Feasibility Blueprint</div>
-          </div>
-          <div class="meta-grid">
-            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-val">${selections.location || 'N/A'}</span></div>
-            <div class="meta-item"><span class="meta-label">Language</span><span class="meta-val">${selections.language}</span></div>
-            <div class="meta-item"><span class="meta-label">Business Sector</span><span class="meta-val">${selections.business || 'N/A'}</span></div>
-            <div class="meta-item"><span class="meta-label">Operational Scale</span><span class="meta-val">${selections.scale || 'N/A'}</span></div>
-            <div class="meta-item"><span class="meta-label">Investment Budget</span><span class="meta-val">${selections.investment || 'N/A'}</span></div>
-            <div class="meta-item"><span class="meta-label">Experience</span><span class="meta-val">${selections.experience || 'N/A'}</span></div>
-          </div>
-          <div class="content-body">${cleanHtml}</div>
-          <div class="footer">
-            Generated by BIZRA AI Agent • Verified OGD Datasets & Government MSME Guidance • ${new Date().toLocaleDateString()}
+          <div class="container">
+            <div class="header">
+              <div class="logo">BIZRA <span>AI Agent</span></div>
+              <div class="tagline">Official MSME Feasibility Blueprint</div>
+            </div>
+            <div class="meta-grid">
+              <div class="meta-item"><span class="meta-label">Location</span><span class="meta-val">${selections.location || 'N/A'}</span></div>
+              <div class="meta-item"><span class="meta-label">Language</span><span class="meta-val">${selections.language}</span></div>
+              <div class="meta-item"><span class="meta-label">Business Sector</span><span class="meta-val">${selections.business || 'N/A'}</span></div>
+              <div class="meta-item"><span class="meta-label">Operational Scale</span><span class="meta-val">${selections.scale || 'N/A'}</span></div>
+              <div class="meta-item"><span class="meta-label">Investment Budget</span><span class="meta-val">${selections.investment || 'N/A'}</span></div>
+              <div class="meta-item"><span class="meta-label">Experience</span><span class="meta-val">${selections.experience || 'N/A'}</span></div>
+            </div>
+            <div class="content-body">${cleanHtml}</div>
+            <div class="footer">
+              Generated by BIZRA AI Agent • Verified OGD Datasets & Government MSME Guidance • ${new Date().toLocaleDateString()}
+            </div>
           </div>
           <script>
             window.onload = function() {
@@ -488,7 +568,10 @@ Please structure the response with clear headings, bullet points, and key metric
       {/* Main Workspace Body */}
       <main className="grid grid-cols-1 lg:grid-cols-12 flex-grow overflow-hidden">
         {/* Left Workspace (8 Cols) - Manual Steps Questionnaire or Report View */}
-        <div className="lg:col-span-8 flex flex-col justify-between p-4 sm:p-6 md:p-8 overflow-y-auto bg-[#111D21]">
+        <div
+          className="lg:col-span-8 flex flex-col p-4 sm:p-6 md:p-8 overflow-y-auto bg-[#111D21]"
+          data-lenis-prevent
+        >
           {reportState === 'loading' && (
             <div className="flex flex-col items-center justify-center py-16 px-6 text-center space-y-8 max-w-xl mx-auto my-auto">
               {/* Ambient Pulse Glowing Orb */}
@@ -604,7 +687,7 @@ Please structure the response with clear headings, bullet points, and key metric
               </div>
 
               {/* Report Output Content Rendered via ResponseRenderer */}
-              <div className="p-6 rounded-2xl bg-[#18292E] border border-[#3B5C65] shadow-xl space-y-4 max-h-[580px] overflow-y-auto scrollbar-thin">
+              <div className="p-6 rounded-2xl bg-[#18292E] border border-[#3B5C65] shadow-xl space-y-4">
                 <ResponseRenderer text={reportText} />
               </div>
 
@@ -1340,7 +1423,7 @@ Please structure the response with clear headings, bullet points, and key metric
         </div>
 
         {/* Right Sidebar (4 Cols) - Navigation & WhatsApp Bot (Matching Image 2) */}
-        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-[#3B5C65] bg-[#111D21] text-[#EAF2C9] overflow-y-auto">
+        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-[#3B5C65] bg-[#111D21] text-[#EAF2C9] overflow-y-auto" data-lenis-prevent>
           <div className="space-y-6 my-auto">
             {/* AI Assistant Mode Switcher Card */}
             <div className="p-5 rounded-2xl border border-[#3B5C65] bg-[#18292E] space-y-4">

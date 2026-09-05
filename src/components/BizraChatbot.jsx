@@ -437,7 +437,10 @@ export default function BIZRAChatbot({ setCurrentTab }) {
         <div className="lg:col-span-8 flex flex-col h-full relative overflow-hidden border-r border-[#3B5C65] bg-[#18292E]">
 
           {/* Scrollable Feed */}
-          <div className="flex-grow overflow-y-auto px-4 sm:px-8 py-6 space-y-6">
+          <div
+            className="flex-grow overflow-y-auto px-4 sm:px-8 py-6 space-y-6"
+            data-lenis-prevent
+          >
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -538,7 +541,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
         </div>
 
         {/* Right Sidebar (4 Cols) - Navigation & WhatsApp/Telegram Bot (Matching BizraManual) */}
-        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-[#3B5C65] bg-[#111D21] text-[#EAF2C9] overflow-y-auto">
+        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-[#3B5C65] bg-[#111D21] text-[#EAF2C9] overflow-y-auto" data-lenis-prevent>
           <div className="space-y-6 my-auto">
             {/* Mode Switcher Card */}
             <div className="p-5 rounded-2xl border border-[#3B5C65] bg-[#18292E] space-y-4 text-left">

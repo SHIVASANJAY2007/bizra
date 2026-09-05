@@ -105,13 +105,7 @@
     overflow: hidden;
   }
 
-  .valley-scroll-locked,
-  .valley-scroll-locked body,
-  .valley-scroll-locked html {
-    overflow: hidden !important;
-    overscroll-behavior: none !important;
-    scrollbar-gutter: stable !important;
-  }
+  /* valley-scroll-locked class removed — ScrollTrigger pin now handles scroll locking */
 
   .lenis.lenis-smooth iframe {
     pointer-events: none;
@@ -195,9 +189,15 @@
 @layer components {
   .field-notebook {
     min-height: 100%;
-    overflow: hidden;
+    /* overflow: hidden removed — it breaks ScrollTrigger pin height measurements */
     background: var(--BIZRA-bg);
     color: var(--BIZRA-ink);
+  }
+
+  /* Hero pin wrapper — GSAP ScrollTrigger (pin:true) manages the pinning
+     and creates its own scroll space. No fixed height needed here. */
+  .hero-pin-wrap {
+    position: relative;
   }
 
   .BIZRA-shell {
@@ -2402,4 +2402,34 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+/* ── BIZRA Markdown Renderer ──────────────────────────────────────────────── */
+.bizra-markdown {
+  word-break: break-word;
+}
+
+/* Smooth scrollbar inside code blocks */
+.bizra-markdown pre::-webkit-scrollbar {
+  height: 5px;
+}
+
+.bizra-markdown pre::-webkit-scrollbar-track {
+  background: #0a141c;
+}
+
+.bizra-markdown pre::-webkit-scrollbar-thumb {
+  background: #3B5C65;
+  border-radius: 999px;
+}
+
+/* Table horizontal scroll */
+.bizra-markdown table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* Ordered list counter reset for react-markdown */
+.bizra-markdown ol {
+  counter-reset: ol-counter;
 }
