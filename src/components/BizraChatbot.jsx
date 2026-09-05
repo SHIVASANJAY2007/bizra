@@ -337,34 +337,34 @@ export default function BIZRAChatbot({ setCurrentTab }) {
     <div className="flex flex-col h-screen bg-[#111D21] text-[#EAF2C9] overflow-hidden font-sans">
 
       {/* Top Navigation Bar */}
-      <header className="px-6 py-3 border-b border-[#3B5C65] bg-[#111D21]/95 backdrop-blur-md flex items-center justify-between shrink-0">
+      <header className="px-4 lg:px-10 h-[60px] md:h-[72px] border-b border-gray-200 bg-white/95 backdrop-blur-md flex items-center justify-between shrink-0 shadow-[0_2px_10px_rgba(0,0,0,0.02)] z-10 relative">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setCurrentTab('landing')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#3B5C65] bg-[#18292E] text-xs font-semibold text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
           >
             <ArrowLeft size={14} />
             <span>Home</span>
           </button>
 
-          <div className="h-4 w-[1px] bg-[#3B5C65]" />
+          <div className="h-4 w-[1px] bg-gray-300" />
 
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#2EA8A4] text-[#18292E] font-black text-base shadow-md">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-black text-white font-black text-base shadow-sm">
               B
             </div>
-            <span className="font-extrabold text-base tracking-tight text-[#EAF2C9]">
-              BIZRA <span className="text-[#2EA8A4] font-normal text-xs uppercase px-1.5 py-0.5 rounded bg-[#2EA8A4]/15 border border-[#2EA8A4]/30 font-mono">AI Agent</span>
+            <span className="font-extrabold text-base tracking-tight text-gray-900">
+              BIZRA <span className="text-gray-700 font-semibold text-xs uppercase px-1.5 py-0.5 rounded bg-gray-100 border border-gray-200 font-mono">AI Agent</span>
             </span>
 
             {/* Live Location Badge */}
             {locationStatus === 'granted' && userLocation && (
               <button
                 onClick={autoDetectLocation}
-                className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#2EA8A4]/15 text-[#2EA8A4] border border-[#2EA8A4]/30 hover:bg-[#2EA8A4]/25 transition-all cursor-pointer"
+                className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 transition-all cursor-pointer"
                 title="Live Location active. Click to refresh location."
               >
-                <MapPin size={11} className="text-[#2EA8A4] animate-pulse shrink-0" />
+                <MapPin size={11} className="text-blue-600 animate-pulse shrink-0" />
                 <span className="max-w-[110px] sm:max-w-[170px] truncate">
                   {userLocation.city ? `${userLocation.city}, ${userLocation.state}` : userLocation.address}
                 </span>
@@ -372,8 +372,8 @@ export default function BIZRAChatbot({ setCurrentTab }) {
             )}
 
             {locationStatus === 'locating' && (
-              <div className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#9ED4AC]/15 text-[#9ED4AC] border border-[#9ED4AC]/30 font-mono">
-                <Loader2 size={11} className="animate-spin text-[#9ED4AC] shrink-0" />
+              <div className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200 font-mono">
+                <Loader2 size={11} className="animate-spin text-gray-500 shrink-0" />
                 <span className="hidden sm:inline">Locating...</span>
               </div>
             )}
@@ -381,7 +381,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
             {(locationStatus === 'idle' || locationStatus === 'denied' || locationStatus === 'error') && (
               <button
                 onClick={autoDetectLocation}
-                className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#22373D] text-[#9ED4AC] hover:text-[#2EA8A4] border border-[#3B5C65] hover:border-[#2EA8A4]/40 transition-all cursor-pointer"
+                className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white text-gray-600 hover:text-black border border-gray-200 hover:border-gray-300 transition-all cursor-pointer shadow-sm"
                 title="Click to grant live location access for regional market data"
               >
                 <LocateFixed size={11} className="shrink-0" />
@@ -394,17 +394,17 @@ export default function BIZRAChatbot({ setCurrentTab }) {
         {/* Right Tab Switcher Actions */}
         <div className="flex items-center gap-2">
           {/* Mode Switch Pills */}
-          <div className="hidden sm:flex items-center p-1 rounded-xl bg-[#18292E] border border-[#3B5C65]">
+          <div className="hidden sm:flex items-center p-1 rounded-xl bg-gray-50 border border-gray-200 shadow-inner">
             <button
               onClick={() => setCurrentTab('manual')}
-              className="px-3 py-1 rounded-lg text-xs font-semibold text-[#9ED4AC] hover:text-[#EAF2C9] transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-900 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <Compass size={13} />
               <span>Manual</span>
             </button>
             <button
               onClick={() => setCurrentTab('chatbot')}
-              className="px-3 py-1 rounded-lg text-xs font-bold transition-all bg-[#2EA8A4] text-[#18292E] shadow-sm flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1 rounded-lg text-xs font-bold transition-all bg-white text-black shadow-sm flex items-center gap-1.5 cursor-pointer"
             >
               <Bot size={13} />
               <span>AI Chatbot</span>
@@ -413,7 +413,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
 
           <button
             onClick={resetChat}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#18292E] border border-[#3B5C65] text-xs font-medium text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-600 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
             title="Reset Session"
           >
             <RotateCcw size={13} />
@@ -422,7 +422,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
 
           <button
             onClick={() => setCurrentTab('landing')}
-            className="p-1.5 rounded-xl border border-[#3B5C65] bg-[#18292E] text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl border border-gray-200 bg-white text-gray-500 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
             aria-label="Exit"
           >
             <X size={16} />

@@ -497,30 +497,30 @@ Please structure the response with clear headings, bullet points, and key metric
   return (
     <div className="flex flex-col h-screen bg-[#111D21] text-[#EAF2C9] overflow-hidden font-sans">
       {/* Top Navigation Bar */}
-      <header className="px-6 py-3 border-b border-[#3B5C65] bg-[#111D21]/95 backdrop-blur-md flex items-center justify-between shrink-0">
+      <header className="px-4 lg:px-10 h-[60px] md:h-[72px] border-b border-gray-200 bg-white/95 backdrop-blur-md flex items-center justify-between shrink-0 shadow-[0_2px_10px_rgba(0,0,0,0.02)] z-10 relative">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setCurrentTab('landing')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#3B5C65] bg-[#18292E] text-xs font-semibold text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
           >
             <ArrowLeft size={14} />
             <span>Home</span>
           </button>
 
-          <div className="h-4 w-[1px] bg-[#3B5C65]" />
+          <div className="h-4 w-[1px] bg-gray-300" />
 
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#2EA8A4] text-[#18292E] font-black text-base shadow-md">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-black text-white font-black text-base shadow-sm">
               B
             </div>
-            <span className="font-extrabold text-base tracking-tight text-[#EAF2C9]">
-              BIZRA <span className="text-[#2EA8A4] font-normal text-xs uppercase px-1.5 py-0.5 rounded bg-[#2EA8A4]/15 border border-[#2EA8A4]/30 font-mono">Manual Wizard</span>
+            <span className="font-extrabold text-base tracking-tight text-gray-900">
+              BIZRA <span className="text-gray-700 font-semibold text-xs uppercase px-1.5 py-0.5 rounded bg-gray-100 border border-gray-200 font-mono">Manual Wizard</span>
             </span>
           </div>
 
           {selections.location && (
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#18292E] border border-[#3B5C65] text-xs text-[#9ED4AC]">
-              <MapPin size={12} className="text-[#2EA8A4]" />
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-50 border border-gray-200 text-xs text-gray-700">
+              <MapPin size={12} className="text-black" />
               <span>{selections.location}</span>
             </div>
           )}
@@ -529,17 +529,17 @@ Please structure the response with clear headings, bullet points, and key metric
         {/* Right Tab Switcher Actions */}
         <div className="flex items-center gap-2">
           {/* Mode Switch Pills */}
-          <div className="hidden sm:flex items-center p-1 rounded-xl bg-[#18292E] border border-[#3B5C65]">
+          <div className="hidden sm:flex items-center p-1 rounded-xl bg-gray-50 border border-gray-200 shadow-inner">
             <button
               onClick={() => setCurrentTab('manual')}
-              className="px-3 py-1 rounded-lg text-xs font-bold transition-all bg-[#2EA8A4] text-[#18292E] shadow-sm flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1 rounded-lg text-xs font-bold transition-all bg-white text-black shadow-sm flex items-center gap-1.5 cursor-pointer"
             >
               <Compass size={13} />
               <span>Manual</span>
             </button>
             <button
               onClick={() => setCurrentTab('chatbot')}
-              className="px-3 py-1 rounded-lg text-xs font-semibold text-[#9ED4AC] hover:text-[#EAF2C9] transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-900 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <Bot size={13} />
               <span>AI Chatbot</span>
@@ -548,7 +548,7 @@ Please structure the response with clear headings, bullet points, and key metric
 
           <button
             onClick={handleReset}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#18292E] border border-[#3B5C65] text-xs font-medium text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-600 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
             title="Reset Session"
           >
             <RotateCcw size={13} />
@@ -557,7 +557,7 @@ Please structure the response with clear headings, bullet points, and key metric
 
           <button
             onClick={() => setCurrentTab('landing')}
-            className="p-1.5 rounded-xl border border-[#3B5C65] bg-[#18292E] text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl border border-gray-200 bg-white text-gray-500 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
             aria-label="Exit"
           >
             <X size={16} />

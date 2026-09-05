@@ -7,9 +7,18 @@ import {
   UserRound,
   X,
   Sparkles,
+  Home,
+  Lightbulb,
+  Landmark,
+  BookOpen,
+  Users,
+  MapPin,
+  Navigation,
+  ArrowRight
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import bizraLogo from '../assets/BIZRA logo.jpeg';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,8 +26,10 @@ const languages = ['English', 'हिन्दी', 'தமிழ்', 'मर�
 
 const navItems = [
   { id: 'start-report', label: 'Start a report', tab: 'landing' },
-  { id: 'how-it-works', label: 'How it works', tab: 'how-it-works' },
-  { id: 'why-BIZRA', label: 'Why BIZRA', tab: 'about' },
+  { id: 'why-BIZRA', label: 'Why BIZRA', tab: 'landing' },
+  { id: 'how-it-works', label: 'How it works', tab: 'landing' },
+  { id: 'who-its-for', label: 'Who it\'s for', tab: 'landing' },
+  { id: 'public-record', label: 'Public record', tab: 'landing' },
 ];
 
 function getInitialLanguage() {
@@ -42,8 +53,13 @@ export default function Header({
   const [authStatus, setAuthStatus] = useState('idle');
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [activeSection, setActiveSection] = useState('start-report');
+  const [isHoverRevealed, setIsHoverRevealed] = useState(false);
+  const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const mousePos = useRef({ x: 0, y: 0 });
 
   const headerRef = useRef(null);
+  const navContainerRef = useRef(null);
   const settingsTriggerRef = useRef(null);
   const loginTriggerRef = useRef(null);
   const mobileMenuTriggerRef = useRef(null);
@@ -56,16 +72,71 @@ export default function Header({
       setScrolled(currentScrollY > 20);
 
       if (currentScrollY > 120 && currentScrollY > lastScrollY.current) {
-        setHidden(true);
+        // Don't hide if mouse is at the top of the screen
+        if (mousePos.current.y > 80) {
+          setHidden(true);
+          setIsHoverRevealed(false);
+        }
       } else {
         setHidden(false);
+        setIsHoverRevealed(false);
       }
       lastScrollY.current = currentScrollY;
+
+      // Scrollspy logic for landing page sections
+      if (currentTab === 'landing') {
+        const pageSections = ['start-report', 'why-BIZRA', 'how-it-works', 'who-its-for', 'public-record'];
+        let current = 'start-report';
+        for (let i = pageSections.length - 1; i >= 0; i--) {
+          const id = pageSections[i];
+          const el = document.getElementById(id);
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            // If the top of the section is above middle of the screen
+            if (rect.top <= window.innerHeight / 2) {
+              current = id;
+              break;
+            }
+          }
+        }
+        setActiveSection(current);
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Init
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [currentTab]);
+
+  // Reveal navbar when mouse approaches the top of the screen
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      mousePos.current = { x: e.clientX, y: e.clientY };
+      if (hidden && e.clientY < 80) {
+        setHidden(false);
+        setIsHoverRevealed(true);
+      }
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, [hidden]);
+
+  // Update sliding pill position when active section changes
+  useEffect(() => {
+    if (navContainerRef.current) {
+      const activeElement = navContainerRef.current.querySelector('[data-active="true"]');
+      if (activeElement) {
+        setPillStyle({
+          left: activeElement.offsetLeft,
+          width: activeElement.offsetWidth,
+          opacity: 1,
+        });
+      } else {
+        setPillStyle(prev => ({ ...prev, opacity: 0 }));
+      }
+    }
+  }, [activeSection, currentTab]);
 
   const closeSettings = () => {
     setShowSettings(false);
@@ -135,6 +206,14 @@ export default function Header({
 
   const scrollToSection = (id) => {
     window.setTimeout(() => {
+      if (id === 'start-report') {
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { duration: 1.0 });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        return;
+      }
       const el = document.getElementById(id);
       if (!el) return;
       if (window.__lenis) {
@@ -149,12 +228,23 @@ export default function Header({
     event.preventDefault();
     setShowMobileMenu(false);
 
-    if (currentTab === 'landing' && item.id && document.getElementById(item.id)) {
+    if (currentTab === 'landing' && item.id) {
+      if (item.id === 'start-report') {
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { duration: 1.0 });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        return;
+      }
+      
       const el = document.getElementById(item.id);
-      if (window.__lenis) {
-        window.__lenis.scrollTo(el, { offset: -80, duration: 1.0 });
-      } else {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (el) {
+        if (window.__lenis) {
+          window.__lenis.scrollTo(el, { offset: -80, duration: 1.0 });
+        } else {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
       return;
     }
@@ -162,6 +252,7 @@ export default function Header({
     setCurrentTab(item.tab);
     if (item.tab === 'landing' && item.id) {
       scrollToSection(item.id);
+      setActiveSection(item.id);
     }
   };
 
@@ -207,144 +298,120 @@ export default function Header({
     setAuthStatus('idle');
   };
 
-  const isActive = (item) =>
-    (item.tab === 'landing' && currentTab === 'landing' && item.id === 'start-report') ||
-    (item.tab !== 'landing' && currentTab === item.tab);
+  const isActive = (item) => {
+    if (currentTab === 'landing') {
+      return activeSection === item.id;
+    }
+    return currentTab === item.tab;
+  };
 
   return (
     <>
       <header
         ref={headerRef}
-        className={`sticky top-0 z-50 w-full transition-all duration-300 transform ${hidden ? '-translate-y-full' : 'translate-y-0'
-          }`}
+        onMouseEnter={() => {
+          if (hidden) {
+            setHidden(false);
+            setIsHoverRevealed(true);
+          }
+        }}
+        onMouseLeave={() => {
+          // Hide if it was revealed by hover, user is scrolled down, and no modals are open
+          if (isHoverRevealed && window.scrollY > 120 && !showSettings && !showLogin && !showMobileMenu) {
+            setHidden(true);
+            setIsHoverRevealed(false);
+          }
+        }}
+        className={`sticky top-0 z-50 w-full transition-all duration-300 transform ${hidden ? '-translate-y-full' : 'translate-y-0'} bg-[#F2F4F3]`}
       >
-      {/* Main Header Container */}
-      <div
-        className={`w-full transition-all duration-300 ${scrolled
-          ? 'bg-[#111D21]/95 backdrop-blur-md border-b border-[#3B5C65] shadow-2xl py-3'
-          : 'bg-[#111D21]/85 backdrop-blur-md border-b border-[#3B5C65]/80 py-4'
-          }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between gap-4">
-          {/* Logo & Title */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setCurrentTab('landing')}
-              className="flex items-center gap-3 group cursor-pointer text-left focus:outline-none"
-            >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#2EA8A4] text-[#18292E] font-black text-xl shadow-md shadow-[#111D21]/40 group-hover:bg-[#258B87] transition-colors">
-                B
-              </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-lg tracking-tight text-[#EAF2C9] group-hover:text-[#2EA8A4] transition-colors">
-                    BIZRA
-                  </span>
-                  <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/30 font-mono">
-                    AI
-                  </span>
-                </div>
-                <span className="text-[10px] font-medium text-[#9ED4AC] hidden sm:block">
-                  Rural Business Intelligence
-                </span>
-              </div>
+        {/* Main Navbar */}
+        <div className="w-full h-[60px] md:h-[72px] bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-10 relative shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+          {/* Logo Area */}
+          <div className="flex items-center shrink-0">
+            <button onClick={() => setCurrentTab('landing')} className="flex items-center gap-2 group cursor-pointer focus:outline-none transition-transform active:scale-95">
+              <img src={bizraLogo} alt="BIZRA Logo" className="h-[30px] md:h-[35px] w-auto object-contain mix-blend-multiply" />
             </button>
           </div>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#18292E] border border-[#3B5C65]">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={(e) => handleNavigation(e, item)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${isActive(item)
-                  ? 'bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/40'
-                  : 'text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D]'
-                  }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
+          {/* Navigation Links */}
+          <div ref={navContainerRef} className="hidden xl:flex items-center gap-2 font-bold text-[13px] text-gray-900 absolute left-1/2 -translate-x-1/2 p-1 rounded-full bg-transparent">
+            {/* Sliding Pill */}
+            <div 
+              className="absolute inset-y-1 bg-black rounded-full transition-all duration-300 ease-out z-0 shadow-md"
+              style={{ left: pillStyle.left, width: pillStyle.width, opacity: pillStyle.opacity }}
+            />
+            {navItems.map((item) => {
+              const active = isActive(item);
+              return (
+                <button 
+                  key={item.id}
+                  data-active={active}
+                  onClick={(e) => handleNavigation(e, item)} 
+                  className={`relative z-10 px-4 py-2 rounded-full transition-colors duration-300 ${active ? 'text-white' : 'text-gray-600 hover:text-black hover:bg-gray-50'}`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
 
           {/* Right Action Controls */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Switcher */}
-            <button
-              ref={settingsTriggerRef}
-              onClick={openSettings}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#18292E] border border-[#3B5C65] text-xs font-semibold text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] transition-colors cursor-pointer"
-              title="Settings & Accessibility"
-            >
-              <Globe2 size={14} className="text-[#2EA8A4]" />
-              <span>{language}</span>
-            </button>
-
-            {/* Login */}
-            <button
-              ref={loginTriggerRef}
-              onClick={openLogin}
-              className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#18292E] border border-[#3B5C65] text-xs font-semibold text-[#EAF2C9] hover:text-white hover:bg-[#22373D] transition-colors cursor-pointer"
-            >
-              <UserRound size={14} />
-              <span>Login</span>
-            </button>
-
-            {/* Primary Launch AI CTA */}
-            <button
-              onClick={() => setCurrentTab('manual')}
-              className="px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-1.5 cursor-pointer shadow-md bg-[#2EA8A4] text-[#18292E] hover:bg-[#258B87] transition-all"
-            >
-              <Sparkles size={14} />
-              <span>Launch BIZRA</span>
-            </button>
-
-            {/* Mobile Menu Button */}
-            <button
-              ref={mobileMenuTriggerRef}
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center bg-[#18292E] border border-[#3B5C65] text-[#9ED4AC] hover:text-[#EAF2C9] transition-colors cursor-pointer"
-              aria-label="Toggle Menu"
-            >
-              {showMobileMenu ? <X size={18} /> : <Menu size={18} />}
-            </button>
+          <div className="hidden lg:flex items-center gap-6 font-bold text-[13px] shrink-0 text-gray-900">
+             <button onClick={openSettings} className="flex items-center gap-1.5 hover:text-black transition-colors cursor-pointer">
+                <Globe2 size={16} />
+                <span>{language}</span>
+             </button>
+             <button onClick={openLogin} className="hover:text-black transition-colors cursor-pointer">
+                Log in
+             </button>
+             <button onClick={() => setCurrentTab('manual')} className="bg-black text-white px-5 py-2.5 rounded-full flex items-center gap-2 hover:bg-gray-800 transition-all active:scale-95 cursor-pointer shadow-sm">
+                <span>Launch BIZRA</span>
+                <ChevronRight size={14} />
+             </button>
           </div>
+          
+          {/* Mobile Menu Button */}
+          <button
+            ref={mobileMenuTriggerRef}
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            className="lg:hidden w-10 h-10 rounded-xl flex items-center justify-center bg-gray-50 border border-gray-200 text-[#0B3060] transition-transform active:scale-95 focus:outline-none cursor-pointer relative z-10"
+            aria-label="Toggle Menu"
+          >
+            {showMobileMenu ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
-      </div>
 
       {/* Mobile Menu Drawer */}
       {showMobileMenu && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-[#111D21]/80 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-sm h-full bg-[#18292E] border-l border-[#3B5C65] shadow-2xl p-6 flex flex-col justify-between overflow-y-auto" ref={layerRef}>
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-sm h-full bg-white shadow-2xl p-6 flex flex-col justify-between overflow-y-auto" ref={layerRef}>
             <div className="space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-[#3B5C65]">
+              <div className="flex items-center justify-between pb-4 border-b border-gray-100">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#2EA8A4]/20 border border-[#2EA8A4]/30 flex items-center justify-center font-bold text-[#2EA8A4] text-xs">
-                    B
-                  </div>
+                  <img src={bizraLogo} alt="BIZRA Logo" className="h-8 w-auto object-contain mix-blend-multiply" />
                   <div>
-                    <span className="font-bold text-sm text-[#EAF2C9] block">BIZRA Menu</span>
-                    <span className="text-[10px] text-[#9ED4AC] uppercase tracking-wider block">Navigation &amp; Settings</span>
+                    <span className="font-bold text-sm text-[#0B3060] block">BIZRA Menu</span>
+                    <span className="text-[10px] text-gray-500 uppercase tracking-wider block">Navigation &amp; Settings</span>
                   </div>
                 </div>
                 <button
                   onClick={closeMobileMenu}
-                  className="w-8 h-8 rounded-lg bg-[#22373D] flex items-center justify-center text-[#9ED4AC] hover:text-[#EAF2C9] transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 hover:text-black transition-colors cursor-pointer"
                 >
                   <X size={16} />
                 </button>
               </div>
 
               {/* Mobile Nav Links */}
-              <div className="space-y-2 md:hidden">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#9ED4AC] block">Navigation</span>
+              <div className="space-y-2 lg:hidden">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 block">Navigation</span>
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={(e) => handleMobileNavigation(e, item)}
                     className={`w-full flex items-center justify-between p-3 rounded-xl text-xs font-semibold text-left transition-all cursor-pointer ${isActive(item)
-                      ? 'bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/40'
-                      : 'bg-[#22373D]/50 text-[#9ED4AC] hover:bg-[#22373D] border border-[#3B5C65]'
+                      ? 'bg-green-50 text-[#1A7B44]'
+                      : 'bg-white text-gray-600 border border-gray-100 hover:bg-gray-50'
                       }`}
                   >
                     <span>{item.label}</span>
@@ -355,15 +422,15 @@ export default function Header({
 
               {/* Languages */}
               <div className="space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#9ED4AC] block">Language / भाषा</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 block">Language / भाषा</span>
                 <div className="grid grid-cols-2 gap-2">
                   {languages.map((lang) => (
                     <button
                       key={lang}
                       onClick={() => handleLanguageChange(lang)}
                       className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer text-left flex items-center justify-between ${language === lang
-                        ? 'bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/40'
-                        : 'bg-[#22373D]/50 text-[#9ED4AC] border border-[#3B5C65] hover:text-[#EAF2C9]'
+                        ? 'bg-green-50 text-[#1A7B44]'
+                        : 'bg-white text-gray-600 border border-gray-100 hover:bg-gray-50'
                         }`}
                     >
                       <span>{lang}</span>
@@ -373,53 +440,19 @@ export default function Header({
                 </div>
               </div>
 
-              {/* Accessibility Settings */}
-              <div className="space-y-3">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#9ED4AC] block">Accessibility</span>
-
-                <div className="p-3.5 rounded-xl bg-[#22373D]/50 border border-[#3B5C65] flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#EAF2C9]">Font Scale</span>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => setFontSize((current) => Math.max(0.8, Number((current - 0.1).toFixed(1))))}
-                      className="w-7 h-7 rounded-lg bg-[#3B5C65] text-xs font-bold flex items-center justify-center text-[#EAF2C9] hover:bg-[#2EA8A4] hover:text-[#18292E] cursor-pointer"
-                    >
-                      A-
-                    </button>
-                    <button
-                      onClick={() => setFontSize(1)}
-                      className="w-7 h-7 rounded-lg bg-[#3B5C65] text-xs font-bold flex items-center justify-center text-[#EAF2C9] hover:bg-[#2EA8A4] hover:text-[#18292E] cursor-pointer"
-                    >
-                      A
-                    </button>
-                    <button
-                      onClick={() => setFontSize((current) => Math.min(1.2, Number((current + 0.1).toFixed(1))))}
-                      className="w-7 h-7 rounded-lg bg-[#3B5C65] text-xs font-bold flex items-center justify-center text-[#EAF2C9] hover:bg-[#2EA8A4] hover:text-[#18292E] cursor-pointer"
-                    >
-                      A+
-                    </button>
-                  </div>
-                </div>
-              </div>
-
               <div className="pt-2">
                 <button
                   onClick={openLogin}
-                  className="w-full py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer bg-[#22373D] text-[#EAF2C9] border border-[#3B5C65] hover:bg-[#2A444C]"
+                  className="w-full py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer bg-[#0B3060] text-white shadow-md hover:bg-[#072044]"
                 >
                   <UserRound size={15} />
                   <span>Citizen Portal Login</span>
                 </button>
               </div>
             </div>
-
-            <div className="pt-6 border-t border-[#3B5C65] text-center text-[10px] text-[#9ED4AC]/70">
-              Digital India Open Government Platform
-            </div>
           </div>
         </div>
       )}
-
       </header>
 
       {/* Settings Modal (Language Selection) */}

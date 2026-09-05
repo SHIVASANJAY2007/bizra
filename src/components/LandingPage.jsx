@@ -18,7 +18,7 @@ import {
   ScanSearch,
   ShieldCheck,
 } from 'lucide-react';
-import heroBg from '../assets/824784.jpg';
+import heroBg from '../assets/skyy.jpg';
 import valleyBottom from '../assets/valley6.bf02ee47.avif';
 import ScrollVelocity from './ScrollVelocity';
 
@@ -571,7 +571,7 @@ function AudienceAdvisory() {
   };
 
   return (
-    <section className="BIZRA-section" aria-labelledby="audience-title">
+    <section className="BIZRA-section" id="who-its-for" aria-labelledby="audience-title">
       <div className="BIZRA-shell">
         <div className="BIZRA-section-head">
           <div>
@@ -648,7 +648,7 @@ function AudienceAdvisory() {
 
 function PublicRecordDocket() {
   return (
-    <section className="BIZRA-section BIZRA-docket-section" aria-labelledby="record-title">
+    <section className="BIZRA-section BIZRA-docket-section" id="public-record" aria-labelledby="record-title">
       <div className="BIZRA-shell BIZRA-docket-layout">
         <div className="BIZRA-docket-intro">
           <div className="BIZRA-section-index">05 / PUBLIC RECORD</div>
@@ -747,10 +747,24 @@ export default function LandingPage() {
       ease: 'none',
     });
 
+    // Global snap trigger for scroll lock system
+    const snapTrigger = ScrollTrigger.create({
+      trigger: document.documentElement,
+      start: 'top top',
+      end: 'bottom bottom',
+      snap: {
+        snapTo: '.hero-pin-wrap, #why-BIZRA, #how-it-works, #who-its-for, #public-record, .BIZRA-closing',
+        duration: { min: 0.2, max: 0.8 },
+        delay: 0.1,
+        ease: 'power2.inOut',
+      }
+    });
+
     return () => {
       const st = ScrollTrigger.getById('valley-pull-trigger');
       if (st) st.kill();
       tl.kill();
+      if (snapTrigger) snapTrigger.kill();
       gsap.set(valley, { clearProps: 'all' });
     };
   }, []);
