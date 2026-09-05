@@ -495,7 +495,7 @@ Please structure the response with clear headings, bullet points, and key metric
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#111D21] text-[#EAF2C9] overflow-hidden font-sans">
+    <div className="flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden font-sans">
       {/* Top Navigation Bar */}
       <header className="px-4 lg:px-10 h-[60px] md:h-[72px] border-b border-gray-200 bg-white/95 backdrop-blur-md flex items-center justify-between shrink-0 shadow-[0_2px_10px_rgba(0,0,0,0.02)] z-10 relative">
         <div className="flex items-center gap-3">
@@ -569,7 +569,7 @@ Please structure the response with clear headings, bullet points, and key metric
       <main className="grid grid-cols-1 lg:grid-cols-12 flex-grow overflow-hidden">
         {/* Left Workspace (8 Cols) - Manual Steps Questionnaire or Report View */}
         <div
-          className="lg:col-span-8 flex flex-col p-4 sm:p-6 md:p-8 overflow-y-auto bg-[#111D21]"
+          className="lg:col-span-8 flex flex-col p-4 sm:p-6 md:p-8 overflow-y-auto bg-gray-50"
           data-lenis-prevent
         >
           {reportState === 'loading' && (
@@ -577,7 +577,7 @@ Please structure the response with clear headings, bullet points, and key metric
               {/* Ambient Pulse Glowing Orb */}
               <div className="relative">
                 <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-[#2EA8A4] via-[#9ED4AC] to-[#2EA8A4] animate-pulse blur-xl opacity-40 absolute -inset-2" />
-                <div className="w-24 h-24 rounded-3xl bg-[#18292E] border-2 border-[#2EA8A4] flex items-center justify-center shadow-2xl relative z-10">
+                <div className="w-24 h-24 rounded-3xl bg-white border-2 border-[#2EA8A4] flex items-center justify-center shadow-2xl relative z-10">
                   <Sparkles size={40} className="text-[#2EA8A4] animate-bounce" />
                 </div>
               </div>
@@ -587,35 +587,35 @@ Please structure the response with clear headings, bullet points, and key metric
                 <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#2EA8A4] px-3 py-1 rounded-full bg-[#2EA8A4]/15 border border-[#2EA8A4]/30">
                   BIZRA AI Intelligence Engine
                 </span>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-[#EAF2C9] tracking-tight min-h-[3rem] flex items-center justify-center transition-all duration-300">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight min-h-[3rem] flex items-center justify-center transition-all duration-300">
                   {claudeLoadingPhrases[loadingPhraseIndex]}
                 </h2>
-                <p className="text-xs text-[#9ED4AC] font-medium max-w-md mx-auto">
+                <p className="text-xs text-gray-500 font-medium max-w-md mx-auto">
                   Processing parameters for <span className="text-[#2EA8A4] font-bold">{selections.business || 'your venture'}</span> in <span className="text-[#2EA8A4] font-bold">{selections.location}</span>
                 </p>
               </div>
 
               {/* Shimmer Progress Line */}
-              <div className="w-full bg-[#18292E] border border-[#3B5C65] h-2 rounded-full overflow-hidden relative shadow-inner">
+              <div className="w-full bg-white border border-gray-200 h-2 rounded-full overflow-hidden relative shadow-inner">
                 <div className="bg-gradient-to-r from-[#2EA8A4] via-[#9ED4AC] to-[#2EA8A4] h-full w-3/4 animate-pulse rounded-full" />
               </div>
 
               {/* Claude-style Milestone Checkpoints */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left w-full pt-4 border-t border-[#3B5C65]/50">
-                <div className="flex items-center gap-2 text-xs text-[#9ED4AC]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left w-full pt-4 border-t border-gray-200/50">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
                   <CheckCircle2 size={15} className="text-[#2EA8A4] shrink-0" />
                   <span>Aggregating OGD market metrics</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-[#9ED4AC]">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
                   <CheckCircle2 size={15} className="text-[#2EA8A4] shrink-0" />
                   <span>Cross-referencing Mudra & PMEGP</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-[#EAF2C9] font-semibold animate-pulse">
+                <div className="flex items-center gap-2 text-xs text-gray-900 font-semibold animate-pulse">
                   <Loader2 size={15} className="text-[#2EA8A4] animate-spin shrink-0" />
                   <span>Synthesizing feasibility blueprint</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-[#9ED4AC]/50">
-                  <div className="w-3.5 h-3.5 rounded-full border border-[#3B5C65] shrink-0" />
+                <div className="flex items-center gap-2 text-xs text-gray-500/50">
+                  <div className="w-3.5 h-3.5 rounded-full border border-gray-200 shrink-0" />
                   <span>Generating PDF export schema</span>
                 </div>
               </div>
@@ -625,15 +625,15 @@ Please structure the response with clear headings, bullet points, and key metric
           {reportState === 'success' && (
             <div className="space-y-6 max-w-4xl mx-auto w-full">
               {/* Report Header Bar */}
-              <div className="p-5 rounded-2xl bg-[#18292E] border border-[#2EA8A4]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+              <div className="p-5 rounded-2xl bg-white border border-[#2EA8A4]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="px-2.5 py-0.5 rounded-full bg-[#2EA8A4]/20 border border-[#2EA8A4]/40 text-[#2EA8A4] text-[10px] font-mono font-bold uppercase">
                       Official Blueprint
                     </span>
-                    <span className="text-xs text-[#9ED4AC] font-mono">{selections.location}</span>
+                    <span className="text-xs text-gray-500 font-mono">{selections.location}</span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-[#EAF2C9] tracking-tight">
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">
                     Feasibility Analysis: {selections.business || 'Custom Business Venture'}
                   </h2>
                 </div>
@@ -641,7 +641,7 @@ Please structure the response with clear headings, bullet points, and key metric
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   <button
                     onClick={handleDownloadPDF}
-                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#2EA8A4] text-[#18292E] font-black text-xs uppercase tracking-wider hover:bg-[#258B87] shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#2EA8A4] text-white font-black text-xs uppercase tracking-wider hover:bg-[#258B87] shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Download size={15} />
                     <span>Download PDF</span>
@@ -649,7 +649,7 @@ Please structure the response with clear headings, bullet points, and key metric
 
                   <button
                     onClick={() => setReportState('idle')}
-                    className="px-3 py-2.5 rounded-xl bg-[#111D21] border border-[#3B5C65] text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D] text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-100 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                     title="Modify Parameters"
                   >
                     <RefreshCw size={14} />
@@ -659,41 +659,41 @@ Please structure the response with clear headings, bullet points, and key metric
               </div>
 
               {/* Form Parameters Highlights Card */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 p-3.5 rounded-xl bg-[#18292E]/60 border border-[#3B5C65]/60 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 p-3.5 rounded-xl bg-white/60 border border-gray-200/60 text-xs">
                 <div>
-                  <span className="text-[9px] uppercase font-mono text-[#9ED4AC]/70 block">Location</span>
-                  <strong className="text-[#EAF2C9] truncate block mt-0.5">{selections.location}</strong>
+                  <span className="text-[9px] uppercase font-mono text-gray-500/70 block">Location</span>
+                  <strong className="text-gray-900 truncate block mt-0.5">{selections.location}</strong>
                 </div>
                 <div>
-                  <span className="text-[9px] uppercase font-mono text-[#9ED4AC]/70 block">Language</span>
-                  <strong className="text-[#EAF2C9] truncate block mt-0.5">{selections.language}</strong>
+                  <span className="text-[9px] uppercase font-mono text-gray-500/70 block">Language</span>
+                  <strong className="text-gray-900 truncate block mt-0.5">{selections.language}</strong>
                 </div>
                 <div>
-                  <span className="text-[9px] uppercase font-mono text-[#9ED4AC]/70 block">Sector</span>
-                  <strong className="text-[#EAF2C9] truncate block mt-0.5">{selections.business || 'N/A'}</strong>
+                  <span className="text-[9px] uppercase font-mono text-gray-500/70 block">Sector</span>
+                  <strong className="text-gray-900 truncate block mt-0.5">{selections.business || 'N/A'}</strong>
                 </div>
                 <div>
-                  <span className="text-[9px] uppercase font-mono text-[#9ED4AC]/70 block">Scale</span>
-                  <strong className="text-[#EAF2C9] truncate block mt-0.5">{selections.scale || 'N/A'}</strong>
+                  <span className="text-[9px] uppercase font-mono text-gray-500/70 block">Scale</span>
+                  <strong className="text-gray-900 truncate block mt-0.5">{selections.scale || 'N/A'}</strong>
                 </div>
                 <div>
-                  <span className="text-[9px] uppercase font-mono text-[#9ED4AC]/70 block">Investment</span>
-                  <strong className="text-[#EAF2C9] truncate block mt-0.5">{selections.investment || 'N/A'}</strong>
+                  <span className="text-[9px] uppercase font-mono text-gray-500/70 block">Investment</span>
+                  <strong className="text-gray-900 truncate block mt-0.5">{selections.investment || 'N/A'}</strong>
                 </div>
                 <div>
-                  <span className="text-[9px] uppercase font-mono text-[#9ED4AC]/70 block">Experience</span>
-                  <strong className="text-[#EAF2C9] truncate block mt-0.5">{selections.experience || 'N/A'}</strong>
+                  <span className="text-[9px] uppercase font-mono text-gray-500/70 block">Experience</span>
+                  <strong className="text-gray-900 truncate block mt-0.5">{selections.experience || 'N/A'}</strong>
                 </div>
               </div>
 
               {/* Report Output Content Rendered via ResponseRenderer */}
-              <div className="p-6 rounded-2xl bg-[#18292E] border border-[#3B5C65] shadow-xl space-y-4">
+              <div className="p-6 rounded-2xl bg-white border border-gray-200 shadow-xl space-y-4">
                 <ResponseRenderer text={reportText} />
               </div>
 
               {/* Bottom Footer Actions */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-[#3B5C65]">
-                <div className="flex items-center gap-2 text-xs text-[#9ED4AC]">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-gray-200">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
                   <CheckCircle2 size={16} className="text-[#2EA8A4]" />
                   <span>Verified by n8n BIZRA AI Agent</span>
                 </div>
@@ -709,7 +709,7 @@ Please structure the response with clear headings, bullet points, and key metric
 
                   <button
                     onClick={() => setCurrentTab('chatbot')}
-                    className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-[#18292E] border border-[#3B5C65] text-[#9ED4AC] hover:text-[#EAF2C9] font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-500 hover:text-gray-900 font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <MessageSquare size={14} />
                     <span>Ask Questions in Chatbot</span>
@@ -723,21 +723,21 @@ Please structure the response with clear headings, bullet points, and key metric
             <div className="p-6 rounded-2xl border border-red-500/40 bg-red-500/10 text-center space-y-4 max-w-md mx-auto my-auto">
               <AlertCircle size={36} className="text-red-400 mx-auto" />
               <div>
-                <h3 className="font-extrabold text-base text-[#EAF2C9]">Report Generation Error</h3>
+                <h3 className="font-extrabold text-base text-gray-900">Report Generation Error</h3>
                 <p className="text-xs text-red-300 mt-1">{reportError}</p>
               </div>
 
               <div className="flex items-center gap-2 pt-2">
                 <button
                   onClick={handleGenerateReport}
-                  className="flex-1 py-2.5 rounded-xl bg-[#2EA8A4] text-[#18292E] font-bold text-xs uppercase tracking-wider hover:bg-[#258B87] transition-all cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-[#2EA8A4] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#258B87] transition-all cursor-pointer"
                 >
                   Retry Generation
                 </button>
 
                 <button
                   onClick={() => setCurrentTab('chatbot')}
-                  className="flex-1 py-2.5 rounded-xl bg-[#18292E] border border-[#3B5C65] text-[#9ED4AC] hover:text-[#EAF2C9] font-bold text-xs transition-all cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-500 hover:text-gray-900 font-bold text-xs transition-all cursor-pointer"
                 >
                   Open Chatbot
                 </button>
@@ -748,7 +748,7 @@ Please structure the response with clear headings, bullet points, and key metric
           {reportState === 'idle' && (
             <div>
               {/* Step Progress Stepper Bar */}
-              <div className="w-full mb-8 pb-6 border-b border-[#3B5C65]/60 overflow-x-auto scrollbar-none">
+              <div className="w-full mb-8 pb-6 border-b border-gray-200/60 overflow-x-auto scrollbar-none">
                 <div className="flex items-center justify-between min-w-[600px] px-2">
                   {steps.map((step, idx) => {
                     const isCompleted = step.id < currentStep;
@@ -763,10 +763,10 @@ Please structure the response with clear headings, bullet points, and key metric
                           <div
                             className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
                               isCompleted
-                                ? 'bg-[#2EA8A4] text-[#18292E] shadow-md'
+                                ? 'bg-[#2EA8A4] text-white shadow-md'
                                 : isActive
                                 ? 'bg-[#2EA8A4]/20 border-2 border-[#2EA8A4] text-[#2EA8A4] shadow-lg ring-4 ring-[#2EA8A4]/10'
-                                : 'bg-[#18292E] border border-[#3B5C65] text-[#9ED4AC]/60'
+                                : 'bg-white border border-gray-200 text-gray-500/60'
                             }`}
                           >
                             {isCompleted ? <Check size={14} className="stroke-[3]" /> : step.id}
@@ -776,8 +776,8 @@ Please structure the response with clear headings, bullet points, and key metric
                               isActive
                                 ? 'text-[#2EA8A4] font-bold'
                                 : isCompleted
-                                ? 'text-[#EAF2C9]'
-                                : 'text-[#9ED4AC]/60'
+                                ? 'text-gray-900'
+                                : 'text-gray-500/60'
                             }`}
                           >
                             {step.label}
@@ -787,7 +787,7 @@ Please structure the response with clear headings, bullet points, and key metric
                         {idx < steps.length - 1 && (
                           <div
                             className={`flex-grow h-[2px] mx-3 transition-colors ${
-                              step.id < currentStep ? 'bg-[#2EA8A4]' : 'bg-[#3B5C65]/40'
+                              step.id < currentStep ? 'bg-[#2EA8A4]' : 'bg-gray-200'
                             }`}
                           />
                         )}
@@ -804,7 +804,7 @@ Please structure the response with clear headings, bullet points, and key metric
                   <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#2EA8A4]">
                     Step {currentStep} of {steps.length}
                   </span>
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#EAF2C9] tracking-tight">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">
                     {currentStep === 1 && 'Select Your Preferred Language'}
                     {currentStep === 2 && 'Where do you plan to start your business?'}
                     {currentStep === 3 && 'What is the scale of your business?'}
@@ -813,7 +813,7 @@ Please structure the response with clear headings, bullet points, and key metric
                     {currentStep === 6 && 'What is your prior experience level in this domain?'}
                     {currentStep === 7 && 'Review & Generate Feasibility Report'}
                   </h2>
-                  <p className="text-xs sm:text-sm text-[#9ED4AC] font-medium">
+                  <p className="text-xs sm:text-sm text-gray-500 font-medium">
                     {currentStep === 2
                       ? 'This helps us analyse the local market and opportunities for you.'
                       : 'Provide details to customize verified OGD datasets and capital guidance.'}
@@ -836,14 +836,14 @@ Please structure the response with clear headings, bullet points, and key metric
                               key={lang}
                               className="col-span-2 sm:col-span-3 md:col-span-4 p-3.5 rounded-xl border border-[#2EA8A4] bg-[#2EA8A4]/15 shadow-lg ring-2 ring-[#2EA8A4]/20 flex flex-col sm:flex-row items-center gap-3"
                             >
-                              <span className="text-xs font-bold text-[#EAF2C9] shrink-0">Type Custom Language:</span>
+                              <span className="text-xs font-bold text-gray-900 shrink-0">Type Custom Language:</span>
                               <input
                                 type="text"
                                 autoFocus
                                 placeholder="e.g. Konkani, Mizo, Santali, Tulu..."
                                 value={customInputs.language}
                                 onChange={(e) => handleCustomInputChange('language', e.target.value)}
-                                className="w-full px-3.5 py-1.5 rounded-lg bg-[#111D21] border border-[#3B5C65] text-xs text-[#EAF2C9] focus:outline-none focus:border-[#2EA8A4]"
+                                className="w-full px-3.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             </div>
                           );
@@ -864,8 +864,8 @@ Please structure the response with clear headings, bullet points, and key metric
                             }}
                             className={`p-3.5 rounded-xl border text-center font-bold text-xs sm:text-sm transition-all cursor-pointer ${
                               isSelected
-                                ? 'border-[#2EA8A4] bg-[#2EA8A4]/15 text-[#EAF2C9] shadow-lg ring-2 ring-[#2EA8A4]/20'
-                                : 'border-[#3B5C65] bg-[#18292E] text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D]'
+                                ? 'border-[#2EA8A4] bg-[#2EA8A4]/15 text-gray-900 shadow-lg ring-2 ring-[#2EA8A4]/20'
+                                : 'border-gray-200 bg-white text-gray-500 hover:text-gray-900 hover:bg-gray-100'
                             }`}
                           >
                             {lang}
@@ -889,23 +889,23 @@ Please structure the response with clear headings, bullet points, and key metric
                         className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between gap-4 relative overflow-hidden ${
                           locationMode === 'auto'
                             ? 'border-[#2EA8A4] bg-[#2EA8A4]/10 ring-2 ring-[#2EA8A4]/20 shadow-xl'
-                            : 'border-[#3B5C65] bg-[#18292E] hover:border-[#2EA8A4]/50 hover:bg-[#22373D]'
+                            : 'border-gray-200 bg-white hover:border-[#2EA8A4]/50 hover:bg-gray-100'
                         }`}
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
                             <div
                               className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                                locationMode === 'auto' ? 'border-[#2EA8A4] bg-[#2EA8A4]' : 'border-[#3B5C65]'
+                                locationMode === 'auto' ? 'border-[#2EA8A4] bg-[#2EA8A4]' : 'border-gray-200'
                               }`}
                             >
-                              {locationMode === 'auto' && <span className="w-2 h-2 rounded-full bg-[#18292E]" />}
+                              {locationMode === 'auto' && <span className="w-2 h-2 rounded-full bg-white" />}
                             </div>
                             <div>
-                              <h3 className="font-extrabold text-sm sm:text-base text-[#EAF2C9]">
+                              <h3 className="font-extrabold text-sm sm:text-base text-gray-900">
                                 1. Use My Current Location
                               </h3>
-                              <p className="text-xs text-[#9ED4AC] mt-0.5">Detect my current location automatically</p>
+                              <p className="text-xs text-gray-500 mt-0.5">Detect my current location automatically</p>
                             </div>
                           </div>
                         </div>
@@ -914,7 +914,7 @@ Please structure the response with clear headings, bullet points, and key metric
                           <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/30 font-mono">
                             Recommended
                           </span>
-                          <div className="w-12 h-12 rounded-xl bg-[#111D21] border border-[#3B5C65] flex items-center justify-center text-[#2EA8A4]">
+                          <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-[#2EA8A4]">
                             <MapPin size={22} />
                           </div>
                         </div>
@@ -929,25 +929,25 @@ Please structure the response with clear headings, bullet points, and key metric
                         className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between gap-4 ${
                           locationMode === 'map'
                             ? 'border-[#2EA8A4] bg-[#2EA8A4]/10 ring-2 ring-[#2EA8A4]/20 shadow-xl'
-                            : 'border-[#3B5C65] bg-[#18292E] hover:border-[#2EA8A4]/50 hover:bg-[#22373D]'
+                            : 'border-gray-200 bg-white hover:border-[#2EA8A4]/50 hover:bg-gray-100'
                         }`}
                       >
                         <div className="flex items-start gap-3">
                           <div
                             className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
-                              locationMode === 'map' ? 'border-[#2EA8A4] bg-[#2EA8A4]' : 'border-[#3B5C65]'
+                              locationMode === 'map' ? 'border-[#2EA8A4] bg-[#2EA8A4]' : 'border-gray-200'
                             }`}
                           >
-                            {locationMode === 'map' && <span className="w-2 h-2 rounded-full bg-[#18292E]" />}
+                            {locationMode === 'map' && <span className="w-2 h-2 rounded-full bg-white" />}
                           </div>
                           <div>
-                            <h3 className="font-extrabold text-sm sm:text-base text-[#EAF2C9]">2. Select on Map</h3>
-                            <p className="text-xs text-[#9ED4AC] mt-0.5">Pick your business location on interactive map</p>
+                            <h3 className="font-extrabold text-sm sm:text-base text-gray-900">2. Select on Map</h3>
+                            <p className="text-xs text-gray-500 mt-0.5">Pick your business location on interactive map</p>
                           </div>
                         </div>
 
                         <div className="flex items-center justify-end pt-2">
-                          <div className="w-12 h-12 rounded-xl bg-[#111D21] border border-[#3B5C65] flex items-center justify-center text-[#9ED4AC]">
+                          <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500">
                             <Map size={22} />
                           </div>
                         </div>
@@ -959,20 +959,20 @@ Please structure the response with clear headings, bullet points, and key metric
                         className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between gap-4 ${
                           locationMode === 'pin'
                             ? 'border-[#2EA8A4] bg-[#2EA8A4]/10 ring-2 ring-[#2EA8A4]/20 shadow-xl'
-                            : 'border-[#3B5C65] bg-[#18292E] hover:border-[#2EA8A4]/50 hover:bg-[#22373D]'
+                            : 'border-gray-200 bg-white hover:border-[#2EA8A4]/50 hover:bg-gray-100'
                         }`}
                       >
                         <div className="flex items-start gap-3">
                           <div
                             className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
-                              locationMode === 'pin' ? 'border-[#2EA8A4] bg-[#2EA8A4]' : 'border-[#3B5C65]'
+                              locationMode === 'pin' ? 'border-[#2EA8A4] bg-[#2EA8A4]' : 'border-gray-200'
                             }`}
                           >
-                            {locationMode === 'pin' && <span className="w-2 h-2 rounded-full bg-[#18292E]" />}
+                            {locationMode === 'pin' && <span className="w-2 h-2 rounded-full bg-white" />}
                           </div>
                           <div className="w-full">
-                            <h3 className="font-extrabold text-sm sm:text-base text-[#EAF2C9]">3. Enter PIN Code</h3>
-                            <p className="text-xs text-[#9ED4AC] mt-0.5">Enter 6-digit PIN code to find your area</p>
+                            <h3 className="font-extrabold text-sm sm:text-base text-gray-900">3. Enter PIN Code</h3>
+                            <p className="text-xs text-gray-500 mt-0.5">Enter 6-digit PIN code to find your area</p>
 
                             {locationMode === 'pin' && (
                               <input
@@ -987,7 +987,7 @@ Please structure the response with clear headings, bullet points, and key metric
                                     updateSelection('location', `PIN: ${e.target.value}`);
                                   }
                                 }}
-                                className="mt-3 w-full px-3 py-1.5 rounded-lg bg-[#111D21] border border-[#3B5C65] text-xs text-[#EAF2C9] focus:outline-none focus:border-[#2EA8A4]"
+                                className="mt-3 w-full px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             )}
                           </div>
@@ -1000,22 +1000,22 @@ Please structure the response with clear headings, bullet points, and key metric
                         className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between gap-4 ${
                           locationMode === 'manual'
                             ? 'border-[#2EA8A4] bg-[#2EA8A4]/10 ring-2 ring-[#2EA8A4]/20 shadow-xl'
-                            : 'border-[#3B5C65] bg-[#18292E] hover:border-[#2EA8A4]/50 hover:bg-[#22373D]'
+                            : 'border-gray-200 bg-white hover:border-[#2EA8A4]/50 hover:bg-gray-100'
                         }`}
                       >
                         <div className="flex items-start gap-3">
                           <div
                             className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
-                              locationMode === 'manual' ? 'border-[#2EA8A4] bg-[#2EA8A4]' : 'border-[#3B5C65]'
+                              locationMode === 'manual' ? 'border-[#2EA8A4] bg-[#2EA8A4]' : 'border-gray-200'
                             }`}
                           >
-                            {locationMode === 'manual' && <span className="w-2 h-2 rounded-full bg-[#18292E]" />}
+                            {locationMode === 'manual' && <span className="w-2 h-2 rounded-full bg-white" />}
                           </div>
                           <div className="w-full">
-                            <h3 className="font-extrabold text-sm sm:text-base text-[#EAF2C9]">
+                            <h3 className="font-extrabold text-sm sm:text-base text-gray-900">
                               4. Enter Village / Block / District
                             </h3>
-                            <p className="text-xs text-[#9ED4AC] mt-0.5">Type your area details manually</p>
+                            <p className="text-xs text-gray-500 mt-0.5">Type your area details manually</p>
 
                             {locationMode === 'manual' && (
                               <input
@@ -1027,7 +1027,7 @@ Please structure the response with clear headings, bullet points, and key metric
                                   setManualLocationInput(e.target.value);
                                   updateSelection('location', e.target.value);
                                 }}
-                                className="mt-3 w-full px-3 py-1.5 rounded-lg bg-[#111D21] border border-[#3B5C65] text-xs text-[#EAF2C9] focus:outline-none focus:border-[#2EA8A4]"
+                                className="mt-3 w-full px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             )}
                           </div>
@@ -1036,10 +1036,10 @@ Please structure the response with clear headings, bullet points, and key metric
                     </div>
 
                     {/* Privacy Assurance Note */}
-                    <div className="p-4 rounded-xl border border-[#2EA8A4]/30 bg-[#2EA8A4]/10 flex items-center gap-3 text-xs text-[#9ED4AC]">
+                    <div className="p-4 rounded-xl border border-[#2EA8A4]/30 bg-[#2EA8A4]/10 flex items-center gap-3 text-xs text-gray-500">
                       <Shield size={20} className="text-[#2EA8A4] shrink-0" />
                       <div>
-                        <strong className="text-[#EAF2C9] block font-semibold">We respect your privacy.</strong>
+                        <strong className="text-gray-900 block font-semibold">We respect your privacy.</strong>
                         <span>Your location data is only used for market analysis and will never be shared.</span>
                       </div>
                     </div>
@@ -1063,19 +1063,19 @@ Please structure the response with clear headings, bullet points, and key metric
                               className="col-span-1 sm:col-span-2 p-5 rounded-2xl border border-[#2EA8A4] bg-[#2EA8A4]/15 ring-2 ring-[#2EA8A4]/20 shadow-xl space-y-2"
                             >
                               <div className="flex items-center justify-between">
-                                <h3 className="font-bold text-sm text-[#EAF2C9]">Type Custom Business Scale</h3>
+                                <h3 className="font-bold text-sm text-gray-900">Type Custom Business Scale</h3>
                                 <span className="text-[10px] font-mono text-[#2EA8A4] uppercase font-bold px-2 py-0.5 rounded bg-[#2EA8A4]/20 border border-[#2EA8A4]/30">
                                   Click & Type
                                 </span>
                               </div>
-                              <p className="text-xs text-[#9ED4AC]">{opt.desc}</p>
+                              <p className="text-xs text-gray-500">{opt.desc}</p>
                               <input
                                 type="text"
                                 autoFocus
                                 placeholder="e.g. Village Cooperative with 50 local farmers..."
                                 value={customInputs.scale}
                                 onChange={(e) => handleCustomInputChange('scale', e.target.value)}
-                                className="w-full px-3.5 py-2.5 rounded-xl bg-[#111D21] border border-[#3B5C65] text-xs text-[#EAF2C9] focus:outline-none focus:border-[#2EA8A4]"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             </div>
                           );
@@ -1097,11 +1097,11 @@ Please structure the response with clear headings, bullet points, and key metric
                             className={`p-5 rounded-2xl border transition-all cursor-pointer ${
                               isSelected
                                 ? 'border-[#2EA8A4] bg-[#2EA8A4]/15 ring-2 ring-[#2EA8A4]/20 shadow-xl'
-                                : 'border-[#3B5C65] bg-[#18292E] hover:bg-[#22373D]'
+                                : 'border-gray-200 bg-white hover:bg-gray-100'
                             }`}
                           >
-                            <h3 className="font-bold text-sm text-[#EAF2C9]">{opt.label}</h3>
-                            <p className="text-xs text-[#9ED4AC] mt-1">{opt.desc}</p>
+                            <h3 className="font-bold text-sm text-gray-900">{opt.label}</h3>
+                            <p className="text-xs text-gray-500 mt-1">{opt.desc}</p>
                           </div>
                         );
                       })}
@@ -1126,19 +1126,19 @@ Please structure the response with clear headings, bullet points, and key metric
                               className="col-span-1 sm:col-span-2 p-4 rounded-2xl border border-[#2EA8A4] bg-[#2EA8A4]/15 ring-2 ring-[#2EA8A4]/20 shadow-xl space-y-2"
                             >
                               <div className="flex items-center justify-between">
-                                <h3 className="font-bold text-xs sm:text-sm text-[#EAF2C9]">Type Custom Business Idea / Concept</h3>
+                                <h3 className="font-bold text-xs sm:text-sm text-gray-900">Type Custom Business Idea / Concept</h3>
                                 <span className="text-[10px] font-mono text-[#2EA8A4] uppercase font-bold px-2 py-0.5 rounded bg-[#2EA8A4]/20 border border-[#2EA8A4]/30">
                                   Click & Type
                                 </span>
                               </div>
-                              <p className="text-xs text-[#9ED4AC]">{opt.desc}</p>
+                              <p className="text-xs text-gray-500">{opt.desc}</p>
                               <input
                                 type="text"
                                 autoFocus
                                 placeholder="e.g. Drone spray service for precision agriculture..."
                                 value={customInputs.business}
                                 onChange={(e) => handleCustomInputChange('business', e.target.value)}
-                                className="w-full px-3.5 py-2.5 rounded-xl bg-[#111D21] border border-[#3B5C65] text-xs text-[#EAF2C9] focus:outline-none focus:border-[#2EA8A4]"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             </div>
                           );
@@ -1160,12 +1160,12 @@ Please structure the response with clear headings, bullet points, and key metric
                             className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start justify-between gap-2 ${
                               isSelected
                                 ? 'border-[#2EA8A4] bg-[#2EA8A4]/15 ring-2 ring-[#2EA8A4]/20 shadow-xl'
-                                : 'border-[#3B5C65] bg-[#18292E] hover:bg-[#22373D]'
+                                : 'border-gray-200 bg-white hover:bg-gray-100'
                             }`}
                           >
                             <div>
-                              <h3 className="font-bold text-xs sm:text-sm text-[#EAF2C9]">{opt.label}</h3>
-                              <p className="text-[11px] text-[#9ED4AC] mt-1 leading-snug">{opt.desc}</p>
+                              <h3 className="font-bold text-xs sm:text-sm text-gray-900">{opt.label}</h3>
+                              <p className="text-[11px] text-gray-500 mt-1 leading-snug">{opt.desc}</p>
                             </div>
                             {isSelected && <Check size={18} className="text-[#2EA8A4] shrink-0 mt-0.5" />}
                           </div>
@@ -1192,19 +1192,19 @@ Please structure the response with clear headings, bullet points, and key metric
                               className="col-span-1 sm:col-span-2 md:col-span-4 p-4 rounded-2xl border border-[#2EA8A4] bg-[#2EA8A4]/15 ring-2 ring-[#2EA8A4]/20 shadow-xl space-y-2"
                             >
                               <div className="flex items-center justify-between">
-                                <h3 className="font-bold text-sm text-[#EAF2C9]">Type Custom Investment Amount</h3>
+                                <h3 className="font-bold text-sm text-gray-900">Type Custom Investment Amount</h3>
                                 <span className="text-[10px] font-mono text-[#2EA8A4] uppercase font-bold px-2 py-0.5 rounded bg-[#2EA8A4]/20 border border-[#2EA8A4]/30">
                                   Click & Type
                                 </span>
                               </div>
-                              <p className="text-xs text-[#9ED4AC]">{opt.note}</p>
+                              <p className="text-xs text-gray-500">{opt.note}</p>
                               <input
                                 type="text"
                                 autoFocus
                                 placeholder="e.g. ₹15 Lakhs bank loan + ₹5 Lakhs personal savings..."
                                 value={customInputs.investment}
                                 onChange={(e) => handleCustomInputChange('investment', e.target.value)}
-                                className="w-full px-3.5 py-2.5 rounded-xl bg-[#111D21] border border-[#3B5C65] text-xs text-[#EAF2C9] focus:outline-none focus:border-[#2EA8A4]"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             </div>
                           );
@@ -1226,10 +1226,10 @@ Please structure the response with clear headings, bullet points, and key metric
                             className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                               isSelected
                                 ? 'border-[#2EA8A4] bg-[#2EA8A4]/15 ring-2 ring-[#2EA8A4]/20 shadow-xl'
-                                : 'border-[#3B5C65] bg-[#18292E] hover:bg-[#22373D]'
+                                : 'border-gray-200 bg-white hover:bg-gray-100'
                             }`}
                           >
-                            <h3 className="font-bold text-sm text-[#EAF2C9]">{opt.label}</h3>
+                            <h3 className="font-bold text-sm text-gray-900">{opt.label}</h3>
                             <span className="text-[10px] text-[#2EA8A4] font-mono mt-2 block leading-tight">{opt.note}</span>
                           </div>
                         );
@@ -1255,19 +1255,19 @@ Please structure the response with clear headings, bullet points, and key metric
                               className="col-span-1 sm:col-span-2 p-5 rounded-2xl border border-[#2EA8A4] bg-[#2EA8A4]/15 ring-2 ring-[#2EA8A4]/20 shadow-xl space-y-2"
                             >
                               <div className="flex items-center justify-between">
-                                <h3 className="font-bold text-sm text-[#EAF2C9]">Describe Custom Professional Experience</h3>
+                                <h3 className="font-bold text-sm text-gray-900">Describe Custom Professional Experience</h3>
                                 <span className="text-[10px] font-mono text-[#2EA8A4] uppercase font-bold px-2 py-0.5 rounded bg-[#2EA8A4]/20 border border-[#2EA8A4]/30">
                                   Click & Type
                                 </span>
                               </div>
-                              <p className="text-xs text-[#9ED4AC]">{opt.desc}</p>
+                              <p className="text-xs text-gray-500">{opt.desc}</p>
                               <input
                                 type="text"
                                 autoFocus
                                 placeholder="e.g. 10 years experience in logistics & cold chain supply management..."
                                 value={customInputs.experience}
                                 onChange={(e) => handleCustomInputChange('experience', e.target.value)}
-                                className="w-full px-3.5 py-2.5 rounded-xl bg-[#111D21] border border-[#3B5C65] text-xs text-[#EAF2C9] focus:outline-none focus:border-[#2EA8A4]"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#2EA8A4]"
                               />
                             </div>
                           );
@@ -1289,11 +1289,11 @@ Please structure the response with clear headings, bullet points, and key metric
                             className={`p-5 rounded-2xl border transition-all cursor-pointer ${
                               isSelected
                                 ? 'border-[#2EA8A4] bg-[#2EA8A4]/15 ring-2 ring-[#2EA8A4]/20 shadow-xl'
-                                : 'border-[#3B5C65] bg-[#18292E] hover:bg-[#22373D]'
+                                : 'border-gray-200 bg-white hover:bg-gray-100'
                             }`}
                           >
-                            <h3 className="font-bold text-sm text-[#EAF2C9]">{opt.label}</h3>
-                            <p className="text-xs text-[#9ED4AC] mt-1">{opt.desc}</p>
+                            <h3 className="font-bold text-sm text-gray-900">{opt.label}</h3>
+                            <p className="text-xs text-gray-500 mt-1">{opt.desc}</p>
                           </div>
                         );
                       })}
@@ -1303,29 +1303,29 @@ Please structure the response with clear headings, bullet points, and key metric
 
                 {/* Step 7: Analysis & Summary */}
                 {currentStep === 7 && (
-                  <div className="p-6 rounded-2xl border border-[#2EA8A4]/40 bg-[#18292E] space-y-6">
+                  <div className="p-6 rounded-2xl border border-[#2EA8A4]/40 bg-white space-y-6">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-[#2EA8A4]/20 border border-[#2EA8A4]/30 flex items-center justify-center text-[#2EA8A4]">
                         <Sparkles size={20} />
                       </div>
                       <div>
-                        <h3 className="font-extrabold text-base text-[#EAF2C9]">Feasibility Blueprint Ready</h3>
-                        <p className="text-xs text-[#9ED4AC]">Review your configuration before generating report</p>
+                        <h3 className="font-extrabold text-base text-gray-900">Feasibility Blueprint Ready</h3>
+                        <p className="text-xs text-gray-500">Review your configuration before generating report</p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
                       {Object.entries(selections).map(([key, val]) => (
-                        <div key={key} className="p-3 rounded-xl bg-[#111D21] border border-[#3B5C65]">
-                          <span className="text-[10px] uppercase tracking-wider font-mono text-[#9ED4AC]/70 block">{key}</span>
-                          <strong className="text-xs text-[#EAF2C9] block mt-0.5 truncate">{val || 'Not selected'}</strong>
+                        <div key={key} className="p-3 rounded-xl bg-gray-50 border border-gray-200">
+                          <span className="text-[10px] uppercase tracking-wider font-mono text-gray-500/70 block">{key}</span>
+                          <strong className="text-xs text-gray-900 block mt-0.5 truncate">{val || 'Not selected'}</strong>
                         </div>
                       ))}
                     </div>
 
                     <button
                       onClick={handleGenerateReport}
-                      className="w-full py-3.5 rounded-xl bg-[#2EA8A4] text-[#18292E] font-black text-sm uppercase tracking-wider shadow-lg hover:bg-[#258B87] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-3.5 rounded-xl bg-[#2EA8A4] text-white font-black text-sm uppercase tracking-wider shadow-lg hover:bg-[#258B87] transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <Sparkles size={16} />
                       <span>Generate AI Feasibility Report</span>
@@ -1334,14 +1334,14 @@ Please structure the response with clear headings, bullet points, and key metric
                 )}
 
                 {/* Navigation Action Buttons (Back & Continue) */}
-                <div className="flex items-center justify-between pt-6 border-t border-[#3B5C65]/60">
+                <div className="flex items-center justify-between pt-6 border-t border-gray-200/60">
                   <button
                     onClick={handleBack}
                     disabled={currentStep === 1}
                     className={`px-5 py-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                       currentStep === 1
-                        ? 'border-[#3B5C65]/40 text-[#9ED4AC]/30 cursor-not-allowed'
-                        : 'border-[#3B5C65] bg-[#18292E] text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D]'
+                        ? 'border-gray-200/40 text-gray-500/30 cursor-not-allowed'
+                        : 'border-gray-200 bg-white text-gray-500 hover:text-gray-900 hover:bg-gray-100'
                     }`}
                   >
                     <ArrowLeft size={15} />
@@ -1353,8 +1353,8 @@ Please structure the response with clear headings, bullet points, and key metric
                     disabled={currentStep === 7}
                     className={`px-6 py-2.5 rounded-xl font-extrabold text-xs tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
                       currentStep === 7
-                        ? 'bg-[#22373D] text-[#9ED4AC]/40 cursor-not-allowed'
-                        : 'bg-[#2EA8A4] text-[#18292E] hover:bg-[#258B87] shadow-md'
+                        ? 'bg-gray-100 text-gray-500/40 cursor-not-allowed'
+                        : 'bg-[#2EA8A4] text-white hover:bg-[#258B87] shadow-md'
                     }`}
                   >
                     <span>Continue</span>
@@ -1366,56 +1366,56 @@ Please structure the response with clear headings, bullet points, and key metric
           )}
 
           {/* Bottom Bar: "Your Current Selection" matching image 1 */}
-          <div className="mt-8 pt-4 border-t border-[#3B5C65]/60">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#9ED4AC]/70 font-mono block mb-3">
+          <div className="mt-8 pt-4 border-t border-gray-200/60">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500/70 font-mono block mb-3">
               Your Current Selection
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-              <div className="p-2.5 rounded-xl bg-[#18292E] border border-[#3B5C65] flex items-center gap-2">
+              <div className="p-2.5 rounded-xl bg-white border border-gray-200 flex items-center gap-2">
                 <Globe size={14} className="text-[#2EA8A4] shrink-0" />
                 <div className="truncate">
-                  <span className="text-[9px] text-[#9ED4AC]/60 block leading-none">Language</span>
-                  <span className="text-xs font-bold text-[#EAF2C9] truncate block mt-0.5">{selections.language}</span>
+                  <span className="text-[9px] text-gray-500/60 block leading-none">Language</span>
+                  <span className="text-xs font-bold text-gray-900 truncate block mt-0.5">{selections.language}</span>
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-[#18292E] border border-[#3B5C65] flex items-center gap-2">
+              <div className="p-2.5 rounded-xl bg-white border border-gray-200 flex items-center gap-2">
                 <MapPin size={14} className="text-[#2EA8A4] shrink-0" />
                 <div className="truncate">
-                  <span className="text-[9px] text-[#9ED4AC]/60 block leading-none">Location</span>
-                  <span className="text-xs font-bold text-[#EAF2C9] truncate block mt-0.5">{selections.location || 'Not selected'}</span>
+                  <span className="text-[9px] text-gray-500/60 block leading-none">Location</span>
+                  <span className="text-xs font-bold text-gray-900 truncate block mt-0.5">{selections.location || 'Not selected'}</span>
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-[#18292E] border border-[#3B5C65] flex items-center gap-2">
+              <div className="p-2.5 rounded-xl bg-white border border-gray-200 flex items-center gap-2">
                 <Layers size={14} className="text-[#2EA8A4] shrink-0" />
                 <div className="truncate">
-                  <span className="text-[9px] text-[#9ED4AC]/60 block leading-none">Scale</span>
-                  <span className="text-xs font-bold text-[#EAF2C9] truncate block mt-0.5">{selections.scale || 'Not selected'}</span>
+                  <span className="text-[9px] text-gray-500/60 block leading-none">Scale</span>
+                  <span className="text-xs font-bold text-gray-900 truncate block mt-0.5">{selections.scale || 'Not selected'}</span>
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-[#18292E] border border-[#3B5C65] flex items-center gap-2">
+              <div className="p-2.5 rounded-xl bg-white border border-gray-200 flex items-center gap-2">
                 <Building2 size={14} className="text-[#2EA8A4] shrink-0" />
                 <div className="truncate">
-                  <span className="text-[9px] text-[#9ED4AC]/60 block leading-none">Business</span>
-                  <span className="text-xs font-bold text-[#EAF2C9] truncate block mt-0.5">{selections.business || 'Not selected'}</span>
+                  <span className="text-[9px] text-gray-500/60 block leading-none">Business</span>
+                  <span className="text-xs font-bold text-gray-900 truncate block mt-0.5">{selections.business || 'Not selected'}</span>
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-[#18292E] border border-[#3B5C65] flex items-center gap-2">
+              <div className="p-2.5 rounded-xl bg-white border border-gray-200 flex items-center gap-2">
                 <Coins size={14} className="text-[#2EA8A4] shrink-0" />
                 <div className="truncate">
-                  <span className="text-[9px] text-[#9ED4AC]/60 block leading-none">Investment</span>
-                  <span className="text-xs font-bold text-[#EAF2C9] truncate block mt-0.5">{selections.investment || 'Not selected'}</span>
+                  <span className="text-[9px] text-gray-500/60 block leading-none">Investment</span>
+                  <span className="text-xs font-bold text-gray-900 truncate block mt-0.5">{selections.investment || 'Not selected'}</span>
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-[#18292E] border border-[#3B5C65] flex items-center gap-2">
+              <div className="p-2.5 rounded-xl bg-white border border-gray-200 flex items-center gap-2">
                 <Briefcase size={14} className="text-[#2EA8A4] shrink-0" />
                 <div className="truncate">
-                  <span className="text-[9px] text-[#9ED4AC]/60 block leading-none">Experience</span>
-                  <span className="text-xs font-bold text-[#EAF2C9] truncate block mt-0.5">{selections.experience || 'Not selected'}</span>
+                  <span className="text-[9px] text-gray-500/60 block leading-none">Experience</span>
+                  <span className="text-xs font-bold text-gray-900 truncate block mt-0.5">{selections.experience || 'Not selected'}</span>
                 </div>
               </div>
             </div>
@@ -1423,23 +1423,23 @@ Please structure the response with clear headings, bullet points, and key metric
         </div>
 
         {/* Right Sidebar (4 Cols) - Navigation & WhatsApp Bot (Matching Image 2) */}
-        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-[#3B5C65] bg-[#111D21] text-[#EAF2C9] overflow-y-auto" data-lenis-prevent>
+        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-gray-200 bg-gray-50 text-gray-900 overflow-y-auto" data-lenis-prevent>
           <div className="space-y-6 my-auto">
             {/* AI Assistant Mode Switcher Card */}
-            <div className="p-5 rounded-2xl border border-[#3B5C65] bg-[#18292E] space-y-4">
+            <div className="p-5 rounded-2xl border border-gray-200 bg-white space-y-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#2EA8A4]/20 border border-[#2EA8A4]/30 flex items-center justify-center text-[#2EA8A4]">
                   <Bot size={20} />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm text-[#EAF2C9]">Prefer Talking to AI?</h3>
-                  <span className="text-xs text-[#9ED4AC]">Switch to BIZRA Conversational Agent</span>
+                  <h3 className="font-extrabold text-sm text-gray-900">Prefer Talking to AI?</h3>
+                  <span className="text-xs text-gray-500">Switch to BIZRA Conversational Agent</span>
                 </div>
               </div>
 
               <button
                 onClick={() => setCurrentTab('chatbot')}
-                className="w-full py-2.5 rounded-xl bg-[#2EA8A4] text-[#18292E] font-black text-xs uppercase tracking-wider shadow-md hover:bg-[#258B87] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-[#2EA8A4] text-white font-black text-xs uppercase tracking-wider shadow-md hover:bg-[#258B87] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <MessageSquare size={14} />
                 <span>Launch AI Chatbot</span>
@@ -1520,24 +1520,24 @@ Please structure the response with clear headings, bullet points, and key metric
             </div>
 
             {/* Popular Questions Accordion / List */}
-            <div className="p-5 rounded-2xl border border-[#3B5C65] bg-[#18292E] space-y-3">
-              <h4 className="font-extrabold text-xs uppercase tracking-wider text-[#9ED4AC]">Popular Questions</h4>
+            <div className="p-5 rounded-2xl border border-gray-200 bg-white space-y-3">
+              <h4 className="font-extrabold text-xs uppercase tracking-wider text-gray-500">Popular Questions</h4>
               <div className="space-y-2">
                 {popularQuestions.map((q) => (
                   <button
                     key={q}
                     onClick={() => setCurrentTab('chatbot')}
-                    className="w-full p-2.5 rounded-xl border border-[#3B5C65]/80 bg-[#111D21] text-left text-xs font-semibold text-[#EAF2C9] hover:text-[#2EA8A4] hover:border-[#2EA8A4]/50 transition-colors flex items-center justify-between cursor-pointer"
+                    className="w-full p-2.5 rounded-xl border border-gray-200/80 bg-gray-50 text-left text-xs font-semibold text-gray-900 hover:text-[#2EA8A4] hover:border-[#2EA8A4]/50 transition-colors flex items-center justify-between cursor-pointer"
                   >
                     <span>{q}</span>
-                    <ChevronRight size={14} className="text-[#9ED4AC]/70 shrink-0" />
+                    <ChevronRight size={14} className="text-gray-500/70 shrink-0" />
                   </button>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#3B5C65] text-center text-[10px] uppercase tracking-widest text-[#9ED4AC]/70">
+          <div className="pt-4 border-t border-gray-200 text-center text-[10px] uppercase tracking-widest text-gray-500/70">
             BIZRA Official Mobile Concierge
           </div>
         </div>

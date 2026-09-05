@@ -334,7 +334,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#111D21] text-[#EAF2C9] overflow-hidden font-sans">
+    <div className="flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden font-sans">
 
       {/* Top Navigation Bar */}
       <header className="px-4 lg:px-10 h-[60px] md:h-[72px] border-b border-gray-200 bg-white/95 backdrop-blur-md flex items-center justify-between shrink-0 shadow-[0_2px_10px_rgba(0,0,0,0.02)] z-10 relative">
@@ -434,7 +434,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
       <main className="grid grid-cols-1 lg:grid-cols-12 flex-grow overflow-hidden">
 
         {/* Chat Feed Column (Left 8 Cols) */}
-        <div className="lg:col-span-8 flex flex-col h-full relative overflow-hidden border-r border-[#3B5C65] bg-[#18292E]">
+        <div className="lg:col-span-8 flex flex-col h-full relative overflow-hidden border-r border-gray-200 bg-white">
 
           {/* Scrollable Feed */}
           <div
@@ -448,8 +448,8 @@ export default function BIZRAChatbot({ setCurrentTab }) {
               >
                 <div
                   className={`max-w-[580px] rounded-2xl p-4 sm:p-5 text-xs sm:text-sm leading-relaxed ${msg.sender === 'user'
-                    ? 'bg-[#2EA8A4] text-[#18292E] rounded-br-none shadow-md font-medium'
-                    : 'bg-[#22373D] text-[#EAF2C9] border border-[#3B5C65] rounded-bl-none shadow-lg'
+                    ? 'bg-[#2EA8A4] text-white rounded-br-none shadow-md font-medium'
+                    : 'bg-gray-100 text-gray-900 border border-gray-200 rounded-bl-none shadow-lg'
                     }`}
                 >
                   {msg.sender === 'user' ? (
@@ -458,8 +458,8 @@ export default function BIZRAChatbot({ setCurrentTab }) {
                     <ResponseRenderer text={msg.text} />
                   )}
                   <div className={`text-[10px] font-bold mt-2 text-right ${msg.sender === 'user'
-                    ? 'text-[#111D21]'
-                    : 'text-[#9ED4AC]'
+                    ? 'text-white'
+                    : 'text-gray-500'
                     }`}>
                     {msg.time}
                   </div>
@@ -471,7 +471,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
                       <button
                         key={pIdx}
                         onClick={() => handleSendMessage(pill)}
-                        className="text-xs font-semibold px-3 py-1.5 rounded-full border transition-all cursor-pointer text-left bg-[#22373D] text-[#EAF2C9] border-[#3B5C65] hover:border-[#2EA8A4] hover:bg-[#2A444C]"
+                        className="text-xs font-semibold px-3 py-1.5 rounded-full border transition-all cursor-pointer text-left bg-gray-100 text-gray-900 border-gray-200 hover:border-[#2EA8A4] hover:bg-gray-200"
                       >
                         {pill}
                       </button>
@@ -482,7 +482,7 @@ export default function BIZRAChatbot({ setCurrentTab }) {
             ))}
 
             {isTyping && (
-              <div className="p-3 rounded-xl border border-[#3B5C65] text-xs w-fit flex items-center gap-2 bg-[#22373D] text-[#EAF2C9]">
+              <div className="p-3 rounded-xl border border-gray-200 text-xs w-fit flex items-center gap-2 bg-gray-100 text-gray-900">
                 <span className="w-2 h-2 rounded-full bg-[#2EA8A4] animate-ping" />
                 <span>BIZRA AI Agent is thinking...</span>
               </div>
@@ -492,22 +492,22 @@ export default function BIZRAChatbot({ setCurrentTab }) {
           </div>
 
           {/* Input Bar */}
-          <div className="p-4 border-t border-[#3B5C65] bg-[#111D21]">
+          <div className="p-4 border-t border-gray-200 bg-gray-50">
             <form
               onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
-              className="flex items-center gap-2 rounded-xl p-1.5 border border-[#3B5C65] focus-within:border-[#2EA8A4] transition-colors bg-[#18292E]"
+              className="flex items-center gap-2 rounded-xl p-1.5 border border-gray-200 focus-within:border-[#2EA8A4] transition-colors bg-white"
             >
               <button
                 type="button"
                 onClick={autoDetectLocation}
                 className={`p-2 rounded-lg transition-colors cursor-pointer shrink-0 ${locationStatus === 'granted'
                   ? 'text-[#2EA8A4] hover:bg-[#2EA8A4]/10'
-                  : 'text-[#9ED4AC] hover:text-[#EAF2C9] hover:bg-[#22373D]'
+                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
                   }`}
                 title={userLocation ? `Location Active: ${userLocation.address}` : "Access live location"}
               >
                 {locationStatus === 'locating' ? (
-                  <Loader2 size={16} className="animate-spin text-[#9ED4AC]" />
+                  <Loader2 size={16} className="animate-spin text-gray-500" />
                 ) : (
                   <MapPin size={16} className={locationStatus === 'granted' ? 'text-[#2EA8A4]' : ''} />
                 )}
@@ -522,15 +522,15 @@ export default function BIZRAChatbot({ setCurrentTab }) {
                 }
                 value={inputQuery}
                 onChange={(e) => setInputQuery(e.target.value)}
-                className="flex-grow px-2 py-2 bg-transparent text-xs sm:text-sm focus:outline-none text-[#EAF2C9] placeholder-[#9ED4AC]/60"
+                className="flex-grow px-2 py-2 bg-transparent text-xs sm:text-sm focus:outline-none text-gray-900 placeholder-[#9ED4AC]/60"
               />
 
               <button
                 type="submit"
                 disabled={!inputQuery.trim()}
                 className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all cursor-pointer ${inputQuery.trim()
-                  ? 'bg-[#2EA8A4] text-[#18292E] hover:bg-[#258B87] shadow-sm'
-                  : 'bg-[#22373D] text-[#9ED4AC]/40 cursor-not-allowed'
+                  ? 'bg-[#2EA8A4] text-white hover:bg-[#258B87] shadow-sm'
+                  : 'bg-gray-100 text-gray-500/40 cursor-not-allowed'
                   }`}
               >
                 <Send size={15} />
@@ -541,23 +541,23 @@ export default function BIZRAChatbot({ setCurrentTab }) {
         </div>
 
         {/* Right Sidebar (4 Cols) - Navigation & WhatsApp/Telegram Bot (Matching BizraManual) */}
-        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-[#3B5C65] bg-[#111D21] text-[#EAF2C9] overflow-y-auto" data-lenis-prevent>
+        <div className="hidden lg:flex lg:col-span-4 flex-col justify-between p-6 border-l border-gray-200 bg-gray-50 text-gray-900 overflow-y-auto" data-lenis-prevent>
           <div className="space-y-6 my-auto">
             {/* Mode Switcher Card */}
-            <div className="p-5 rounded-2xl border border-[#3B5C65] bg-[#18292E] space-y-4 text-left">
+            <div className="p-5 rounded-2xl border border-gray-200 bg-white space-y-4 text-left">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#2EA8A4]/20 border border-[#2EA8A4]/30 flex items-center justify-center text-[#2EA8A4]">
                   <Compass size={20} />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm text-[#EAF2C9]">Prefer Guided Step-by-Step?</h3>
-                  <span className="text-xs text-[#9ED4AC]">Switch to BIZRA Manual Wizard</span>
+                  <h3 className="font-extrabold text-sm text-gray-900">Prefer Guided Step-by-Step?</h3>
+                  <span className="text-xs text-gray-500">Switch to BIZRA Manual Wizard</span>
                 </div>
               </div>
 
               <button
                 onClick={() => setCurrentTab('manual')}
-                className="w-full py-2.5 rounded-xl bg-[#2EA8A4] text-[#18292E] font-black text-xs uppercase tracking-wider shadow-md hover:bg-[#258B87] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-[#2EA8A4] text-white font-black text-xs uppercase tracking-wider shadow-md hover:bg-[#258B87] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Compass size={14} />
                 <span>Launch Manual Wizard</span>
@@ -638,8 +638,8 @@ export default function BIZRAChatbot({ setCurrentTab }) {
             </div>
 
             {/* Popular Questions List */}
-            <div className="p-5 rounded-2xl border border-[#3B5C65] bg-[#18292E] space-y-3 text-left">
-              <h4 className="font-extrabold text-xs uppercase tracking-wider text-[#9ED4AC]">Popular Questions</h4>
+            <div className="p-5 rounded-2xl border border-gray-200 bg-white space-y-3 text-left">
+              <h4 className="font-extrabold text-xs uppercase tracking-wider text-gray-500">Popular Questions</h4>
               <div className="space-y-2">
                 {[
                   'Which business is best in my area?',
@@ -650,17 +650,17 @@ export default function BIZRAChatbot({ setCurrentTab }) {
                   <button
                     key={q}
                     onClick={() => handleSendMessage(q)}
-                    className="w-full p-2.5 rounded-xl border border-[#3B5C65]/80 bg-[#111D21] text-left text-xs font-semibold text-[#EAF2C9] hover:text-[#2EA8A4] hover:border-[#2EA8A4]/50 transition-colors flex items-center justify-between cursor-pointer"
+                    className="w-full p-2.5 rounded-xl border border-gray-200/80 bg-gray-50 text-left text-xs font-semibold text-gray-900 hover:text-[#2EA8A4] hover:border-[#2EA8A4]/50 transition-colors flex items-center justify-between cursor-pointer"
                   >
                     <span>{q}</span>
-                    <ChevronRight size={14} className="text-[#9ED4AC]/70 shrink-0" />
+                    <ChevronRight size={14} className="text-gray-500/70 shrink-0" />
                   </button>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#3B5C65] text-center text-[10px] uppercase tracking-widest text-[#9ED4AC]/70">
+          <div className="pt-4 border-t border-gray-200 text-center text-[10px] uppercase tracking-widest text-gray-500/70">
             BIZRA Official Mobile Concierge
           </div>
         </div>

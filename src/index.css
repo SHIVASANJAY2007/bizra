@@ -47,23 +47,23 @@
 }
 
 :root {
-  --BIZRA-ink: #EAF2C9;
-  --BIZRA-muted: #9ED4AC;
-  --BIZRA-muted-strong: #EAF2C9;
-  --BIZRA-bg: #18292E;
-  --BIZRA-bg-deep: #111D21;
-  --BIZRA-panel: #22373D;
-  --BIZRA-panel-raised: #2A444C;
-  --BIZRA-line: #3B5C65;
-  --BIZRA-line-soft: rgba(59, 92, 101, 0.4);
+  --BIZRA-ink: #111827;
+  --BIZRA-muted: #6B7280;
+  --BIZRA-muted-strong: #374151;
+  --BIZRA-bg: #FFFFFF;
+  --BIZRA-bg-deep: #F9FAFB;
+  --BIZRA-panel: #F3F4F6;
+  --BIZRA-panel-raised: #E5E7EB;
+  --BIZRA-line: #E5E7EB;
+  --BIZRA-line-soft: rgba(229, 231, 235, 0.6);
   --BIZRA-green: #2EA8A4;
   --BIZRA-green-deep: #258B87;
-  --BIZRA-green-soft: #9ED4AC;
-  --BIZRA-amber: #4B6E77;
-  --BIZRA-amber-soft: #9ED4AC;
-  --BIZRA-paper: #EAF2C9;
-  --BIZRA-paper-ink: #18292E;
-  --BIZRA-paper-muted: #4B6E77;
+  --BIZRA-green-soft: #2EA8A4;
+  --BIZRA-amber: #F59E0B;
+  --BIZRA-amber-soft: #FBBF24;
+  --BIZRA-paper: #FFFFFF;
+  --BIZRA-paper-ink: #111827;
+  --BIZRA-paper-muted: #6B7280;
   --font-BIZRA-body: 'DM Sans', system-ui, -apple-system, sans-serif;
   --font-BIZRA-display: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
   --font-BIZRA-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -288,7 +288,7 @@
     place-items: center;
     border: 1px solid var(--BIZRA-green);
     border-radius: 10px 4px 10px 4px;
-    background: #0c3a2e;
+    background: #E0F2F1;
     color: var(--BIZRA-green-soft);
     font-family: var(--font-BIZRA-display);
     font-size: 20px;
@@ -453,10 +453,10 @@
   .BIZRA-field-sheet {
     max-width: 625px;
     margin-top: 31px;
-    border: 1px solid #38504f;
+    border: 1px solid var(--BIZRA-line);
     border-radius: 14px 6px 14px 6px;
     background: var(--BIZRA-panel);
-    box-shadow: 7px 7px 0 #061018;
+    box-shadow: 7px 7px 0 #D1D5DB;
     padding: 24px;
   }
 
@@ -527,10 +527,10 @@
   .BIZRA-field select {
     width: 100%;
     min-height: 48px;
-    border: 1px solid #405055;
+    border: 1px solid var(--BIZRA-line);
     border-radius: 8px;
     outline: none;
-    background: #0a141c;
+    background: #FFFFFF;
     color: var(--BIZRA-ink);
     padding: 0 12px;
     font-size: 13px;
@@ -538,7 +538,7 @@
   }
 
   .BIZRA-field input::placeholder {
-    color: #708083;
+    color: #9CA3AF;
   }
 
   .BIZRA-field input:focus,
@@ -602,10 +602,10 @@
 
   .BIZRA-sample-frame {
     overflow: hidden;
-    border: 1px solid #40534f;
+    border: 1px solid var(--BIZRA-line);
     border-radius: 15px 6px 15px 6px;
-    background: #101e24;
-    box-shadow: 11px 11px 0 #061018;
+    background: #F9FAFB;
+    box-shadow: 11px 11px 0 #D1D5DB;
   }
 
   .BIZRA-sample-top {
@@ -613,7 +613,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    border-bottom: 1px solid #334740;
+    border-bottom: 1px solid var(--BIZRA-line);
     padding: 13px 17px;
   }
 
@@ -653,7 +653,7 @@
   }
 
   .BIZRA-sample-caption {
-    border-bottom: 1px solid #334740;
+    border-bottom: 1px solid var(--BIZRA-line);
     padding: 17px 18px 15px;
   }
 
@@ -682,11 +682,11 @@
   .BIZRA-sample-evidence {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    background: #0b151b;
+    background: #F3F4F6;
   }
 
   .BIZRA-sample-evidence div {
-    border-right: 1px solid #334740;
+    border-right: 1px solid var(--BIZRA-line);
     padding: 12px 10px;
   }
 
@@ -716,7 +716,7 @@
   }
 
   .BIZRA-sample-source {
-    background: #09131a;
+    background: #F9FAFB;
     color: var(--BIZRA-muted);
     padding: 12px 17px;
     font-size: 11px;
@@ -730,7 +730,7 @@
 
   .BIZRA-ruled-strip {
     border-bottom: 1px solid var(--BIZRA-line);
-    background: #0b161d;
+    background: #FFFFFF;
   }
 
   .BIZRA-ruled-items {
@@ -821,7 +821,7 @@
     border: 1px solid #c8bea9;
     border-radius: 14px 5px 14px 5px;
     background: var(--BIZRA-paper);
-    box-shadow: 10px 10px 0 #061018;
+    box-shadow: 10px 10px 0 #D1D5DB;
     color: var(--BIZRA-paper-ink);
     padding: 29px;
   }
@@ -1681,7 +1681,7 @@
     border: 1px solid var(--BIZRA-line);
     border-radius: 14px 6px 14px 6px;
     background: var(--BIZRA-panel);
-    box-shadow: 8px 8px 0 #061018;
+    box-shadow: 8px 8px 0 #D1D5DB;
     padding: 28px;
   }
 
@@ -2094,7 +2094,7 @@
     }
 
     .BIZRA-sample-evidence div:nth-child(-n + 2) {
-      border-bottom: 1px solid #334740;
+      border-bottom: 1px solid var(--BIZRA-line);
     }
 
     .BIZRA-ruled-items {
@@ -2288,12 +2288,12 @@
     border: 1px solid var(--BIZRA-line);
     border-radius: 14px 6px 14px 6px;
     background: var(--BIZRA-panel);
-    box-shadow: 6px 6px 0 #061018;
+    box-shadow: 6px 6px 0 #D1D5DB;
   }
 
   .BIZRA-card:hover {
     border-color: var(--BIZRA-green);
-    box-shadow: 6px 6px 0 #061018;
+    box-shadow: 6px 6px 0 #D1D5DB;
     transform: none;
   }
 
@@ -2415,11 +2415,11 @@
 }
 
 .bizra-markdown pre::-webkit-scrollbar-track {
-  background: #0a141c;
+  background: #FFFFFF;
 }
 
 .bizra-markdown pre::-webkit-scrollbar-thumb {
-  background: #3B5C65;
+  background: var(--BIZRA-line);
   border-radius: 999px;
 }
 

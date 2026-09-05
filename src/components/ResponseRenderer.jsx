@@ -15,8 +15,8 @@ function CodeBlock({ children, className }) {
   const code = String(children).replace(/\n$/, '');
 
   return (
-    <div className="my-4 rounded-xl bg-[#0a141c] border border-[#3B5C65] overflow-hidden shadow-lg">
-      <div className="flex items-center justify-between px-4 py-2 bg-[#111D21] border-b border-[#3B5C65]">
+    <div className="my-4 rounded-xl bg-[#FFFFFF] border border-gray-200 overflow-hidden shadow-lg">
+      <div className="flex items-center justify-between px-4 py-2 bg-gray-50 border-b border-gray-200">
         <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#2EA8A4]">
           {language}
         </span>
@@ -26,7 +26,7 @@ function CodeBlock({ children, className }) {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
           }}
-          className="flex items-center gap-1.5 text-[11px] text-[#9ED4AC] hover:text-[#EAF2C9] transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 text-[11px] text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
         >
           {copied
             ? <><Check size={12} className="text-[#2EA8A4]" /><span className="text-[#2EA8A4]">Copied</span></>
@@ -34,7 +34,7 @@ function CodeBlock({ children, className }) {
           }
         </button>
       </div>
-      <pre className="p-4 text-xs font-mono text-[#EAF2C9] overflow-x-auto whitespace-pre leading-relaxed">
+      <pre className="p-4 text-xs font-mono text-gray-900 overflow-x-auto whitespace-pre leading-relaxed">
         <code>{code}</code>
       </pre>
     </div>
@@ -44,7 +44,7 @@ function CodeBlock({ children, className }) {
 /* ─── Inline code ─────────────────────────────────────────────────────────── */
 function InlineCode({ children }) {
   return (
-    <code className="bg-[#2EA8A4]/15 text-[#9ED4AC] font-mono text-[11px] px-1.5 py-0.5 rounded border border-[#2EA8A4]/30 mx-0.5">
+    <code className="bg-[#2EA8A4]/15 text-gray-500 font-mono text-[11px] px-1.5 py-0.5 rounded border border-[#2EA8A4]/30 mx-0.5">
       {children}
     </code>
   );
@@ -53,7 +53,7 @@ function InlineCode({ children }) {
 /* ─── Headings ────────────────────────────────────────────────────────────── */
 const H1 = ({ children }) => (
   <div className="mt-6 mb-3 pb-3 border-b-2 border-[#2EA8A4]/40">
-    <h1 className="text-lg sm:text-xl font-black tracking-tight text-[#EAF2C9] flex items-center gap-2.5">
+    <h1 className="text-lg sm:text-xl font-black tracking-tight text-gray-900 flex items-center gap-2.5">
       <span className="w-1.5 h-6 rounded-full bg-gradient-to-b from-[#2EA8A4] to-[#9ED4AC] inline-block shrink-0" />
       {children}
     </h1>
@@ -62,7 +62,7 @@ const H1 = ({ children }) => (
 
 const H2 = ({ children }) => (
   <div className="mt-5 mb-2">
-    <h2 className="text-base sm:text-lg font-extrabold text-[#EAF2C9] flex items-center gap-2">
+    <h2 className="text-base sm:text-lg font-extrabold text-gray-900 flex items-center gap-2">
       <span className="w-5 h-5 rounded-md bg-[#2EA8A4]/20 border border-[#2EA8A4]/40 flex items-center justify-center shrink-0">
         <ChevronRight size={12} className="text-[#2EA8A4]" />
       </span>
@@ -79,31 +79,31 @@ const H3 = ({ children }) => (
 );
 
 const H4 = ({ children }) => (
-  <h4 className="mt-3 mb-1 text-xs sm:text-sm font-bold text-[#9ED4AC] uppercase tracking-wide">
+  <h4 className="mt-3 mb-1 text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wide">
     {children}
   </h4>
 );
 
 const H5 = ({ children }) => (
-  <h5 className="mt-2 mb-1 text-xs font-bold text-[#9ED4AC]/80">{children}</h5>
+  <h5 className="mt-2 mb-1 text-xs font-bold text-gray-500/80">{children}</h5>
 );
 
 const H6 = ({ children }) => (
-  <h6 className="mt-1 mb-1 text-xs font-semibold text-[#9ED4AC]/60">{children}</h6>
+  <h6 className="mt-1 mb-1 text-xs font-semibold text-gray-500/60">{children}</h6>
 );
 
 /* ─── Paragraph ───────────────────────────────────────────────────────────── */
 const Paragraph = ({ children }) => (
-  <p className="text-xs sm:text-sm leading-relaxed text-[#EAF2C9] my-1.5">{children}</p>
+  <p className="text-xs sm:text-sm leading-relaxed text-gray-900 my-1.5">{children}</p>
 );
 
 /* ─── Strong / Em / Link ──────────────────────────────────────────────────── */
 const Strong = ({ children }) => (
-  <strong className="font-extrabold text-[#EAF2C9]">{children}</strong>
+  <strong className="font-extrabold text-gray-900">{children}</strong>
 );
 
 const Em = ({ children }) => (
-  <em className="italic text-[#9ED4AC]">{children}</em>
+  <em className="italic text-gray-500">{children}</em>
 );
 
 const Link = ({ href, children }) => (
@@ -111,7 +111,7 @@ const Link = ({ href, children }) => (
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="inline-flex items-center gap-1 text-[#2EA8A4] hover:text-[#9ED4AC] font-semibold underline underline-offset-2 transition-colors mx-0.5"
+    className="inline-flex items-center gap-1 text-[#2EA8A4] hover:text-gray-500 font-semibold underline underline-offset-2 transition-colors mx-0.5"
   >
     {children}
     <ExternalLink size={11} />
@@ -120,7 +120,7 @@ const Link = ({ href, children }) => (
 
 /* ─── Blockquote ─────────────────────────────────────────────────────────── */
 const Blockquote = ({ children }) => (
-  <blockquote className="my-4 pl-4 border-l-[3px] border-[#2EA8A4] bg-[#2EA8A4]/8 rounded-r-xl py-3 pr-4 text-[#9ED4AC] italic text-sm">
+  <blockquote className="my-4 pl-4 border-l-[3px] border-[#2EA8A4] bg-[#2EA8A4]/8 rounded-r-xl py-3 pr-4 text-gray-500 italic text-sm">
     {children}
   </blockquote>
 );
@@ -128,9 +128,9 @@ const Blockquote = ({ children }) => (
 /* ─── Horizontal rule ─────────────────────────────────────────────────────── */
 const Hr = () => (
   <div className="my-5 flex items-center gap-3">
-    <div className="flex-grow h-px bg-gradient-to-r from-transparent via-[#3B5C65] to-transparent" />
-    <Minus size={12} className="text-[#3B5C65] shrink-0" />
-    <div className="flex-grow h-px bg-gradient-to-r from-transparent via-[#3B5C65] to-transparent" />
+    <div className="flex-grow h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+    <Minus size={12} className="text-gray-300 shrink-0" />
+    <div className="flex-grow h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
   </div>
 );
 
@@ -156,18 +156,18 @@ const Li = ({ children }) => {
     counter.val += 1;
     const num = counter.val;
     return (
-      <li className="flex items-start gap-3 p-2.5 rounded-xl bg-[#22373D]/60 border border-[#3B5C65]/60 hover:border-[#2EA8A4]/40 transition-colors">
+      <li className="flex items-start gap-3 p-2.5 rounded-xl bg-gray-100/60 border border-gray-200/60 hover:border-[#2EA8A4]/40 transition-colors">
         <span className="w-6 h-6 rounded-lg bg-[#2EA8A4]/20 border border-[#2EA8A4]/40 text-[#2EA8A4] font-extrabold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
           {num}
         </span>
-        <div className="flex-grow text-xs sm:text-sm text-[#EAF2C9] leading-relaxed pt-0.5">
+        <div className="flex-grow text-xs sm:text-sm text-gray-900 leading-relaxed pt-0.5">
           {children}
         </div>
       </li>
     );
   }
   return (
-    <li className="flex items-start gap-2.5 text-[#EAF2C9]">
+    <li className="flex items-start gap-2.5 text-gray-900">
       <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#2EA8A4] shrink-0 flex-none" />
       <span className="text-xs sm:text-sm leading-relaxed flex-grow">{children}</span>
     </li>
@@ -176,7 +176,7 @@ const Li = ({ children }) => {
 
 /* ─── Table ──────────────────────────────────────────────────────────────── */
 const Table = ({ children }) => (
-  <div className="my-5 rounded-xl overflow-hidden border border-[#3B5C65] shadow-lg">
+  <div className="my-5 rounded-xl overflow-hidden border border-gray-200 shadow-lg">
     <div className="overflow-x-auto" data-lenis-prevent>
       <table className="w-full text-xs sm:text-sm border-collapse min-w-[400px]">
         {children}
@@ -192,23 +192,23 @@ const Thead = ({ children }) => (
 );
 
 const Tbody = ({ children }) => (
-  <tbody className="divide-y divide-[#3B5C65]/60">{children}</tbody>
+  <tbody className="divide-y divide-gray-200">{children}</tbody>
 );
 
 const Tr = ({ children }) => (
-  <tr className="hover:bg-[#2EA8A4]/5 transition-colors even:bg-[#18292E]/60">
+  <tr className="hover:bg-[#2EA8A4]/5 transition-colors even:bg-white/60">
     {children}
   </tr>
 );
 
 const Th = ({ children }) => (
-  <th className="px-4 py-3 text-left text-[10px] font-mono font-bold uppercase tracking-wider text-[#2EA8A4] whitespace-nowrap border-r border-[#3B5C65]/40 last:border-r-0">
+  <th className="px-4 py-3 text-left text-[10px] font-mono font-bold uppercase tracking-wider text-[#2EA8A4] whitespace-nowrap border-r border-gray-200/40 last:border-r-0">
     {children}
   </th>
 );
 
 const Td = ({ children }) => (
-  <td className="px-4 py-3 text-[#EAF2C9] font-medium leading-snug border-r border-[#3B5C65]/30 last:border-r-0">
+  <td className="px-4 py-3 text-gray-900 font-medium leading-snug border-r border-gray-200/30 last:border-r-0">
     {children}
   </td>
 );

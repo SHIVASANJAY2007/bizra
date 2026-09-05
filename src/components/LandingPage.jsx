@@ -413,7 +413,7 @@ function CommitmentStrip() {
   );
 
   return (
-    <div className="w-full bg-[#111D21] border-y border-[#3B5C65] py-4 overflow-hidden shadow-inner" aria-label="BIZRA service commitments">
+    <div className="w-full bg-white border-y border-gray-200 py-4 overflow-hidden shadow-inner" aria-label="BIZRA service commitments">
       <ScrollVelocity
         texts={[row1Node, row2Node]}
         velocity={60}
@@ -427,7 +427,7 @@ function CommitmentStrip() {
 
 function EvidenceSection() {
   return (
-    <section className="BIZRA-section" id="why-BIZRA" aria-labelledby="evidence-title">
+    <section className="BIZRA-section bg-[#F8F2E5]" id="why-BIZRA" aria-labelledby="evidence-title">
       <div className="BIZRA-shell">
         <div className="BIZRA-section-head">
           <div>
@@ -517,7 +517,7 @@ function EvidenceSection() {
 
 function ProcessLine() {
   return (
-    <section className="BIZRA-section BIZRA-process-section" id="how-it-works" aria-labelledby="process-title">
+    <section className="BIZRA-section BIZRA-process-section bg-white" id="how-it-works" aria-labelledby="process-title">
       <div className="BIZRA-shell">
         <div className="BIZRA-section-head">
           <div>
@@ -571,7 +571,7 @@ function AudienceAdvisory() {
   };
 
   return (
-    <section className="BIZRA-section" id="who-its-for" aria-labelledby="audience-title">
+    <section className="BIZRA-section bg-[#F8F2E5]" id="who-its-for" aria-labelledby="audience-title">
       <div className="BIZRA-shell">
         <div className="BIZRA-section-head">
           <div>
@@ -648,7 +648,7 @@ function AudienceAdvisory() {
 
 function PublicRecordDocket() {
   return (
-    <section className="BIZRA-section BIZRA-docket-section" id="public-record" aria-labelledby="record-title">
+    <section className="BIZRA-section BIZRA-docket-section bg-white" id="public-record" aria-labelledby="record-title">
       <div className="BIZRA-shell BIZRA-docket-layout">
         <div className="BIZRA-docket-intro">
           <div className="BIZRA-section-index">05 / PUBLIC RECORD</div>
@@ -682,7 +682,7 @@ function PublicRecordDocket() {
 
 function FounderStory() {
   return (
-    <section className="BIZRA-story-section" aria-labelledby="story-title">
+    <section className="BIZRA-story-section bg-[#F8F2E5]" aria-labelledby="story-title">
       <div className="BIZRA-shell BIZRA-story-grid">
         <div className="BIZRA-story-quote">
           <div className="BIZRA-quote-mark" aria-hidden="true">“</div>
@@ -811,7 +811,7 @@ export default function LandingPage() {
               </p>
 
               {/* Note / Tagline */}
-              <div className="inline-flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-[#EAF2C9]/90 bg-[#18292E]/85 backdrop-blur-md px-4 py-2 rounded-xl border border-[#3B5C65] shadow-xl">
+              <div className="inline-flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-[#EAF2C9] bg-[#18292E]/60 backdrop-blur-md px-4 py-2 rounded-xl border border-[#3B5C65]/60 shadow-xl">
                 <ShieldCheck size={16} className="text-[#2EA8A4] shrink-0" />
                 <span>Free public utility · Uses available verified government datasets</span>
               </div>
@@ -836,7 +836,7 @@ export default function LandingPage() {
         <AudienceAdvisory />
         <PublicRecordDocket />
         <FounderStory />
-        <section className="BIZRA-closing" aria-labelledby="closing-title">
+        <section className="BIZRA-closing bg-white" aria-labelledby="closing-title">
           <div className="BIZRA-shell BIZRA-closing-inner">
             <div>
               <h2 id="closing-title">Ready to begin with your location?</h2>

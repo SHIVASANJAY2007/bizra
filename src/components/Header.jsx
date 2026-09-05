@@ -458,18 +458,18 @@ export default function Header({
       {/* Settings Modal (Language Selection) */}
       {showSettings && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#111D21]/90 backdrop-blur-md overflow-y-auto"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-50/90 backdrop-blur-md overflow-y-auto"
           onClick={closeSettings}
         >
           <div
-            className="w-full max-w-md bg-[#18292E] border-2 border-[#2EA8A4]/50 rounded-2xl p-6 md:p-8 shadow-2xl relative my-auto"
+            className="w-full max-w-md bg-white border-2 border-[#2EA8A4]/50 rounded-2xl p-6 md:p-8 shadow-2xl relative my-auto"
             onClick={(e) => e.stopPropagation()}
             ref={layerRef}
           >
             {/* Close Button */}
             <button
               onClick={closeSettings}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#22373D] border border-[#3B5C65] text-[#9ED4AC] hover:text-[#18292E] hover:bg-[#2EA8A4] hover:border-[#2EA8A4] flex items-center justify-center transition-all cursor-pointer shadow-md"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 border border-gray-200 text-gray-500 hover:text-white hover:bg-[#2EA8A4] hover:border-[#2EA8A4] flex items-center justify-center transition-all cursor-pointer shadow-md"
               aria-label="Close modal"
               title="Close"
             >
@@ -480,13 +480,13 @@ export default function Header({
               <div className="w-12 h-12 rounded-2xl bg-[#2EA8A4]/15 border border-[#2EA8A4]/40 flex items-center justify-center mx-auto mb-3 text-[#2EA8A4] shadow-md">
                 <Globe2 size={24} />
               </div>
-              <h3 className="text-xl font-bold text-[#EAF2C9]">Language &amp; Display</h3>
-              <p className="text-xs text-[#9ED4AC] mt-1 font-medium">Customize language and visual preferences</p>
+              <h3 className="text-xl font-bold text-gray-900">Language &amp; Display</h3>
+              <p className="text-xs text-gray-500 mt-1 font-medium">Customize language and visual preferences</p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase text-[#9ED4AC] tracking-wider mb-3">Select Language / भाषा</label>
+                <label className="block text-xs font-bold uppercase text-gray-500 tracking-wider mb-3">Select Language / भाषा</label>
                 <div className="grid grid-cols-2 gap-2.5">
                   {languages.map((lang) => (
                     <button
@@ -494,7 +494,7 @@ export default function Header({
                       onClick={() => handleLanguageChange(lang)}
                       className={`px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer text-left flex items-center justify-between shadow-sm ${language === lang
                         ? 'bg-[#2EA8A4]/25 text-[#2EA8A4] border-2 border-[#2EA8A4] shadow-md'
-                        : 'bg-[#22373D] text-[#9ED4AC] border border-[#3B5C65] hover:text-[#EAF2C9] hover:bg-[#2A444C] hover:border-[#2EA8A4]/50'
+                        : 'bg-gray-100 text-gray-500 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 hover:border-[#2EA8A4]/50'
                         }`}
                     >
                       <span className="text-sm">{lang}</span>
@@ -504,10 +504,10 @@ export default function Header({
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#3B5C65] mt-6">
+              <div className="pt-4 border-t border-gray-200 mt-6">
                 <button
                   onClick={closeSettings}
-                  className="w-full py-3 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-[#2EA8A4] text-[#18292E] hover:bg-[#258B87] transition-all cursor-pointer shadow-md"
+                  className="w-full py-3 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-[#2EA8A4] text-white hover:bg-[#258B87] transition-all cursor-pointer shadow-md"
                 >
                   Done / Save Language
                 </button>
@@ -520,18 +520,18 @@ export default function Header({
       {/* Login Modal */}
       {showLogin && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#111D21]/90 backdrop-blur-md overflow-y-auto"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-50/90 backdrop-blur-md overflow-y-auto"
           onClick={closeLogin}
         >
           <div
-            className="w-full max-w-md bg-[#18292E] border-2 border-[#3B5C65] rounded-2xl p-6 md:p-8 shadow-2xl relative my-auto"
+            className="w-full max-w-md bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 shadow-2xl relative my-auto"
             onClick={(e) => e.stopPropagation()}
             ref={layerRef}
           >
             {/* Close Button */}
             <button
               onClick={closeLogin}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#22373D] border border-[#3B5C65] text-[#9ED4AC] hover:text-[#18292E] hover:bg-[#2EA8A4] hover:border-[#2EA8A4] flex items-center justify-center transition-all cursor-pointer shadow-md"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 border border-gray-200 text-gray-500 hover:text-white hover:bg-[#2EA8A4] hover:border-[#2EA8A4] flex items-center justify-center transition-all cursor-pointer shadow-md"
               aria-label="Close modal"
               title="Close"
             >
@@ -542,10 +542,10 @@ export default function Header({
               <div className="w-12 h-12 rounded-2xl bg-[#2EA8A4]/15 border border-[#2EA8A4]/30 flex items-center justify-center mx-auto mb-3 text-[#2EA8A4]">
                 <UserRound size={24} />
               </div>
-              <h3 className="text-xl font-bold text-[#EAF2C9]">
+              <h3 className="text-xl font-bold text-gray-900">
                 {isRegistering ? 'Create BIZRA Account' : 'Welcome to BIZRA'}
               </h3>
-              <p className="text-xs text-[#9ED4AC] mt-1 font-medium">
+              <p className="text-xs text-gray-500 mt-1 font-medium">
                 {isRegistering
                   ? 'Sign up to evaluate your rural business ideas'
                   : 'Access your business feasibility reports and loan proposals'}
@@ -559,36 +559,36 @@ export default function Header({
             ) : (
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase text-[#9ED4AC] mb-1.5">Email Address</label>
+                  <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Email Address</label>
                   <input
                     type="email"
                     required
                     placeholder="entrepreneur@domain.in"
                     value={loginForm.email}
                     onChange={(e) => updateLoginField('email', e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-[#111D21] border border-[#3B5C65] text-[#EAF2C9] placeholder-[#9ED4AC]/50 text-sm focus:outline-none focus:border-[#2EA8A4] transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-[#9ED4AC]/50 text-sm focus:outline-none focus:border-[#2EA8A4] transition-colors"
                   />
                   {loginErrors.email && <span className="text-rose-400 text-xs mt-1 block">{loginErrors.email}</span>}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase text-[#9ED4AC] mb-1.5">Password</label>
+                  <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Password</label>
                   <input
                     type="password"
                     required
                     placeholder="••••••••"
                     value={loginForm.password}
                     onChange={(e) => updateLoginField('password', e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-[#111D21] border border-[#3B5C65] text-[#EAF2C9] placeholder-[#9ED4AC]/50 text-sm focus:outline-none focus:border-[#2EA8A4] transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-[#9ED4AC]/50 text-sm focus:outline-none focus:border-[#2EA8A4] transition-colors"
                   />
                   {loginErrors.password && <span className="text-rose-400 text-xs mt-1 block">{loginErrors.password}</span>}
                 </div>
-                <button type="submit" className="w-full py-3 rounded-xl text-sm font-bold mt-2 cursor-pointer bg-[#2EA8A4] text-[#18292E] hover:bg-[#258B87] transition-all shadow-md">
+                <button type="submit" className="w-full py-3 rounded-xl text-sm font-bold mt-2 cursor-pointer bg-[#2EA8A4] text-white hover:bg-[#258B87] transition-all shadow-md">
                   {isRegistering ? 'Create Account' : 'Sign In'}
                 </button>
               </form>
             )}
 
-            <div className="mt-6 text-center text-xs text-[#9ED4AC] pt-4 border-t border-[#3B5C65]">
+            <div className="mt-6 text-center text-xs text-gray-500 pt-4 border-t border-gray-200">
               {isRegistering ? (
                 <span>
                   Already registered?{' '}

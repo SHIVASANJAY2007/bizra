@@ -75,17 +75,17 @@ export default function HowItWorks() {
   ];
 
   return (
-    <div className="w-full bg-[#18292E] text-[#EAF2C9] section-padding">
+    <div className="w-full bg-white text-gray-900 section-padding">
       <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-20">
 
         {/* 1. Workflow Header & 5 Steps Grid */}
         <section className="space-y-12">
           <ScrollReveal animation="fade-up" className="text-center space-y-3 max-w-2xl mx-auto">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/30">Platform Workflow</span>
-            <h1 className="text-[#EAF2C9] font-bold tracking-tight text-3xl md:text-5xl">
+            <h1 className="text-gray-900 font-bold tracking-tight text-3xl md:text-5xl">
               How BIZRA Works
             </h1>
-            <p className="text-[#9ED4AC] text-base md:text-lg leading-relaxed">
+            <p className="text-gray-500 text-base md:text-lg leading-relaxed">
               Our AI pipeline transforms raw government census, transport, and mandi records into a clear 5-step roadmap for your enterprise.
             </p>
           </ScrollReveal>
@@ -94,7 +94,7 @@ export default function HowItWorks() {
             {steps.map((step, idx) => (
               <div
                 key={idx}
-                className="h-full flex flex-col justify-between p-5 rounded-2xl bg-[#22373D] border border-[#3B5C65] hover:border-[#2EA8A4]/60 transition-all shadow-lg group"
+                className="h-full flex flex-col justify-between p-5 rounded-2xl bg-gray-100 border border-gray-200 hover:border-[#2EA8A4]/60 transition-all shadow-lg group"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -106,16 +106,16 @@ export default function HowItWorks() {
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-base text-[#EAF2C9] group-hover:text-[#2EA8A4] transition-colors">
+                  <h3 className="font-bold text-base text-gray-900 group-hover:text-[#2EA8A4] transition-colors">
                     {step.title}
                   </h3>
 
-                  <p className="text-xs text-[#9ED4AC] leading-relaxed">
+                  <p className="text-xs text-gray-500 leading-relaxed">
                     {step.desc}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-[#3B5C65] mt-4 flex items-center gap-1.5 text-[11px] font-semibold text-[#2EA8A4]">
+                <div className="pt-4 border-t border-gray-200 mt-4 flex items-center gap-1.5 text-[11px] font-semibold text-[#2EA8A4]">
                   <CheckCircle2 size={13} />
                   <span>Verified Step</span>
                 </div>
@@ -127,9 +127,9 @@ export default function HowItWorks() {
         {/* 2. Deliverables Section */}
         <section className="space-y-12">
           <ScrollReveal animation="fade-up" className="text-center space-y-3 max-w-xl mx-auto">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#4B6E77]/30 text-[#9ED4AC] border border-[#3B5C65]">Comprehensive Deliverables</span>
-            <h2 className="text-[#EAF2C9] font-bold tracking-tight text-3xl md:text-5xl">What You Receive in Every Report</h2>
-            <p className="text-[#9ED4AC] text-sm md:text-base">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#4B6E77]/30 text-gray-500 border border-gray-200">Comprehensive Deliverables</span>
+            <h2 className="text-gray-900 font-bold tracking-tight text-3xl md:text-5xl">What You Receive in Every Report</h2>
+            <p className="text-gray-500 text-sm md:text-base">
               Institutional-grade intelligence modules designed for bank loan approvals and business setup.
             </p>
           </ScrollReveal>
@@ -138,11 +138,11 @@ export default function HowItWorks() {
             {deliverables.map((item, idx) => (
               <div
                 key={idx}
-                className="bg-[#22373D] border border-[#3B5C65] rounded-2xl p-6 h-full flex flex-col justify-between group hover:border-[#2EA8A4]/60 transition-colors shadow-lg"
+                className="bg-gray-100 border border-gray-200 rounded-2xl p-6 h-full flex flex-col justify-between group hover:border-[#2EA8A4]/60 transition-colors shadow-lg"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-xl bg-[#111D21] border border-[#3B5C65] flex items-center justify-center text-[#2EA8A4]">
+                    <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-[#2EA8A4]">
                       <item.icon size={20} />
                     </div>
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#2EA8A4]/20 text-[#2EA8A4] border border-[#2EA8A4]/30">
@@ -150,17 +150,17 @@ export default function HowItWorks() {
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-base text-[#EAF2C9] group-hover:text-[#2EA8A4] transition-colors">
+                  <h3 className="font-bold text-base text-gray-900 group-hover:text-[#2EA8A4] transition-colors">
                     {item.title}
                   </h3>
 
-                  <p className="text-xs text-[#9ED4AC] leading-relaxed">
+                  <p className="text-xs text-gray-500 leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-[#3B5C65] mt-4 flex items-center justify-between text-xs font-semibold">
-                  <span className="text-[#9ED4AC]">Government Backed</span>
+                <div className="pt-4 border-t border-gray-200 mt-4 flex items-center justify-between text-xs font-semibold">
+                  <span className="text-gray-500">Government Backed</span>
                   <span className="flex items-center gap-1 text-[#2EA8A4]">
                     <Sparkles size={12} /> Active
                   </span>
@@ -172,14 +172,14 @@ export default function HowItWorks() {
 
         {/* 3. Advisor Strip */}
         <Parallax speed={0.1}>
-          <div className="bg-[#22373D] border border-[#3B5C65] rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+          <div className="bg-gray-100 border border-gray-200 rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-[#2EA8A4]/10 border border-[#2EA8A4]/30 flex items-center justify-center shrink-0 text-[#2EA8A4]">
                 <HelpCircle size={24} />
               </div>
               <div className="space-y-1">
-                <h3 className="text-lg font-bold text-[#EAF2C9]">Need Assistance Interpreting Your Report?</h3>
-                <p className="text-xs text-[#9ED4AC]">
+                <h3 className="text-lg font-bold text-gray-900">Need Assistance Interpreting Your Report?</h3>
+                <p className="text-xs text-gray-500">
                   Our regional support coordinators assist with parameter evaluation, permits, and bank proposals.
                 </p>
               </div>
@@ -187,7 +187,7 @@ export default function HowItWorks() {
 
             <a
               href="mailto:support@data.gov.in"
-              className="px-6 py-3 font-semibold rounded-xl text-xs shrink-0 flex items-center gap-2 bg-[#2EA8A4] text-[#18292E] hover:bg-[#258B87] transition-all"
+              className="px-6 py-3 font-semibold rounded-xl text-xs shrink-0 flex items-center gap-2 bg-[#2EA8A4] text-white hover:bg-[#258B87] transition-all"
             >
               <span>Contact Regional Advisor</span>
               <ArrowRight size={14} />
